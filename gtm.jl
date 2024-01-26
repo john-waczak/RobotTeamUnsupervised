@@ -2,7 +2,6 @@ using LinearAlgebra
 using Statistics, MultivariateStats
 using Distances
 
-
 function makeCoords(k)
     ξ = range(-1.0, 1.0, length=k)
 
@@ -88,4 +87,62 @@ end
 
 function getLatentMeans(gtm)
     return gtm.W*gtm.Φ'
+end
+
+
+function getNodeDistances(gtm, X)
+    return pairwise(sqeuclidean, getLatentMeans(gtm), X', dims=2)
+end
+
+
+function getNodeDistances!(D, gtm, X)
+    pairwise!(D, sqeuclidean, getLatentMeans(gtm), X', dims=2)
+end
+
+
+
+function Responsabilities(gtm, X)
+    D = getNodeDistances(gtm, X)
+
+    # use exp-normalize trick
+    # to prevent overflow
+    R = -(1.0/(2.0*gtm.β⁻¹)) .* D
+    for j in axes(R, 2)
+        R[:,j] .= exp.(R[:,j] .- maximum(R[:,j]))
+        R[:,j] .= R[:,j] ./ sum(R[:,j])
+    end
+
+    return R
+end
+
+
+
+# in place version for less allocations
+function Responsabilities!(R, R_tmp, D, gtm, X)
+    getNodeDistances!(D, gtm, X)
+
+    R .= -(1.0/(2.0*gtm.β⁻¹)) .* D
+    maximum!(R_tmp, R)
+
+    #Threads.@threads for j in axes(R, 2)
+    for j in axes(R, 2)
+        R[:,j] .= exp.(R[:,j] .- R_tmp[j])
+    end
+
+    sum!(R_tmp, R)
+    # Threads.@threads for j in axes(R,2)
+    for j in axes(R,2)
+        R[:,j] .= R[:,j] ./ R_tmp[j]
+    end
+end
+
+
+function getGMatrix(R)
+    return diagm(sum(R, dims=2)[:])
+end
+
+
+function getGMatrix!(G,R)
+    G_diag = @view G[diagind(G)]
+    sum!(G_diag, R)
 end

@@ -60,4 +60,40 @@ fig
 
 gtm = GTM(10, 4, 2, X)
 
+getLatentMeans(gtm)
 
+D = getNodeDistances(gtm, X)
+@benchmark getNodeDistances(gtm, X)
+@benchmark getNodeDistances!(D, gtm, X)
+
+
+R = Responsabilities(gtm, X)
+
+R2 = zeros(size(R));
+Rtmp = sum(R2, dims=1)
+Rtmp = maximum(R2, dims=1)
+Responsabilities!(R2, Rtmp, D, gtm, X)
+
+R2 == R
+
+@benchmark Responsabilities(gtm, X)
+@benchmark Responsabilities!(R2, Rtmp, D, gtm, X)
+
+@assert R2 == R
+
+diagm(sum(R, dims=2)[:])
+
+G = getGMatrix(R)
+size(G)
+size(R)
+G2 = zeros(size(G))
+getGMatrix!(G2,R)
+
+@benchmark getGMatrix(R)
+@benchmark getGMatrix!(G2, R)
+
+diag(G) == sum(R, dims=2)[:]
+diag(G2) == sum(R, dims=2)[:]
+
+
+G2[end,end]
