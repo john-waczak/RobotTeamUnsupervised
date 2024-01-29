@@ -58,42 +58,67 @@ fig
 
 
 
-gtm = GTM(10, 4, 2, X)
+k = 8
+m = 5
+s = 2
 
-getLatentMeans(gtm)
+gtm = GTM(k, m, s, X)
 
-D = getNodeDistances(gtm, X)
-@benchmark getNodeDistances(gtm, X)
-@benchmark getNodeDistances!(D, gtm, X)
+gtm = GTM(k, m, s, X)
+llhs, R = fit!(gtm, X, α = 1, niter=50, tol=0.001)
 
-
-R = Responsabilities(gtm, X)
-
-R2 = zeros(size(R));
-Rtmp = sum(R2, dims=1)
-Rtmp = maximum(R2, dims=1)
-Responsabilities!(R2, Rtmp, D, gtm, X)
-
-R2 == R
-
-@benchmark Responsabilities(gtm, X)
-@benchmark Responsabilities!(R2, Rtmp, D, gtm, X)
-
-@assert R2 == R
-
-diagm(sum(R, dims=2)[:])
-
-G = getGMatrix(R)
-size(G)
-size(R)
-G2 = zeros(size(G))
-getGMatrix!(G2,R)
-
-@benchmark getGMatrix(R)
-@benchmark getGMatrix!(G2, R)
-
-diag(G) == sum(R, dims=2)[:]
-diag(G2) == sum(R, dims=2)[:]
+lines(1:length(llhs), llhs)
 
 
-G2[end,end]
+
+
+means = DataMeans(gtm, X)
+
+# modes = DataModes(gtm, X)
+
+
+
+fig = Figure()
+ax = Axis(
+    fig[1,1],
+    xlabel="ξ₁",
+    ylabel="ξ₂",
+    title="GTM Means"
+)
+
+idx1 = y .== 1
+idx2 = y .== 2
+idx3 = y .== 3
+
+sc1 = scatter!(ax, means[idx1,1], means[idx1,2], color=mints_colors[1])
+sc2 = scatter!(ax, means[idx2,1], means[idx2,2], color=mints_colors[2])
+sc3 = scatter!(ax, means[idx3,1], means[idx3,2], color=mints_colors[3])
+
+axislegend(ax, [sc1, sc2, sc3], target_labels)
+
+fig
+
+
+
+modes = DataModes(gtm, X)
+
+fig = Figure()
+ax = Axis(
+    fig[1,1],
+    xlabel="ξ₁",
+    ylabel="ξ₂",
+    title="GTM Modes"
+)
+
+idx1 = y .== 1
+idx2 = y .== 2
+idx3 = y .== 3
+
+sc1 = scatter!(ax, modes[idx1,1], modes[idx1,2], color=mints_colors[1])
+sc2 = scatter!(ax, modes[idx2,1], modes[idx2,2], color=mints_colors[2])
+sc3 = scatter!(ax, modes[idx3,1], modes[idx3,2], color=mints_colors[3])
+
+axislegend(ax, [sc1, sc2, sc3], target_labels)
+
+fig
+
