@@ -65,17 +65,12 @@ s = 2
 gtm = GTM(k, m, s, X)
 
 gtm = GTM(k, m, s, X)
-llhs, R = fit!(gtm, X, α = 1, niter=50, tol=0.001)
-
+converged,llhs, R = fit!(gtm, X, α = 0.1, niter=100, tol=0.01)
 lines(1:length(llhs), llhs)
 
 
-
-
-means = DataMeans(gtm, X)
-
-# modes = DataModes(gtm, X)
-
+means = DataMeans(gtm)
+modes = DataModes(gtm)
 
 
 fig = Figure()

@@ -142,14 +142,16 @@ end
 
 
 
-function fit!(gtm, X; α = 0.1, niter=100, tol=0.001)
+function fit!(gtm, X; α = 0.1, niter=100, tol=0.001, nconverged=5)
     # 1. create distance matrix Δ² between manifold points and data matrix
     Ψ = gtm.W * gtm.Φ'
     Δ² = pairwise(sqeuclidean, Ψ, X', dims=2)
     # 2. Until convergence, i.e. log-likelihood < tol
 
     llhs = Float64[]
-    converged = false
+    llh_prev = 0.0
+    nclose = 0
+    converged = false  # a flag to tell us if we converged successfully
     for i in 1:niter
         # expectation
         P = getPMatrix(Δ², gtm.β⁻¹)
@@ -165,6 +167,19 @@ function fit!(gtm, X; α = 0.1, niter=100, tol=0.001)
         # compute log-likelihood
         l = loglikelihood(P, gtm.β⁻¹, X, gtm.Ξ)
         push!(llhs, l)
+
+        llh_diff = abs(l - llh_prev)
+        llh_prev = l
+
+        if llh_diff <= tol
+            # increment the number of "close" difference
+            nclose += 1
+        end
+
+        if nclose == nconverged
+            converged = true
+            break
+        end
     end
 
     # update responsabilities after final pass
@@ -173,17 +188,17 @@ function fit!(gtm, X; α = 0.1, niter=100, tol=0.001)
     P = getPMatrix(Δ², gtm.β⁻¹)
     R = Responsabilities(P)
 
-    return llhs, R
+    return converged,llhs, R
 end
 
 
 
-function DataMeans(gtm, X)
+function DataMeans(gtm)
     return R'*gtm.Ξ
 end
 
 
-function DataModes(gtm, X)
+function DataModes(gtm)
     idx = argmax(R, dims=1)
     idx = [idx[i][1] for i ∈ 1:length(idx)]
     return gtm.Ξ[idx,:]
