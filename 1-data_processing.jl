@@ -26,15 +26,15 @@ include("config.jl")
 datapath = "/Users/johnwaczak/data/robot-team/finalized/Full/df_full.csv"
 @assert ispath(datapath)
 
-df = CSV.read(datapath, DataFrame)
+df = CSV.read(datapath, DataFrame);
 
 target_names = keys(targets_dict)
 
 
 # there are 526 total features
 n_features = 526
-df_features = df[:, 1:n_features]
-df_targets = df[:, n_features+1:end]
+df_features = df[:, 1:n_features];
+df_targets = df[:, n_features+1:end];
 
 
 targets_to_keep = [
@@ -56,8 +56,10 @@ targets_to_keep = [
     :RefFuel
 ]
 
-df_targets = df_targets[:, targets_to_keep]
+df_targets = df_targets[:, targets_to_keep];
 
+
+nλs = length(wavelengths)
 
 # remove spectral/vegetation indices from features
 reflectance_names = [Symbol("R_"*lpad(i, 3, "0")) for i ∈ 1:nλs]
@@ -73,7 +75,7 @@ push!(features_to_keep, :solar_zenith)
 push!(features_to_keep, :Σrad)
 push!(features_to_keep, :Σdownwelling)
 
-df_features = df_features[:, features_to_keep]
+df_features = df_features[:, features_to_keep];
 
 
 # let's decide if we need to trim the wavelengths at all
@@ -114,6 +116,15 @@ end
 
 save(joinpath(outpath, "fi-comparison.png"), fig)
 save(joinpath(outpath, "fi-comparison.pdf"), fig)
+
+# save the data
+data_path = joinpath("./data", "robot-team", "supervised")
+if !ispath(data_path)
+    mkpath(data_path)
+end
+
+CSV.write(joinpath(data_path, "df_features.csv"), df_features)
+CSV.write(joinpath(data_path, "df_targets.csv"), df_targets)
 
 
 
