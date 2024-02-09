@@ -1,4 +1,4 @@
-using CSV, DataFrames
+using CSV, DataFrames, DelimitedFiles
 using MLJ
 using Pkg
 Pkg.add(["Clustering", "MLJClusteringInterface"])
@@ -25,7 +25,7 @@ update_theme!(
     )
 )
 
-include("./utils.jl")
+# include("./utils.jl")
 
 
 figures_path = joinpath("./figures", "iris")
@@ -70,6 +70,21 @@ fp = fitted_params(mach)
 
 assignments = rpt[:assignments]
 centers = fp[:centers]  # D × K where D = number of reatures and K = number of clusters
+
+Δ = pairwise(mach.model.metric, Matrix(X), dims=1)
+s = silhouettes(assignments, Δ)
+s̄ = mean(s)
+
+k = mach.model.k
+
+fig = Figure();
+ax = Axis(fig[1,1])
+
+
+
+# write the centers to a file
+centers
+
 
 # SOM
 

@@ -118,7 +118,7 @@ save(joinpath(outpath, "fi-comparison.png"), fig)
 save(joinpath(outpath, "fi-comparison.pdf"), fig)
 
 # save the data
-data_path = joinpath("./data", "robot-team", "supervised")
+data_path = joinpath("./data", "robot-team", "unsupervised")
 if !ispath(data_path)
     mkpath(data_path)
 end
