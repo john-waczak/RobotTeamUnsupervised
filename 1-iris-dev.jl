@@ -1,11 +1,13 @@
 using CSV, DataFrames, DelimitedFiles
 using MLJ
-using Pkg
-Pkg.add(["Clustering", "MLJClusteringInterface"])
-using Clustering: silhouettes
-using SelfOrganizingMaps
+#using Pkg
+#Pkg.add(["Clustering", "MLJClusteringInterface"])
+#using Clustering: silhouettes
+#using SelfOrganizingMaps
+#using Distances
 using GenerativeTopographicMapping
 using CairoMakie, MintsMakieRecipes
+using JSON
 
 using BenchmarkTools
 
@@ -25,8 +27,6 @@ update_theme!(
     )
 )
 
-# include("./utils.jl")
-
 
 figures_path = joinpath("./figures", "iris")
 if !ispath(figures_path)
@@ -39,9 +39,10 @@ if !ispath(figures_path)
 end
 
 
+data_path = "./data"
 
 
-df = CSV.read(download("https://ncsa.osn.xsede.org/ees230012-bucket01/mintsML/toy-datasets/iris/iris.csv"), DataFrame)
+df = CSV.read(joinpath(data_path, "toy-datasets", "iris", "df_iris.csv"), DataFrame)
 
 X = df[:, 1:4]
 y = df[:,5]
@@ -51,39 +52,90 @@ y = [findfirst(y[i] .== target_labels) for i in axes(y,1)]
 
 
 
-# KMeans -- uses Centroids
-KMeans = @load KMeans pkg=Clustering
-kmeans = KMeans()
-mach = machine(kmeans, X)
+gtm = GTM(k=6, m=2, tol=1e-5, nepochs=100)
+mach = machine(gtm, X)
 fit!(mach)
 
+df_res = DataFrame(MLJ.transform(mach, X))
+df_res.mode_class = get.(MLJ.predict(mach, X))
 
-# get the distance of each record to each of the cluster centroids
-X̃ = MLJ.transform(mach, X)
 
-# get the predicted label for each record
-ŷ = MLJ.predict(mach, X)
 
-# get the
+# N × K
+Rs = predict_responsibility(mach, X)
+
+
 rpt = report(mach)
-fp = fitted_params(mach)
+llhs = rpt[:llhs]
+Ξ = rpt[:Ξ]
 
-assignments = rpt[:assignments]
-centers = fp[:centers]  # D × K where D = number of reatures and K = number of clusters
+rpt
 
-Δ = pairwise(mach.model.metric, Matrix(X), dims=1)
-s = silhouettes(assignments, Δ)
-s̄ = mean(s)
-
-k = mach.model.k
 
 fig = Figure();
-ax = Axis(fig[1,1])
+ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
+lines!(ax, 1:length(llhs), llhs, linewidth=5)
+fig
 
 
 
+
+fig = Figure();
+ax = Axis(
+    fig[1,1],
+    xlabel="ξ₁",
+    ylabel="ξ₂",
+    title="GTM Means"
+)
+scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
+
+fig
+
+save("./figures/iris/test.png", fig)
+
+
+JSON.print(rpt)
+
+# open(joinpath(path_to_use, "$(savename)-occam__$(suffix).json"), "w") do f
+#     JSON.print(f, res_dict)
+# end
+
+
+
+
+
+
+
+
+# KMeans -- uses Centroids
+# KMeans = @load KMeans pkg=Clustering
+# kmeans = KMeans()
+# mach = machine(kmeans, X)
+# fit!(mach)
+
+
+# X̃ = MLJ.transform(mach, X)  # distance to all cluster centers
+# ŷ = MLJ.predict(mach, X)    # cluster identification
+
+# # get the
+# rpt = report(mach)
+# fp = fitted_params(mach)
+# assignments = rpt[:assignments]
+# centers = fp[:centers]  # D × K where D = number of reatures and K = number of clusters
+
+# df_centers = DataFrame(centers', names(X))
+
+# Δ = pairwise(mach.model.metric, Matrix(X), dims=1)
+# s = silhouettes(assignments, Δ)
+
+
+# s̄ = mean(s)
+
+# k = mach.model.k
+
+# fig = Figure();
+# ax = Axis(fig[1,1])
 # write the centers to a file
-centers
 
 
 # SOM
