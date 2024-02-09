@@ -3,7 +3,7 @@ using MLJ
 using Pkg
 Pkg.add(["Clustering", "MLJClusteringInterface"])
 using Clustering: silhouettes
-
+using SelfOrganizingMaps
 using GenerativeTopographicMapping
 using CairoMakie, MintsMakieRecipes
 
@@ -93,12 +93,3 @@ centers
 
 
 
-
-
-
-
-
-
-# set up code for fitting in parallel, producing silhouette plots, saving centroids
-# we can then have an analysis script which plots the mean silhouette scores for all values of k
-# we can also visualize the centroids
