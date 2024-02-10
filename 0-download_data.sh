@@ -3,7 +3,7 @@
 SAVE_PATH=$1
 
 if [[ -d ${1}/robot-team/unsupervised/data ]]; then
-   echo "${1}/robot-team/unsupervised exists"
+   echo "${1}/robot-team/unsupervised/adata exists"
 else
     mkdir -p ${1}/robot-team/unsupervised/data
 fi
