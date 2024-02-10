@@ -44,11 +44,11 @@ function parse_commandline()
         "-k"
             help = "k² is total number of latent nodes"
             arg_type = Int
-            default = 30
-        "-m"
-            help = "m² is the total number of rbf centers"
+            default = 32
+        "--m_max", "-m"
+            help = "Max value of m to use in parameter sweep. There are m² rbf centers."
             arg_type = Int
-            default = 20
+            default = 32
         "-s"
             help = "Scale factor for rbf variance"
             arg_type = Float64
@@ -90,7 +90,7 @@ function main()
 
     datapath = parsed_args[:datapath]
     k = parsed_args[:k]
-    m = parsed_args[:m]
+    m_max = parsed_args[:m_max]
     s = parsed_args[:s]
     α = parsed_args[:a]
     refs_only = parsed_args[:refs_only]
@@ -101,80 +101,80 @@ function main()
 
     println("nrow: ", nrow(X), "\tncol: ", ncol(X))
 
+
+    folder_name = "all_features"
+
     if refs_only
         X = X[:, 1:462]
-    end
-
-
-    # let's set up the path for saving results
-    folder_name = "all_features"
-    if refs_only
         folder_name = "refs_only"
     end
 
-    outpath_base = joinpath(outpath, folder_name, "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
+    for m ∈ 2:1:m_max
+        @info "m=$(m)"
+        # let's set up the path for saving results
+        outpath_base = joinpath(outpath, folder_name, "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
 
-    if !ispath(outpath_base)
-        @info "Creating save directory at $(outpath_base)"
-        mkpath(outpath_base)
+        if !ispath(outpath_base)
+            @info "\tCreating save directory at $(outpath_base)"
+            mkpath(outpath_base)
+        end
+
+
+        @info "\tInitializing GTM"
+        gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=20)
+        mach = machine(gtm, X)
+
+        @info "\tFitting GTM"
+        fit!(mach)
+
+        rpt = report(mach)
+        Ξ = rpt[:Ξ]
+        Rs = predict_responsibility(mach, X)
+
+        # contourf(Ξ[:,1], Ξ[:,2],  log10.(Rs[1,:] .+ eps(Float64)))
+        # contourf(Ξ[:,1], Ξ[:,2],  Rs[1,:])
+        @info "\tCreating output files for GTM means and mode class labels"
+        df_res = DataFrame(MLJ.transform(mach, X))
+        df_res.mode_class = get.(MLJ.predict(mach, X))
+        CSV.write(joinpath(outpath_base, "fitres.csv"), df_res)
+
+        @info "\tComputing Responsibility matrix"
+        Rs = predict_responsibility(mach, X)
+        writedlm(joinpath(outpath_base, "responsibility.csv"), Rs, ',')
+
+        @info "\tSaving report"
+        rpt = report(mach)
+        open(joinpath(outpath_base, "gtm_report.json"), "w") do f
+            JSON.print(f, rpt)
+        end
+
+        @info "\tGenerating Plots"
+
+        llhs = rpt[:llhs]
+        Ξ = rpt[:Ξ]
+
+        fig = Figure();
+        ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
+        lines!(ax, 1:length(llhs), llhs, linewidth=5)
+
+        save(joinpath(outpath_base, "training-llhs.png"), fig)
+        save(joinpath(outpath_base, "training-llhs.pdf"), fig)
+
+        fig = Figure();
+        ax = Axis(
+            fig[1,1],
+            xlabel="ξ₁",
+            ylabel="ξ₂",
+            title="GTM Means"
+        )
+        scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
+
+        save(joinpath(outpath_base, "latent-means.png"), fig)
+        save(joinpath(outpath_base, "latent-means.pdf"), fig)
+
+        @info "\tSaving machine"
+        MLJ.save(joinpath(outpath_base, "gtm.jls"), mach)
     end
-
-
-    @info "Initializing GTM"
-    gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=20)
-    mach = machine(gtm, X)
-
-    @info "Fitting GTM"
-    fit!(mach)
-
-    rpt = report(mach)
-    Ξ = rpt[:Ξ]
-    Rs = predict_responsibility(mach, X)
-
-    # contourf(Ξ[:,1], Ξ[:,2],  log10.(Rs[1,:] .+ eps(Float64)))
-    # contourf(Ξ[:,1], Ξ[:,2],  Rs[1,:])
-
-    @info "Creating output files for GTM means and mode class labels"
-    df_res = DataFrame(MLJ.transform(mach, X))
-    df_res.mode_class = get.(MLJ.predict(mach, X))
-    CSV.write(joinpath(outpath_base, "fitres.csv"), df_res)
-
-    @info "Computing Responsibility matrix"
-    Rs = predict_responsibility(mach, X)
-    writedlm(joinpath(outpath_base, "responsibility.csv"), Rs, ',')
-
-    @info "Saving report"
-    rpt = report(mach)
-    open(joinpath(outpath_base, "gtm_report.json"), "w") do f
-        JSON.print(f, rpt)
-    end
-
-    @info "Generating Plots"
-
-    llhs = rpt[:llhs]
-    Ξ = rpt[:Ξ]
-
-    fig = Figure();
-    ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
-    lines!(ax, 1:length(llhs), llhs, linewidth=5)
-
-    save(joinpath(outpath_base, "training-llhs.png"), fig)
-    save(joinpath(outpath_base, "training-llhs.pdf"), fig)
-
-    fig = Figure();
-    ax = Axis(
-        fig[1,1],
-        xlabel="ξ₁",
-        ylabel="ξ₂",
-        title="GTM Means"
-    )
-    scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
-
-    save(joinpath(outpath_base, "latent-means.png"), fig)
-    save(joinpath(outpath_base, "latent-means.pdf"), fig)
-
-    @info "Saving machine"
-    MLJ.save(joinpath(outpath_base, "gtm.jls"), mach)
 end
 
 
