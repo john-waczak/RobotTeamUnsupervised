@@ -61,17 +61,14 @@ function parse_commandline()
             help = "Label for output files"
             arg_type = Bool
             default = true
-        "--outpath", "-o"
-            help = "Output path for saving results"
-            arg_type = String
-            default = "/Users/johnwaczak/gitrepos/RobotTeamUnsupervised/models"
     end
 
 
     parsed_args = parse_args(ARGS, s; as_symbols=true)
 
+    println(parsed_args)
+
     @assert ispath(parsed_args[:datapath]) "datapath does not exist"
-    @assert ispath(parsed_args[:outpath]) "datapath does not exist"
 
     return parsed_args
 end
@@ -81,6 +78,9 @@ end
 function main()
     # seed reproducible pseudo-random number generator
     @info "Setting random number seed"
+    flush(stdout)
+    flush(stderr)
+
     rng = Xoshiro(42)
 
     # parse args making sure that supplied target does exist
@@ -94,10 +94,13 @@ function main()
     s = parsed_args[:s]
     α = parsed_args[:a]
     refs_only = parsed_args[:refs_only]
-    outpath = parsed_args[:outpath]
 
     @info "Loading datasets..."
-    X = CSV.read(joinpath(datapath, "df_features.csv"), DataFrame)
+    flush(stdout)
+    flush(stderr)
+
+
+    X = CSV.read(joinpath(datapath, "data", "df_features.csv"), DataFrame)
 
     println("nrow: ", nrow(X), "\tncol: ", ncol(X))
 
@@ -111,20 +114,34 @@ function main()
 
     for m ∈ 2:1:m_max
         @info "m=$(m)"
+        flush(stdout)
+  	flush(stderr)
+
+
         # let's set up the path for saving results
-        outpath_base = joinpath(outpath, folder_name, "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
+        outpath_base = joinpath(datapath, "models", folder_name, "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
 
         if !ispath(outpath_base)
             @info "\tCreating save directory at $(outpath_base)"
+	    flush(stdout)
+    	    flush(stderr)
+
+
             mkpath(outpath_base)
         end
 
 
         @info "\tInitializing GTM"
+        flush(stdout)
+        flush(stderr)
+
         gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=20)
         mach = machine(gtm, X)
 
         @info "\tFitting GTM"
+        flush(stdout)
+        flush(stderr)
+
         fit!(mach)
 
         rpt = report(mach)
@@ -134,21 +151,36 @@ function main()
         # contourf(Ξ[:,1], Ξ[:,2],  log10.(Rs[1,:] .+ eps(Float64)))
         # contourf(Ξ[:,1], Ξ[:,2],  Rs[1,:])
         @info "\tCreating output files for GTM means and mode class labels"
+        flush(stdout)
+        flush(stderr)
+
+
         df_res = DataFrame(MLJ.transform(mach, X))
         df_res.mode_class = get.(MLJ.predict(mach, X))
         CSV.write(joinpath(outpath_base, "fitres.csv"), df_res)
 
         @info "\tComputing Responsibility matrix"
+        flush(stdout)
+        flush(stderr)
+
+
         Rs = predict_responsibility(mach, X)
         writedlm(joinpath(outpath_base, "responsibility.csv"), Rs, ',')
 
         @info "\tSaving report"
+        flush(stdout)
+        flush(stderr)
+
+
         rpt = report(mach)
         open(joinpath(outpath_base, "gtm_report.json"), "w") do f
             JSON.print(f, rpt)
         end
 
         @info "\tGenerating Plots"
+        flush(stdout)
+        flush(stderr)
+
 
         llhs = rpt[:llhs]
         Ξ = rpt[:Ξ]
@@ -173,6 +205,9 @@ function main()
         save(joinpath(outpath_base, "latent-means.pdf"), fig)
 
         @info "\tSaving machine"
+        flush(stdout)
+        flush(stderr)
+
         MLJ.save(joinpath(outpath_base, "gtm.jls"), mach)
     end
 end
