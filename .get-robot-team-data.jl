@@ -2,6 +2,7 @@ using CSV, DataFrames
 #using MLJ
 #using GenerativeTopographicMapping
 using CairoMakie, MintsMakieRecipes
+using Random
 
 set_theme!(mints_theme)
 update_theme!(
@@ -123,9 +124,13 @@ if !ispath(data_path)
     mkpath(data_path)
 end
 
-CSV.write(joinpath(data_path, "df_features.csv"), df_features)
-CSV.write(joinpath(data_path, "df_targets.csv"), df_targets)
 
 
+rng = Xoshiro(42)
+Nrecords = 50_000
+idx_to_use = rand(1:nrow(df_features), Nrecords)
+
+CSV.write(joinpath(data_path, "df_features.csv"), df_features[idx_to_use,:])
+CSV.write(joinpath(data_path, "df_targets.csv"), df_targets[idx_to_use,:])
 
 

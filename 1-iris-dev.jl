@@ -91,9 +91,7 @@ scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
 
 fig
 
-save("./figures/iris/test.png", fig)
-
-
+rpt
 JSON.print(rpt)
 
 # open(joinpath(path_to_use, "$(savename)-occam__$(suffix).json"), "w") do f
