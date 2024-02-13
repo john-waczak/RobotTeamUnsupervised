@@ -115,17 +115,16 @@ function main()
     for m ∈ 2:1:m_max
         @info "m=$(m)"
         flush(stdout)
-  	flush(stderr)
+  	    flush(stderr)
 
 
         # let's set up the path for saving results
-        outpath_base = joinpath(datapath, "models", folder_name, "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
+        outpath_base = joinpath(datapath, "models", folder_name, "param-search", "k=$(k)__m=$(m)__s=$(s)__α=$(α)")
 
         if !ispath(outpath_base)
             @info "\tCreating save directory at $(outpath_base)"
-	    flush(stdout)
-    	    flush(stderr)
-
+	          flush(stdout)
+    	      flush(stderr)
 
             mkpath(outpath_base)
         end
@@ -135,7 +134,7 @@ function main()
         flush(stdout)
         flush(stderr)
 
-        gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=20)
+        gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=250)
         mach = machine(gtm, X)
 
         @info "\tFitting GTM"
@@ -157,7 +156,8 @@ function main()
 
         df_res = DataFrame(MLJ.transform(mach, X))
         df_res.mode_class = get.(MLJ.predict(mach, X))
-        CSV.write(joinpath(outpath_base, "fitres.csv"), df_res)
+        # don't save so we don't fill up the disk unnecessarily
+        # CSV.write(joinpath(outpath_base, "fitres.csv"), df_res)
 
         @info "\tComputing Responsibility matrix"
         flush(stdout)
@@ -165,16 +165,24 @@ function main()
 
 
         Rs = predict_responsibility(mach, X)
-        writedlm(joinpath(outpath_base, "responsibility.csv"), Rs, ',')
+        # writedlm(joinpath(outpath_base, "responsibility.csv"), Rs, ',')
 
         @info "\tSaving report"
         flush(stdout)
         flush(stderr)
 
+        rpt_out = Dict()
+        rpt_out[:k] = k
+        rpt_out[:m] = m
+        rpt_out[:s] = s
+        rpt_out[:α] = α
+        rpt_out[:converged] = rpt[:converged]
+        rpt_out[:llhs] = rpt[:llhs]
+        rpt_out[:AIC] = rpt[:AIC]
+        rpt_out[:BIC] = rpt[:BIC]
 
-        rpt = report(mach)
         open(joinpath(outpath_base, "gtm_report.json"), "w") do f
-            JSON.print(f, rpt)
+            JSON.print(f, rpt_out)
         end
 
         @info "\tGenerating Plots"
@@ -182,33 +190,32 @@ function main()
         flush(stderr)
 
 
-        llhs = rpt[:llhs]
-        Ξ = rpt[:Ξ]
+        # llhs = rpt[:llhs]
+        # Ξ = rpt[:Ξ]
 
-        fig = Figure();
-        ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
-        lines!(ax, 1:length(llhs), llhs, linewidth=5)
+        # fig = Figure();
+        # ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
+        # lines!(ax, 1:length(llhs), llhs, linewidth=5)
 
-        save(joinpath(outpath_base, "training-llhs.png"), fig)
-        save(joinpath(outpath_base, "training-llhs.pdf"), fig)
+        # save(joinpath(outpath_base, "training-llhs.png"), fig)
+        # save(joinpath(outpath_base, "training-llhs.pdf"), fig)
 
-        fig = Figure();
-        ax = Axis(
-            fig[1,1],
-            xlabel="ξ₁",
-            ylabel="ξ₂",
-            title="GTM Means"
-        )
-        scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
+        # fig = Figure();
+        # ax = Axis(
+        #     fig[1,1],
+        #     xlabel="ξ₁",
+        #     ylabel="ξ₂",
+        #     title="GTM Means"
+        # )
+        # scatter!(ax, df_res.ξ₁, df_res.ξ₂, color=df_res.mode_class)
 
-        save(joinpath(outpath_base, "latent-means.png"), fig)
-        save(joinpath(outpath_base, "latent-means.pdf"), fig)
+        # save(joinpath(outpath_base, "latent-means.png"), fig)
+        # save(joinpath(outpath_base, "latent-means.pdf"), fig)
 
-        @info "\tSaving machine"
-        flush(stdout)
-        flush(stderr)
-
-        MLJ.save(joinpath(outpath_base, "gtm.jls"), mach)
+        # @info "\tSaving machine"
+        # flush(stdout)
+        # flush(stderr)
+        # MLJ.save(joinpath(outpath_base, "gtm.jls"), mach)
     end
 end
 
