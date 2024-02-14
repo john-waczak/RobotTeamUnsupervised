@@ -16,8 +16,8 @@ function make_slurm_jobs(;
 
     #SBATCH     --job-name=$(job_name)
     #SBATCH     --array=2-50
-    #SBATCH     --output=$(job_name)_%a.out
-    #SBATCH     --error=$(job_name)_%a.err
+    #SBATCH     --output=$(job_name)_%a-%A.out
+    #SBATCH     --error=$(job_name)_%a-%A.err
     #SBATCH     --nodes=1
     #SBATCH     --ntasks=1
     #SBATCH     --cpus-per-task=$(n_tasks)   # number of threads for multi-threading
