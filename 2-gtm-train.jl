@@ -115,7 +115,7 @@ function main()
     for m ∈ 2:1:m_max
         @info "m=$(m)"
         flush(stdout)
-  	flush(stderr)
+        flush(stderr)
 
 
         # let's set up the path for saving results
@@ -123,8 +123,8 @@ function main()
 
         if !ispath(outpath_base)
             @info "\tCreating save directory at $(outpath_base)"
-	    flush(stdout)
-    	    flush(stderr)
+            flush(stdout)
+            flush(stderr)
 
 
             mkpath(outpath_base)

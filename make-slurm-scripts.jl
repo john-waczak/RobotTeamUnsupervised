@@ -3,7 +3,7 @@ function make_slurm_jobs(;
                          basename="gtm-k_",
                          n_tasks=4,
                          datapath="/scratch/jwaczak/data/robot-team/unsupervised",
-                         m_max = 32,
+                         m_max = 50,
                          s = 0.5,
                          a = 0.1,
                          refs_only = true,
@@ -15,7 +15,7 @@ function make_slurm_jobs(;
     #!/bin/bash
 
     #SBATCH     --job-name=$(job_name)
-    #SBATCH     --array=2-32
+    #SBATCH     --array=2-50
     #SBATCH     --output=$(job_name)_%a.out
     #SBATCH     --error=$(job_name)_%a.err
     #SBATCH     --nodes=1
