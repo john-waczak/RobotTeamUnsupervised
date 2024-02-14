@@ -36,33 +36,16 @@ function make_slurm_jobs(;
 end
 
 
-make_slurm_jobs(
-    s=0.1,
-    a=0.1
-)
 
-make_slurm_jobs(
-    s=0.25,
-    a=0.1
-)
 
-make_slurm_jobs(
-    s=0.5,
-    a=0.1
-)
 
-make_slurm_jobs(
-    s=1.0,
-    a=0.1
-)
+for a in [0.01, 0.1, 0.5, 1.0]
+    for s in [0.1, 0.25, 0.5, 1.0, 1.5, 2.0]
+	make_slurm_jobs(
+			s=s,
+			a=a 
+			)
+    end
+end
 
-make_slurm_jobs(
-    s=1.5,
-    a=0.1
-)
-
-make_slurm_jobs(
-    s=2.0,
-    a=0.1
-)
 
