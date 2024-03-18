@@ -100,7 +100,7 @@ function main()
     flush(stderr)
 
 
-    X = CSV.read(joinpath(datapath, "data", "df_features.csv"), DataFrame)
+    X = CSV.read(joinpath(datapath, "data", "11-23", "df_features.csv"), DataFrame)
 
     println("nrow: ", nrow(X), "\tncol: ", ncol(X))
 

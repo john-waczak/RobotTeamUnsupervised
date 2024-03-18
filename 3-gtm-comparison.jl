@@ -7,6 +7,9 @@ using ArgParse
 using Random
 using ProgressMeter
 using LaTeXStrings
+using MultivariateStats
+using Distances
+
 
 set_theme!(mints_theme)
 update_theme!(
@@ -24,16 +27,27 @@ update_theme!(
     )
 )
 
+include("./config.jl")
+
 
 datapath="./data/robot-team/unsupervised"
 @assert ispath(datapath)
 
-X = CSV.read(joinpath(datapath, "data", "df_features.csv"), DataFrame)
-# limit to reflectances only
-X = X[:, 1:462]
+X = CSV.read(joinpath(datapath, "data", "df_features.csv"), DataFrame);
+Y = CSV.read(joinpath(datapath, "data", "df_targets.csv"), DataFrame);
 
 model_path = joinpath(datapath, "models", "refs_only")
 @assert ispath(model_path)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -89,6 +103,10 @@ CSV.write(joinpath(summary_path, "fit-summary.csv"), df)
 @assert all(df.converged)
 
 
+idx_slow = findall(df.converged .== false)
+df[idx_slow, :]
+
+
 # find the global optima for BIC and AIC
 idx_bic_global = argmin(df.BIC)
 df[idx_bic_global,:]
@@ -102,129 +120,249 @@ s_best = df.s[idx_bic_global]
 α_best = df.α[idx_bic_global]
 
 
-# the hyperparameters we varied were k, m, s, and α. Lets group the dataframe by s and α so we can plot the AIC and BIC for each
-gdf = groupby(df, [:s, :α])
-
-# get the k and m corresponding to the lowest BIC/AIC for each pair of α and s
-bic_aics = []
-for (key, subdf) in pairs(gdf)
-    res = Dict()
-    res[:s] = key[:s]
-    res[:α] = key[:α]
-
-    idx_bic = argmin(subdf.BIC)
-    idx_aic = argmin(subdf.AIC)
-
-    res[:kb] = subdf.k[idx_bic]
-    res[:mb] = subdf.m[idx_bic]
-    res[:BIC] = subdf.BIC[idx_bic]
-
-    res[:ka] = subdf.k[idx_aic]
-    res[:ma] = subdf.m[idx_aic]
-    res[:AIC] = subdf.BIC[idx_aic]
-
-    push!(bic_aics, DataFrame(res))
-end
-
-df_best = vcat(bic_aics...)
+k_best
+m_best
+s_best
+α_best
 
 
-# visualize the dependence of the BIC and AIC on α and s
+
+unique(df.s)
+unique(df.α)
+
 savepath = joinpath("./figures", "hp-comparison")
 if !ispath(savepath)
     mkpath(savepath)
 end
 
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="α", ylabel="s");
-s = scatter!(ax, df_best.α, df_best.s, color = df_best.BIC, markersize=50)
 
-idx_bic = argmin(df_best.BIC)
-ab = df_best.α[idx_bic]
-sb = df_best.s[idx_bic]
-
-sl = scatter!(ax, Point2f(ab, sb), marker = :star5, markersize=25, color=:white, strokecolor=:gray, strokewidth=1)
-cb = Colorbar(fig[1,2], s, label="Bayesian Information Criterion", ticks = ([extrema(df_best.BIC)...], ["Low", "High"]))
-
-save(joinpath(savepath, "bic-comparison.png"), fig)
-save(joinpath(savepath, "bic-comparison.pdf"), fig)
-
-fig
-
-
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="α", ylabel="s");
-s = scatter!(ax, df_best.α, df_best.s, color = df_best.AIC, markersize=50)
-
-idx_aic = argmin(df_best.AIC)
-aa = df_best.α[idx_aic]
-sa = df_best.s[idx_aic]
-
-sl = scatter!(ax, Point2f(aa, sa), marker = :star5, markersize=25, color=:white, strokecolor=:gray, strokewidth=1)
-cb = Colorbar(fig[1,2], s, label="Akaike Information Criterion", ticks = ([extrema(df_best.AIC)...], ["Low", "High"]))
-
-save(joinpath(savepath, "aic-comparison.png"), fig)
-save(joinpath(savepath, "aic-comparison.pdf"), fig)
-
-fig
-
-
-subdf = gdf[(s=s_best, α=α_best,)]
-
-
-idx_bic = argmin(subdf.BIC)
-idx_aic = argmin(subdf.AIC)
-k_b = subdf.k[idx_bic]
-m_b = subdf.m[idx_bic]
-k_a = subdf.k[idx_aic]
-m_a = subdf.m[idx_aic]
-
-unique(subdf.k)
-k_b
-
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="k (k² Latent Nodes)", ylabel="m (m² RBF Centers)", title="GTM Hyperparameter Results\ns=$(s_best), α=$(α_best)");
-#h = contourf!(ax, subdf.k, subdf.m, subdf.BIC; levels=15)
-h = heatmap!(ax, subdf.k, subdf.m, subdf.BIC)
-c = contour!(ax, subdf.k, subdf.m, subdf.AIC; levels=10, color=:white)
-s = scatter!(ax, Point2f(k_b, m_b), marker = :star5, markersize=25, color=:white, strokecolor=:gray, strokewidth=1)
-s2 = scatter!(ax, Point2f(k_a, m_a), marker = :star6, markersize=25, color=:white, strokecolor=:gray, strokewidth=1)
-cb = Colorbar(fig[1,2], h; label="Bayesian Information Criterion", ticks = ([extrema(subdf.BIC)...], ["Low", "High"]))
-xlims!(ax, extrema(subdf.k))
-ylims!(ax, extrema(subdf.m))
-
-fig
-
-k_b*k_b
-m_b
-
-# since the number of parameters don't actually depend on k (they only depend on m since Ψ = WΦ')
-
-"let's instead plot"
-
-
-# let's do these K values and see what happens "just" when we vary m, s, and α
-4
-8
-16
-32
-
-
-
-df_fixed = df[df.α .== 0.1 .&& df.s .== 0.1, :]
-gdf = groupby(df_fixed, :k)
+# visualize BIC vs m for fixed k, α, s
 
 fig = Figure();
 ax = Axis(fig[1,1], xlabel="m", ylabel="Bayesian Information Criterion");
-for k ∈ [4,]
-    df_k = gdf[(k=k,)]
-    df_k = df_k[df_k.m .≤ 32, :]
-    sort!(df_k, :m)
+xlims!(ax, minimum(df.m), maximum(df.m))
 
-    lines!(ax, df_k.m, df_k.BIC, label="k = $(k)")
+df_fixed = df[df.α .== α_best .&& df.s .== s_best, :];
+gdf = groupby(df_fixed, :k);
+
+for k ∈ [4,8,16,32]
+    df_k = gdf[(k=k,)]
+    sort!(df_k, :m)
+    lines!(ax, df_k.m, df_k.BIC, label="k = $(k)", linewidth=3)
 end
 
 axislegend(ax; position=:lt)
 fig
 
-unique(df.s)
+save(joinpath(savepath, "bic-vs-m.png"), fig)
+save(joinpath(savepath, "bic-vs-m.svg"), fig)
+save(joinpath(savepath, "bic-vs-m.pdf"), fig)
+
+
+# visualize BIC vs s for fixed m, k, α
+fig = Figure();
+ax = Axis(fig[1,1], xlabel="scale factor", ylabel="Bayesian Information Criterion");
+xlims!(ax, minimum(df.s), maximum(df.s))
+
+df_fixed = df[df.k .== k_best .&& df.m .== m_best .&& df.α .== α_best, :]
+lines!(ax, df_fixed.s, df_fixed.BIC, linewidth=3)
+fig
+
+save(joinpath(savepath, "bic-vs-s.png"), fig)
+save(joinpath(savepath, "bic-vs-s.svg"), fig)
+save(joinpath(savepath, "bic-vs-s.pdf"), fig)
+
+
+# visualize BIC vs α for fixed m, k, s
+fig = Figure();
+ax = Axis(fig[1,1], xlabel="α", ylabel="Bayesian Information Criterion");
+xlims!(ax, minimum(df.α), maximum(df.α))
+
+df_fixed = df[df.k .== k_best .&& df.m .== m_best .&& df.s .== s_best, :]
+lines!(ax, df_fixed.α, df_fixed.BIC, linewidth=3)
+fig
+
+save(joinpath(savepath, "bic-vs-alpha.png"), fig)
+save(joinpath(savepath, "bic-vs-alpha.svg"), fig)
+save(joinpath(savepath, "bic-vs-alpha.pdf"), fig)
+
+
+
+# add code to generate summary table
+# with:
+# parameter name, values searched, optimal value
+
+
+
+
+# make final output directory
+savepath = joinpath("./figures", "model-final")
+if !ispath(savepath)
+    mkpath(savepath)
+end
+
+
+Xdata = X
+# Xdata = Xall
+
+# headers = names(X)
+# Xdata = copy(Matrix(X))
+
+# for i ∈ axes(Xdata, 1)
+#     Xdata[i, :] .= Xdata[i, :] ./ sum(Xdata[i,:])
+# end
+
+# Xdata = DataFrame(Xdata, headers)
+
+m = 4
+s = 3
+k = round(Int, 10*(m-1)/(2*s) + 1)
+
+k = 32
+
+gtm = GTM(k=k, m=m, s=s, α=1.0, tol=1e-5, nepochs=250)
+mach = machine(gtm, Xdata)
+fit!(mach)
+
+
+
+# Make a square plot of the latent points and rbf means
+gtm_mdl = fitted_params(mach)[:gtm]
+rpt = report(mach)
+
+keys(rpt)
+
+M = gtm_mdl.M                          # RBF centers
+Ξ = rpt[:Ξ]                            # Latent Points
+Ψ = rpt[:W] * rpt[:Φ]'                 # Projected Node Means
+llhs = rpt[:llhs]
+
+Rs = predict_responsibility(mach, Xdata)
+mean_proj = DataFrame(MLJ.transform(mach, Xdata))
+mode_proj = DataFrame(DataModes(gtm_mdl, Matrix(Xdata)), [:ξ₁, :ξ₂] )
+class_id = MLJ.predict(mach, Xdata)
+
+# compute PCA as well
+pca = MultivariateStats.fit(PCA, Matrix(Xdata)', maxoutdim=3, pratio=0.99999);
+U = MultivariateStats.predict(pca, Matrix(Xdata)')[1:2,:]'
+
+
+
+
+# set up 2-dimensional color map
+fig = Figure();
+axl = Axis(fig[1,1], xlabel="u₁", ylabel="u₂", title="PCA", aspect=AxisAspect(1.0))
+axr = Axis(fig[1,2], xlabel="ξ₁", ylabel="ξ₂", title="GTM ⟨ξ⟩", aspect=AxisAspect(1.0))
+scatter!(axl, U[:,1], U[:,2], markersize=5, alpha=0.7)
+scatter!(axr, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7)
+fig
+
+names(Xrest)
+names(Y)
+
+
+
+# color_col = Y.CDOM[:]
+# clims = color_clims["CDOM"]["11-23"]
+# cm = cgrad(:roma, rev=true)
+
+# fig = Figure();
+# axl = Axis(fig[1,1], xlabel="u₁", ylabel="u₂", title="PCA", aspect=AxisAspect(1.0))
+# axr = Axis(fig[1,2], xlabel="ξ₁", ylabel="ξ₂", title="GTM ⟨ξ⟩", aspect=AxisAspect(1.0))
+# h1 = scatter!(axl, U[:,1], U[:,2], color=color_col, colorrange=clims, colormap=cm, markersize=5, alpha=0.7)
+# h2 = scatter!(axr, mean_proj.ξ₁, mean_proj.ξ₂, color=color_col, colorrange=clims, colormap=cm, markersize=5, alpha=0.7)
+# cb = Colorbar(fig[1,3], colorrange=clims, colormap=cm)
+
+# fig
+
+
+# Rs[1,:]
+# scatter(Ξ[:,1], Ξ[:,2], color=Rs[1,:])
+
+
+# plot log-likelihoods
+fig = Figure();
+ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
+lines!(ax, 3:length(llhs), llhs[3:end], linewidth=5)
+fig
+
+
+fig = Figure();
+ax = Axis(fig[1,1]);
+#xlims!(ax, wavelengths[1], 900)
+# ylims!(ax, 0, 0.05)
+size(Ψ)
+
+for i ∈ [1, 32, 1024-31, 1024]
+    lines!(ax, wavelengths, Ψ[:,i])
+end
+
+fig
+
+
+size(Rs)
+size(Ψ)
+
+X̂ = Ψ * Rs'
+Xmat = Matrix(Xdata)
+Σs = svdvals(Xmat)
+
+
+using LinearAlgebra
+
+
+Δ² = colwise(sqeuclidean, X̂, Xmat')
+
+rms_error = sqrt(mean(Δ²))
+
+Rs[1,:]
+
+
+fig = Figure();
+ax = Axis(fig[1,1], xlabel="wavelength", ylabel="Reflectance");
+l1 = lines!(ax, wavelengths, Xmat[1,:])
+l2 = lines!(ax, wavelengths, X̂[:,1])
+axislegend(ax, [l1, l2], ["original", "reconstructed"])
+
+fig
+
+size(Xmat)
+
+
+fig
+
+μ = Rs' * Matrix(X)
+
+sum(Rs, dims=1)
+
+size(Rs)
+size(μ)
+
+
+for i ∈ axes(Rs,2)
+    μ[i,:] .= μ[i,:] ./ sum(Rs[:,i])
+end
+
+fig
+
+fig = Figure();
+gl = fig[1,1] = GridLayout();
+ax = Axis(gl[1,1], xlabel="λ (nm)", ylabel="Reflectance");
+ax2 = Axis(gl[1,2], xlabel="λ (nm)")
+
+idx_900 = findfirst(wavelengths .≥ 900)
+xlims!(ax, wavelengths[1], wavelengths[idx_900])
+xlims!(ax2, wavelengths[idx_900], wavelengths[end])
+
+colsize!(gl, 1, Relative(0.7))
+
+#for i ∈ [1, 32, 1024-31, 1024]
+for i ∈ [1, k, k^2-k, k^2]
+    lines!(ax, wavelengths[1:idx_900], μ[i,1:idx_900])
+    lines!(ax2, wavelengths[idx_900:end], μ[i,idx_900:end])
+end
+
+fig
+
+
+mean(sum(Rs .> 0, dims=2))
