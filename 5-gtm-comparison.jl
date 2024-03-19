@@ -1,7 +1,8 @@
 using CSV, DataFrames, DelimitedFiles
 using MLJ
 using GenerativeTopographicMapping
-using CairoMakie, MintsMakieRecipes
+using CairoMakie
+
 using JSON
 using ArgParse
 using Random
@@ -10,6 +11,8 @@ using LaTeXStrings
 using MultivariateStats
 using Distances
 
+include("utils/makie-defaults.jl")
+include("utils/config.jl")
 
 set_theme!(mints_theme)
 update_theme!(
@@ -27,8 +30,6 @@ update_theme!(
     )
 )
 
-include("./config.jl")
-
 
 datapath="./data/robot-team/unsupervised"
 @assert ispath(datapath)
@@ -38,18 +39,6 @@ Y = CSV.read(joinpath(datapath, "data", "df_targets.csv"), DataFrame);
 
 model_path = joinpath(datapath, "models", "refs_only")
 @assert ispath(model_path)
-
-
-
-
-
-
-
-
-
-
-
-
 
 json_files = []
 
