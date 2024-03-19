@@ -78,7 +78,7 @@ end
 
 function get_h5_data(h5path, Δx = 0.1, skip_size = 5)
     # open file in read mode
-    h5 = h5open(hsi_list[1], "r")
+    h5 = h5open(h5path, "r")
 
     # extract data
     varnames = read(h5["data-Δx_$(Δx)/varnames"])

@@ -5,3 +5,4 @@ data
 *.err
 *.out
 *.slurm
+.CondaPkg
