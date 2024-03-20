@@ -96,6 +96,7 @@ axr = Axis(fig[1,2], xlabel="ξ₁", ylabel="ξ₂", title="GTM ⟨ξ⟩", aspec
 scatter!(axl, U[:,1], U[:,2], markersize=5, alpha=0.7)
 scatter!(axr, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7, color=class_id)
 fig
+
 save(joinpath(figures_path, "square-means.pdf"), fig)
 
 # plot some exemplar means
@@ -226,6 +227,23 @@ leg = Legend(fig[1,2], [s_a, s_p, s_w, s_g], ["Algae", "Rhodamine", "Water", "Gr
 fig
 save(joinpath(figures_path, "square-means-labeled.png"), fig)
 save(joinpath(figures_path, "square-means-labeled.pdf"), fig)
+
+
+names(X)
+names(Y)
+fig = Figure();
+ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7, color=class_id)
+fig
+
+
+
+
+
+
+
+
+
 
 
 # torus topology
