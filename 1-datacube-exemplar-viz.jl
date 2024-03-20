@@ -40,6 +40,9 @@ files_dict = Dict(
     "11-23" => Dict(
         "no-dye" => [
             joinpath(h5_basepath, "11-23", "Scotty_1", "Scotty_1-2.h5"),
+            joinpath(h5_basepath, "11-23", "Scotty_1", "Scotty_1-7.h5"),
+            joinpath(h5_basepath, "11-23", "Scotty_1", "Scotty_1-13.h5"),
+            joinpath(h5_basepath, "11-23", "Scotty_1", "Scotty_1-14.h5"),
             joinpath(h5_basepath, "11-23", "Scotty_2", "Scotty_2-1.h5"),
         ],
         "dye" => [
@@ -163,25 +166,25 @@ important_coords = Dict(
     "plume" => Dict(
         "x" => xs[80],
         "y" => ys[225],
-        "R" => Data[1:462, 80, 225],
+        "R" => Data[1:462, 80, 225] ./ maximum(Data[1:462, 80, 225]),
         "λs" => λs,
     ),
     "water" => Dict(
         "x" => xs[400],
         "y" => ys[320],
-        "R" => Data[1:462, 400, 320],
+        "R" => Data[1:462, 400, 320] ./ maximum(Data[1:462, 400, 320]),
         "λs" => λs,
     ),
     "algae" => Dict(
         "x" => xs[186],
         "y" => ys[45],
-        "R" => Data[1:462, 186, 45],
+        "R" => Data[1:462, 186, 45] ./ maximum(Data[1:462, 186, 45]),
         "λs" => λs,
     ),
     "grass" => Dict(
         "x" => xs[400],
         "y" => xs[80],
-        "R" => Data[1:462, 400, 80],
+        "R" => Data[1:462, 400, 80] ./ maximum(Data[1:462, 400, 80]),
         "λs" => λs,
     ),
 )
@@ -190,11 +193,11 @@ important_coords = Dict(
 
 CairoMakie.activate!()
 fig = Figure();
-ax = CairoMakie.Axis(fig[1,1], xlabel="λ (nm)", ylabel="Normalized Reflectance",);
-lines!(ax, important_coords["algae"]["λs"], important_coords["algae"]["R"] ./ maximum(important_coords["algae"]["R"]), linewidth=2, label="Algae")
-lines!(ax, important_coords["plume"]["λs"], important_coords["plume"]["R"] ./ maximum(important_coords["plume"]["R"]), linewidth=2, label="Rhodamine")
-lines!(ax, important_coords["water"]["λs"], important_coords["water"]["R"] ./ maximum(important_coords["water"]["R"]), linewidth=2, label="Water")
-lines!(ax, important_coords["grass"]["λs"], important_coords["grass"]["R"] ./ maximum(important_coords["grass"]["R"]), linewidth=2, label="Grass", color=:brown)
+ax = CairoMakie.Axis(fig[1,1], xlabel="λ (nm)", ylabel="Scaled Reflectance",);
+lines!(ax, important_coords["algae"]["λs"], important_coords["algae"]["R"], linewidth=2, label="Algae")
+lines!(ax, important_coords["plume"]["λs"], important_coords["plume"]["R"], linewidth=2, label="Rhodamine")
+lines!(ax, important_coords["water"]["λs"], important_coords["water"]["R"], linewidth=2, label="Water")
+lines!(ax, important_coords["grass"]["λs"], important_coords["grass"]["R"], linewidth=2, label="Grass", color=:brown)
 axislegend(ax, position=:lt, labelsize=13)
 xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][end])
 fig
@@ -301,7 +304,15 @@ function get_h5_data(h5path, Δx = 0.1, skip_size = 5)
         end
     end
 
+    # keep only the non-nan pixels
     Data = Data[:, ij_inbounds]
+
+    # scale so that peak value is always 1.0
+    for j ∈ axes(Data, 2)
+        R_max = maximum(Data[1:462, j])
+        Data[1:462, j] .= Data[1:462, j] ./ R_max
+    end
+
     X = X[ij_inbounds]
     Y = Y[ij_inbounds]
     Longitudes = Longitudes[ij_inbounds]
@@ -315,6 +326,7 @@ function get_h5_data(h5path, Δx = 0.1, skip_size = 5)
 
     return df_h5
 end
+
 
 
 
@@ -352,5 +364,4 @@ df_targets = df_out[:, target_names];
 
 CSV.write(joinpath(out_path, "df_features.csv"), df_features)
 CSV.write(joinpath(out_path, "df_targets.csv"), df_targets)
-
 
