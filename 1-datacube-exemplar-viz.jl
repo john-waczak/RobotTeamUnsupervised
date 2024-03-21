@@ -355,13 +355,19 @@ if !ispath(out_path)
 end
 
 
-feature_names = ["R_"*lpad(i, 3, "0") for i ∈ 1:462]
-target_names = ["roll", "pitch", "heading", "altitude", "view_angle", "solar_azimuth", "solar_elevation", "solar_zenith", "Σrad", "Σdownwelling", "x", "y", "longitude", "latitude"]
+# feature_names = ["R_"*lpad(i, 3, "0") for i ∈ 1:462]
+# target_names = ["roll", "pitch", "heading", "altitude", "view_angle", "solar_azimuth", "solar_elevation", "solar_zenith", "Σrad", "Σdownwelling", "x", "y", "longitude", "latitude"]
 
-df_features = df_out[:, feature_names];
-df_targets = df_out[:, target_names];
+# df_features = df_out[:, feature_names];
+# df_targets = df_out[:, target_names];
+
+
+df_features = df_out[:, 1:462];
+df_targets = df_out[:, 463:end];
+
 
 
 CSV.write(joinpath(out_path, "df_features.csv"), df_features)
 CSV.write(joinpath(out_path, "df_targets.csv"), df_targets)
+
 
