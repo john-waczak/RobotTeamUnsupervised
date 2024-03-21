@@ -1,5 +1,5 @@
 function make_slurm_jobs(;
-                         script_to_run="2-gtm-train.jl",
+                         script_to_run="4-gtm-train.jl",
                          basename="gtm-k_",
                          n_tasks=4,
                          datapath="/scratch/jwaczak/data/robot-team/unsupervised",
