@@ -3,6 +3,7 @@ function make_slurm_jobs(;
                          basename="gtm-k_",
                          n_tasks=4,
                          datapath="/scratch/jwaczak/data/robot-team/unsupervised",
+                         modelspath="/scratch/jwaczak/data/robot-team/unsupervised/models",
                          # s = 0.5,
                          a = 0.1,
                          )
@@ -25,7 +26,7 @@ function make_slurm_jobs(;
     #SBATCH     --mail-user=jxw190004@utdallas.edu
     #SBATCH     --partition=normal
 
-    julia --threads \$SLURM_CPUS_PER_TASK $(script_to_run) --datapath $(datapath) -s \$SLURM_ARRAY_TASK_ID -a $(a)
+    julia --threads \$SLURM_CPUS_PER_TASK $(script_to_run) --datapath $(datapath) --modelspath $(modelspath) -s \$SLURM_ARRAY_TASK_ID -a $(a)
     """
 
     open("gtm-train__a-$(a).slurm", "w") do f

@@ -18,6 +18,10 @@ function parse_commandline()
             help = "Path to directory where dataset is stored"
             arg_type = String
             default = "/Users/johnwaczak/gitrepos/robot-team/RobotTeamUnsupervised/data/robot-team/unsupervised"
+        "--modelspath", "-m"
+            help = "Path to directory where model output is stored"
+            arg_type = String
+            default = "/Users/johnwaczak/gitrepos/robot-team/RobotTeamUnsupervised/models"
         # "-k"
         #     help = "k² is total number of latent nodes"
         #     arg_type = Int
@@ -39,6 +43,7 @@ function parse_commandline()
 
     parsed_args = parse_args(ARGS, s; as_symbols=true)
     @assert ispath(parsed_args[:datapath]) "datapath does not exist"
+    @assert ispath(parsed_args[:modelspath]) "modelspath does not exist"
 
     return parsed_args
 end
@@ -77,10 +82,7 @@ function main()
     println("nrow: ", nrow(X), "\tncol: ", ncol(X))
 
 
-    models_path = "./models"
-    if !ispath(models_path)
-        mkpath(models_path)
-    end
+    models_path = parsed_args[:modelspath]
 
     for m ∈ ms
         @info "m=$(m)"
