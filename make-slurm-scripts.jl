@@ -13,7 +13,7 @@ function make_slurm_jobs(;
     #!/bin/bash
 
     #SBATCH     --job-name=$(job_name)
-    #SBATCH     --array=0.1,0.25,0.5,1.0,1.5,2.0,2.5,3.0
+    #SBATCH     --array=1-8
     #SBATCH     --output=$(job_name)_%a-%A.out
     #SBATCH     --error=$(job_name)_%a-%A.err
     #SBATCH     --nodes=1

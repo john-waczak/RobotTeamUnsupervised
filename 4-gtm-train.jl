@@ -27,9 +27,9 @@ function parse_commandline()
         #     arg_type = Int
         #     default = 4
         "-s"
-            help = "Scale factor for rbf variance"
-            arg_type = Float64
-            default = 2.0
+            help = "Index for scale factor for rbf variance"
+            arg_type = Int
+            default = 1
         "-a"
             help = "Regularization factor"
             arg_type = Float64
@@ -63,7 +63,9 @@ function main()
     k = 32
     ms = 2:12
     # m_max = parsed_args[:m_max]
-    s = parsed_args[:s]
+
+    svals = [0.1,0.25,0.5,1.0,1.5,2.0,2.5,3.0]
+    s = svals[parsed_args[:s]]
     α = parsed_args[:a]
 
     @info "Loading datasets..."
