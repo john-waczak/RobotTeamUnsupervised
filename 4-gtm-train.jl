@@ -63,6 +63,9 @@ function main()
 
     println(parsed_args)
 
+    # load in config file
+    include("./utils/config.jl")
+
     datapath = parsed_args[:datapath]
     # k = parsed_args[:k]
     k = 32
