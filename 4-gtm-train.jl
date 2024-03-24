@@ -17,7 +17,7 @@ function parse_commandline()
         "--datapath", "-d"
             help = "Path to directory where dataset is stored"
             arg_type = String
-            default = "/Users/johnwaczak/gitrepos/robot-team/RobotTeamUnsupervised/data/robot-team/unsupervised"
+            default = "/Users/johnwaczak/gitrepos/robot-team/RobotTeamUnsupervised/data/robot-team"
         "--modelspath", "-m"
             help = "Path to directory where model output is stored"
             arg_type = String
@@ -77,10 +77,18 @@ function main()
     flush(stdout)
     flush(stderr)
 
-    X = CSV.read(joinpath(datapath, "data", "df_features.csv"), DataFrame)
+    # load in data
+    X1 = CSV.read(joinpath(datapath, "df_features_unsup.csv"), DataFrame);
+    X2 = CSV.read(joinpath(datapath, "df_features_sup.csv"), DataFrame);
+    Y1 = CSV.read(joinpath(datapath, "df_targets_unsup.csv"), DataFrame);
+    Y2 = CSV.read(joinpath(datapath, "df_targets_sup.csv"), DataFrame);
+
+    # join into single dataset
+    is_sup = vcat([false for _ ∈ 1:nrow(X1)], [true for _ in 1:nrow(X2)])
+    idx_900 = findfirst(wavelengths .≥ 900)
+    X = vcat(X1[:, 1:idx_900], X2[:, 1:idx_900])
 
     println("nrow: ", nrow(X), "\tncol: ", ncol(X))
-
 
     models_path = parsed_args[:modelspath]
 

@@ -9,7 +9,7 @@ using JSON
 
 include("utils/makie-defaults.jl")
 include("utils/viz.jl")
-
+include("utils/config.jl")
 
 
 set_theme!(mints_theme)
@@ -34,6 +34,7 @@ h5_basepath = "/Users/johnwaczak/data/robot-team/processed/hsi"
 @assert ispath(h5_basepath)
 
 
+idx_900 = findfirst(wavelengths .≥ 900)
 
 # generate file lists
 files_dict = Dict(
@@ -93,6 +94,22 @@ end
 
 # visualize each of the datacubes with dye to find the best one
 h5path = files_dict["11-23"]["no-dye"][1]
+h5 = h5open(h5path, "r")
+Δx = 0.1
+xs = h5["data-Δx_$(Δx)/X"][:];
+ys = h5["data-Δx_$(Δx)/Y"][:];
+Data = h5["data-Δx_$(Δx)/Data"][:, :, :];
+λs = h5["data-Δx_$(Δx)/λs"][:];
+close(h5)
+
+size(xs)
+size(Data)
+
+x_road = xs[20]
+y_road = ys[760]
+R_road = Data[1:idx_900, 20, 760] ./ maximum(Data[1:idx_900, 20, 760])
+
+
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16)
 
 GLMakie.activate!()
@@ -166,27 +183,33 @@ important_coords = Dict(
     "plume" => Dict(
         "x" => xs[80],
         "y" => ys[225],
-        "R" => Data[1:462, 80, 225] ./ maximum(Data[1:462, 80, 225]),
+        "R" => Data[1:462, 80, 225] ./ maximum(Data[1:idx_900, 80, 225]),
         "λs" => λs,
     ),
     "water" => Dict(
         "x" => xs[400],
         "y" => ys[320],
-        "R" => Data[1:462, 400, 320] ./ maximum(Data[1:462, 400, 320]),
+        "R" => Data[1:462, 400, 320] ./ maximum(Data[1:idx_900, 400, 320]),
         "λs" => λs,
     ),
     "algae" => Dict(
         "x" => xs[186],
         "y" => ys[45],
-        "R" => Data[1:462, 186, 45] ./ maximum(Data[1:462, 186, 45]),
+        "R" => Data[1:462, 186, 45] ./ maximum(Data[1:idx_900, 186, 45]),
         "λs" => λs,
     ),
     "grass" => Dict(
         "x" => xs[400],
         "y" => xs[80],
-        "R" => Data[1:462, 400, 80] ./ maximum(Data[1:462, 400, 80]),
+        "R" => Data[1:462, 400, 80] ./ maximum(Data[1:idx_900, 400, 80]),
         "λs" => λs,
     ),
+    "road" => Dict(
+        "x" => x_road,
+        "y" => y_road,
+        "R" => R_road,
+        "λs" => λs
+    )
 )
 
 # visuzlie the spectra
@@ -194,12 +217,15 @@ important_coords = Dict(
 CairoMakie.activate!()
 fig = Figure();
 ax = CairoMakie.Axis(fig[1,1], xlabel="λ (nm)", ylabel="Scaled Reflectance",);
-lines!(ax, important_coords["algae"]["λs"], important_coords["algae"]["R"], linewidth=2, label="Algae")
-lines!(ax, important_coords["plume"]["λs"], important_coords["plume"]["R"], linewidth=2, label="Rhodamine")
-lines!(ax, important_coords["water"]["λs"], important_coords["water"]["R"], linewidth=2, label="Water")
-lines!(ax, important_coords["grass"]["λs"], important_coords["grass"]["R"], linewidth=2, label="Grass", color=:brown)
+lines!(ax, important_coords["algae"]["λs"][1:idx_900], important_coords["algae"]["R"][1:idx_900], linewidth=1, label="Algae")
+lines!(ax, important_coords["plume"]["λs"][1:idx_900], important_coords["plume"]["R"][1:idx_900], linewidth=1, label="Rhodamine")
+lines!(ax, important_coords["water"]["λs"][1:idx_900], important_coords["water"]["R"][1:idx_900], linewidth=1, label="Water")
+lines!(ax, important_coords["grass"]["λs"][1:idx_900], important_coords["grass"]["R"][1:idx_900], linewidth=1, label="Grass", color=:brown)
+lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=1, label="Road", color=:tan)
 axislegend(ax, position=:lt, labelsize=13)
-xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][end])
+
+xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][idx_900])
+ylims!(ax, 0, 1)
 fig
 
 save(joinpath(figs_path, "sample-spectra.pdf"), fig)
@@ -309,7 +335,9 @@ function get_h5_data(h5path, Δx = 0.1, skip_size = 5)
 
     # scale so that peak value is always 1.0
     for j ∈ axes(Data, 2)
-        R_max = maximum(Data[1:462, j])
+
+        # use R vals with λ < 900 nm
+        R_max = maximum(Data[1:idx_900, j])
         Data[1:462, j] .= Data[1:462, j] ./ R_max
     end
 
@@ -349,7 +377,7 @@ df_out = vcat(dfs...);
 println(nrow(df_out))
 
 
-out_path = abspath("data/robot-team/unsupervised/data")
+out_path = abspath("data/robot-team/data-unsupervised")
 if !ispath(out_path)
     mkpath(out_path)
 end
@@ -361,13 +389,32 @@ end
 # df_features = df_out[:, feature_names];
 # df_targets = df_out[:, target_names];
 
+# chop off to λs before 900
 
-df_features = df_out[:, 1:462];
+df_features = df_out[:, 1:idx_900];
 df_targets = df_out[:, 463:end];
-
 
 
 CSV.write(joinpath(out_path, "df_features.csv"), df_features)
 CSV.write(joinpath(out_path, "df_targets.csv"), df_targets)
 
+
+
+# add in the supervised data
+df_f_sup = CSV.read("data/robot-team/data-supervised/11-23/df_features.csv", DataFrame)
+df_t_sup = CSV.read("data/robot-team/data-supervised/11-23/df_targets.csv", DataFrame)
+
+# normalize the supervised data
+Data_out = Matrix(df_f_sup[:, 1:idx_900])
+for i ∈ axes(Data_out, 1)
+    Data_out[i,:] .= Data_out[i,:] ./ maximum(Data_out[i,:])
+end
+df_f_sup_out = DataFrame(Data_out, names(df_f_sup)[1:idx_900])
+df_t_sup_out = hcat(df_f_sup[:, 463:end], df_t_sup)
+
+CSV.write("data/robot-team/df_features_unsup.csv", df_features)
+CSV.write("data/robot-team/df_targets_unsup.csv", df_targets)
+
+CSV.write("data/robot-team/df_features_sup.csv", df_f_sup_out)
+CSV.write("data/robot-team/df_targets_sup.csv", df_t_sup_out)
 
