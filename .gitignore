@@ -6,3 +6,4 @@ data
 *.out
 *.slurm
 .CondaPkg
+Scotty.tiff

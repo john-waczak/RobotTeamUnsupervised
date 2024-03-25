@@ -76,10 +76,11 @@ X = vcat(X1[:, 1:idx_900], X2[:, 1:idx_900])
 
 # square topology
 k = 32
-m = 5
+m = 12
+α = 0.01
+s = 1.0
 nepochs = 250
-
-gtm = GTM(k=k, m=m, tol=1e-5, nepochs=nepochs)
+gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=nepochs)
 mach = machine(gtm, X)
 fit!(mach)
 
@@ -299,18 +300,6 @@ save(joinpath(figures_path, "square-means-labeled.png"), fig)
 save(joinpath(figures_path, "square-means-labeled.pdf"), fig)
 
 
-
-# Generate final analysis dataframe keeping only those unique pairs of GTM means
-res_df = DataFrame();
-res_df.ξ₁_mean = mean_proj.ξ₁;
-res_df.ξ₂_mean = mean_proj.ξ₂;
-res_df.ξ₁_mode = mode_proj.ξ₁;
-res_df.ξ₂_mode = mode_proj.ξ₂;
-res_df = hcat(res_df, Y);
-
-gdf_mean = groupby(res_df, [:ξ₁_mode, :ξ₂_mode]);
-df = combine(gdf_mean, first, renamecols=false);
-
 # NDWI
 
 is_sup
@@ -449,70 +438,4 @@ end
 open(joinpath(models_path, "exemplar-spectra.json"), "w") do f
     JSON.print(f, sample_coords)
 end
-
-
-
-# Fit New GTM on ONLY the Supervised Data
-gtm = GTM(k=k, m=m, tol=1e-5, nepochs=nepochs)
-mach = machine(gtm, X2)
-fit!(mach)
-
-# get fit results
-gtm_mdl = fitted_params(mach)[:gtm]
-rpt = report(mach)
-M = gtm_mdl.M                          # RBF centers
-Ξ = rpt[:Ξ]                            # Latent Points
-Ψ = rpt[:W] * rpt[:Φ]'                 # Projected Node Means
-llhs = rpt[:llhs]
-
-# compute responsabilities and projections
-Rs = predict_responsibility(mach, X2)
-mean_proj = DataFrame(MLJ.transform(mach, X2))
-mode_proj = DataFrame(DataModes(gtm_mdl, Matrix(X2)), [:ξ₁, :ξ₂] )
-class_id = get.(MLJ.predict(mach, X2))
-
-
-# compute PCA as well
-pca = MultivariateStats.fit(PCA, Matrix(X2)', maxoutdim=3, pratio=0.99999);
-U = MultivariateStats.predict(pca, Matrix(X2)')[1:2,:]'
-
-# plot log-likelihoods
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="iteration", ylabel="log-likelihood")
-lines!(ax, 3:length(llhs), llhs[3:end], linewidth=5)
-fig
-
-
-# set up 2-dimensional color map
-fig = Figure();
-axl = Axis(fig[1,1], xlabel="u₁", ylabel="u₂", title="PCA", aspect=AxisAspect(1.0))
-axr = Axis(fig[1,2], xlabel="ξ₁", ylabel="ξ₂", title="GTM ⟨ξ⟩", aspect=AxisAspect(1.0))
-scatter!(axl, U[:,1], U[:,2], markersize=5, alpha=0.7)
-scatter!(axr, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7, color=class_id)
-fig
-save(joinpath(figures_path, "sup-only-means.png"), fig)
-save(joinpath(figures_path, "sup-only-means.pdf"), fig)
-
-
-# Ca
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, color=Vector(Y2.Ca), colormap=cgrad(:roma, rev=true), colorrange=(20, 56), alpha=0.6)
-cb = Colorbar(fig[1,2], s2, label="Ca⁺⁺")
-fig
-
-save(joinpath(figures_path, "sup-only-Ca.png"), fig)
-save(joinpath(figures_path, "sup-only-Ca.pdf"), fig)
-
-# Na
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, color=Vector(Y2.Na), colormap=cgrad(:roma, rev=true), colorrange=(200, 380), alpha=0.6)
-cb = Colorbar(fig[1,2], s2, label="Na⁺")
-fig
-
-save(joinpath(figures_path, "sup-only-Na.png"), fig)
-save(joinpath(figures_path, "sup-only-Na.pdf"), fig)
-
-
 
