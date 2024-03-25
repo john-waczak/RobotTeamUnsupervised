@@ -69,7 +69,7 @@ function main()
     datapath = parsed_args[:datapath]
     # k = parsed_args[:k]
     k = 32
-    ms = 2:12
+    ms = 2:20
     # m_max = parsed_args[:m_max]
 
     svals = [0.1,0.25,0.5,1.0,1.5,2.0,2.5,3.0]
@@ -112,37 +112,42 @@ function main()
             mkpath(outpath_base)
         end
 
+        json_path = joinpath(outpath_base, "gtm_report.json")
 
-        @info "\tInitializing GTM"
-        flush(stdout)
-        flush(stderr)
 
-        gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=250)
-        mach = machine(gtm, X)
+        # only run if we haven't already
+        if !ispath(json_path)
+            @info "\tInitializing GTM"
+            flush(stdout)
+            flush(stderr)
 
-        @info "\tFitting GTM"
-        flush(stdout)
-        flush(stderr)
+            gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=250)
+            mach = machine(gtm, X)
 
-        fit!(mach)
+            @info "\tFitting GTM"
+            flush(stdout)
+            flush(stderr)
 
-        rpt = report(mach)
-        @info "\tSaving report"
-        flush(stdout)
-        flush(stderr)
+            fit!(mach)
 
-        rpt_out = Dict()
-        rpt_out[:k] = k
-        rpt_out[:m] = m
-        rpt_out[:s] = s
-        rpt_out[:α] = α
-        rpt_out[:converged] = rpt[:converged]
-        rpt_out[:llhs] = rpt[:llhs]
-        rpt_out[:AIC] = rpt[:AIC]
-        rpt_out[:BIC] = rpt[:BIC]
+            rpt = report(mach)
+            @info "\tSaving report"
+            flush(stdout)
+            flush(stderr)
 
-        open(joinpath(outpath_base, "gtm_report.json"), "w") do f
-            JSON.print(f, rpt_out)
+            rpt_out = Dict()
+            rpt_out[:k] = k
+            rpt_out[:m] = m
+            rpt_out[:s] = s
+            rpt_out[:α] = α
+            rpt_out[:converged] = rpt[:converged]
+            rpt_out[:llhs] = rpt[:llhs]
+            rpt_out[:AIC] = rpt[:AIC]
+            rpt_out[:BIC] = rpt[:BIC]
+
+            open(joinpath(outpath_base, "gtm_report.json"), "w") do f
+                JSON.print(f, rpt_out)
+            end
         end
     end
 end
