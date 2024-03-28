@@ -76,10 +76,10 @@ X = vcat(X1[:, 1:idx_900], X2[:, 1:idx_900])
 
 # square topology
 k = 32
-m = 12
-α = 0.01
+m = 14
+α = 0.1
 s = 1.0
-nepochs = 250
+nepochs = 300
 gtm = GTM(k=k, m=m, s=s, α=α, tol=1e-5, nepochs=nepochs)
 mach = machine(gtm, X)
 fit!(mach)
@@ -135,6 +135,8 @@ scatter!(axr, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7, color=c
 fig
 
 save(joinpath(figures_path, "square-means.pdf"), fig)
+
+
 
 
 # ALGAE
@@ -345,80 +347,80 @@ save(joinpath(figures_path, "square-ndvi.pdf"), fig)
 
 
 
-# CDOM
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.CDOM), colormap=cgrad(:roma, rev=true), colorrange=(20.1, 21.6))
-cb = Colorbar(fig[1,2], s2, label="CDOM")
-fig
+# # CDOM
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.CDOM), colormap=cgrad(:roma, rev=true), colorrange=(20.1, 21.6))
+# cb = Colorbar(fig[1,2], s2, label="CDOM")
+# fig
 
-save(joinpath(figures_path, "square-CDOM.png"), fig)
-save(joinpath(figures_path, "square-CDOM.pdf"), fig)
-
-
-# CO
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.CO), colormap=cgrad(:roma, rev=true), colorrange=(25.7, 27.3))
-cb = Colorbar(fig[1,2], s2, label="Crude Oil")
-fig
-
-save(joinpath(figures_path, "square-CO.png"), fig)
-save(joinpath(figures_path, "square-CO.pdf"), fig)
+# save(joinpath(figures_path, "square-CDOM.png"), fig)
+# save(joinpath(figures_path, "square-CDOM.pdf"), fig)
 
 
-# Ca
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Ca), colormap=cgrad(:roma, rev=true), colorrange=(20, 56))
-cb = Colorbar(fig[1,2], s2, label="Ca⁺⁺")
-fig
+# # CO
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.CO), colormap=cgrad(:roma, rev=true), colorrange=(25.7, 27.3))
+# cb = Colorbar(fig[1,2], s2, label="Crude Oil")
+# fig
 
-save(joinpath(figures_path, "square-Ca.png"), fig)
-save(joinpath(figures_path, "square-Ca.pdf"), fig)
-
-# Cl
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Cl), colormap=cgrad(:roma, rev=true), colorrange=(44, 57))
-cb = Colorbar(fig[1,2], s2, label="Cl⁻")
-fig
-
-save(joinpath(figures_path, "square-Cl.png"), fig)
-save(joinpath(figures_path, "square-Cl.pdf"), fig)
+# save(joinpath(figures_path, "square-CO.png"), fig)
+# save(joinpath(figures_path, "square-CO.pdf"), fig)
 
 
-# Na
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Na), colormap=cgrad(:roma, rev=true), colorrange=(200, 380))
-cb = Colorbar(fig[1,2], s2, label="Na⁺")
-fig
+# # Ca
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Ca), colormap=cgrad(:roma, rev=true), colorrange=(20, 56))
+# cb = Colorbar(fig[1,2], s2, label="Ca⁺⁺")
+# fig
 
-save(joinpath(figures_path, "square-Na.png"), fig)
-save(joinpath(figures_path, "square-Na.pdf"), fig)
+# save(joinpath(figures_path, "square-Ca.png"), fig)
+# save(joinpath(figures_path, "square-Ca.pdf"), fig)
+
+# # Cl
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Cl), colormap=cgrad(:roma, rev=true), colorrange=(44, 57))
+# cb = Colorbar(fig[1,2], s2, label="Cl⁻")
+# fig
+
+# save(joinpath(figures_path, "square-Cl.png"), fig)
+# save(joinpath(figures_path, "square-Cl.pdf"), fig)
 
 
-# Chl
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Chl), colormap=cgrad(:roma, rev=true), colorrange=(1.0, 3.0))
-cb = Colorbar(fig[1,2], s2, label="Chlorophyll A")
-fig
+# # Na
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Na), colormap=cgrad(:roma, rev=true), colorrange=(200, 380))
+# cb = Colorbar(fig[1,2], s2, label="Na⁺")
+# fig
 
-save(joinpath(figures_path, "square-Chl.png"), fig)
-save(joinpath(figures_path, "square-Chl.pdf"), fig)
+# save(joinpath(figures_path, "square-Na.png"), fig)
+# save(joinpath(figures_path, "square-Na.pdf"), fig)
 
 
-# Trub3489
-fig = Figure();
-ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
-s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Turb3489), colormap=cgrad(:roma, rev=true), colorrange=(1, 25))
-cb = Colorbar(fig[1,2], s2, label="Turbidity")
-fig
+# # Chl
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Chl), colormap=cgrad(:roma, rev=true), colorrange=(1.0, 3.0))
+# cb = Colorbar(fig[1,2], s2, label="Chlorophyll A")
+# fig
 
-save(joinpath(figures_path, "square-turb.png"), fig)
-save(joinpath(figures_path, "square-turb.pdf"), fig)
+# save(joinpath(figures_path, "square-Chl.png"), fig)
+# save(joinpath(figures_path, "square-Chl.pdf"), fig)
+
+
+# # Trub3489
+# fig = Figure();
+# ax = Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+# s2 = scatter!(ax, mean_proj_2.ξ₁, mean_proj_2.ξ₂, color=Vector(Y2.Turb3489), colormap=cgrad(:roma, rev=true), colorrange=(1, 25))
+# cb = Colorbar(fig[1,2], s2, label="Turbidity")
+# fig
+
+# save(joinpath(figures_path, "square-turb.png"), fig)
+# save(joinpath(figures_path, "square-turb.pdf"), fig)
 
 
 

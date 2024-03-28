@@ -176,13 +176,19 @@ xs = h5["data-Δx_$(Δx)/X"][:];
 ys = h5["data-Δx_$(Δx)/Y"][:];
 Data = h5["data-Δx_$(Δx)/Data"][:, :, :];
 λs = h5["data-Δx_$(Δx)/λs"][:];
-
 close(h5)
+
+rgb_image = get_h5_rgb(h5path)
+
+
+
+
+
 # get x,y coords for important points and save for later
 important_coords = Dict(
     "plume" => Dict(
         "x" => xs[80],
-        "y" => ys[225],
+        "y" => ys[235],
         "R" => Data[1:462, 80, 225] ./ maximum(Data[1:idx_900, 80, 225]),
         "λs" => λs,
     ),
@@ -193,9 +199,9 @@ important_coords = Dict(
         "λs" => λs,
     ),
     "algae" => Dict(
-        "x" => xs[186],
-        "y" => ys[45],
-        "R" => Data[1:462, 186, 45] ./ maximum(Data[1:idx_900, 186, 45]),
+        "x" => xs[285],
+        "y" => ys[100],
+        "R" => Data[1:462, 285, 100] ./ maximum(Data[1:idx_900, 285, 100]),
         "λs" => λs,
     ),
     "grass" => Dict(
@@ -212,24 +218,77 @@ important_coords = Dict(
     )
 )
 
-# visuzlie the spectra
 
+
+# visualize selected pixels
+blue = colorant"#0366fc"
+darkblue = colorant"#013582"
+red = colorant"#d10f0f"
+darkred = colorant"#a10d0d"
+green = colorant"#28a10d"
+darkgreen = colorant"#157000"
+brown = colorant"#703e00"
+darkbrown = colorant"#543105"
+tan = colorant"#f0ba78"
+darktan = colorant"#ba8a50"
+
+
+
+fig = Figure();
+ax = CairoMakie.Axis(fig[2,1]);
+
+# hidedecorations!(ax)
+# hidespines!(ax)
+
+img = heatmap!(ax, rgb_image);
+
+stroke_width = 1.5
+
+s_a = scatter!(ax, [285], [100], marker=:circle, color=green, markersize=10, strokewidth=stroke_width, strokecolor=darkgreen, )
+s_p = scatter!(ax, [80], [235], marker=:circle, color=red, markersize=10, strokewidth=stroke_width, strokecolor=darkred)
+s_w = scatter!(ax, [400], [320], marker=:circle, color=blue, markersize=10, strokewidth=stroke_width, strokecolor=darkblue)
+s_g = scatter!(ax, [400], [80], marker=:circle, color=brown, markersize=10, strokewidth=stroke_width, strokecolor=darkbrown)
+
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g], ["Algae", "Rhodamine", "Water", "Grass"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+
+fig
+
+save(joinpath(figs_path, "sample-locations.png"), fig)
+save(joinpath(figs_path, "sample-locations.pdf"), fig)
+
+
+# visuzlie the spectra
 CairoMakie.activate!()
 fig = Figure();
-ax = CairoMakie.Axis(fig[1,1], xlabel="λ (nm)", ylabel="Scaled Reflectance",);
-lines!(ax, important_coords["algae"]["λs"][1:idx_900], important_coords["algae"]["R"][1:idx_900], linewidth=1, label="Algae")
-lines!(ax, important_coords["plume"]["λs"][1:idx_900], important_coords["plume"]["R"][1:idx_900], linewidth=1, label="Rhodamine")
-lines!(ax, important_coords["water"]["λs"][1:idx_900], important_coords["water"]["R"][1:idx_900], linewidth=1, label="Water")
-lines!(ax, important_coords["grass"]["λs"][1:idx_900], important_coords["grass"]["R"][1:idx_900], linewidth=1, label="Grass", color=:brown)
-lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=1, label="Road", color=:tan)
-axislegend(ax, position=:lt, labelsize=13)
-
+ax = CairoMakie.Axis(fig[2,1], xlabel="λ (nm)", ylabel="Scaled Reflectance",);
+la = lines!(ax, important_coords["algae"]["λs"][1:idx_900], important_coords["algae"]["R"][1:idx_900], linewidth=2, label="Algae", color=green)
+lp = lines!(ax, important_coords["plume"]["λs"][1:idx_900], important_coords["plume"]["R"][1:idx_900], linewidth=2, label="Rhodamine", color=red)
+lw = lines!(ax, important_coords["water"]["λs"][1:idx_900], important_coords["water"]["R"][1:idx_900], linewidth=2, label="Water", color=blue)
+lg = lines!(ax, important_coords["grass"]["λs"][1:idx_900], important_coords["grass"]["R"][1:idx_900], linewidth=2, label="Grass", color=tan)
+lr = lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=2, label="Road", color=brown)
+fig[1,1] = Legend(fig, [la, lp, lw, lg, lr], ["Algae", "Rhodamine", "Water", "Grass", "Road"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][idx_900])
 ylims!(ax, 0, 1)
 fig
 
 save(joinpath(figs_path, "sample-spectra.pdf"), fig)
 save(joinpath(figs_path, "sample-spectra.png"), fig)
+
+
+
+# fig = Figure();
+# ax = CairoMakie.Axis(fig[1,1])
+
+# for i ∈ 280:5:325
+#     lines!(ax, wavelengths[1:idx_900], Data[1:idx_900, i, 100] ./ maximum(Data[1:idx_900, i, 100]), color=i, colorrange=(280, 325))
+# end
+
+# lines!(ax, wavelengths[1:idx_900], Data[1:idx_900, 285, 100] ./ maximum(Data[1:idx_900, 285, 100])) #, color=i, colorrange=(280, 325))
+
+# cb = Colorbar(fig[1,2], colorrange=(280, 325))
+# fig
+
+
 
 
 # write the dict to a json file

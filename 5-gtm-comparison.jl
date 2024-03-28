@@ -97,6 +97,14 @@ m_best = df.m[idx_bic_global]
 s_best = df.s[idx_bic_global]
 α_best = df.α[idx_bic_global]
 
+k_best_a = df.k[idx_aic_global]
+m_best_a = df.m[idx_aic_global]
+s_best_a = df.s[idx_aic_global]
+α_best_a = df.α[idx_aic_global]
+
+
+
+
 savepath = joinpath("./figures", "hp-comparison")
 if !ispath(savepath)
     mkpath(savepath)
@@ -106,6 +114,7 @@ df_fixed = df[df.α .== α_best, :];
 
 # BIC vs s & m for fixed α
 mvals = sort(unique(df.m))
+mvals = 2:2:20
 svals = sort(unique(df.s))
 αvals = sort(unique(df.α))
 
