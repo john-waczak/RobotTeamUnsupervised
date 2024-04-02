@@ -1,7 +1,6 @@
 using CSV, DataFrames, DelimitedFiles
 using CairoMakie
 using Makie.Colors
-
 using JSON
 using ProgressMeter
 using LinearAlgebra, Statistics
@@ -30,9 +29,6 @@ update_theme!(
 include("utils/viz.jl")
 include("utils/config.jl")
 
-exemplar_spectra = JSON.parsefile("./models/exemplar-spectra.json")
-
-
 figures_path = joinpath("./figures", "maps")
 if !ispath(figures_path)
     mkpath(figures_path)
@@ -59,12 +55,22 @@ satmap = get_background_satmap(w,e,s,n)
 CairoMakie.activate!()
 fig = Figure(size=(800,600));
 ax = CairoMakie.Axis(fig[1,1]);
-bg = heatmap!(ax, satmap.w..satmap.e, satmap.s..satmap.n, satmap.img);
+bg = heatmap!(ax, (satmap.w - lon_min)..(satmap.e - lon_min), (satmap.s - lat_min)..(satmap.n - lat_min), satmap.img);
+
+lon_min, lon_max = (-97.7168, -97.7125)
+lat_min, lat_max = (33.70075, 33.7035)
+
 # add 30 meter scale bar
-lines!(ax, [λ_scale_l, λ_scale_r], [ϕ_scale, ϕ_scale], color=:white, linewidth=5)
-text!(ax, λ_scale_l, ϕ_scale - 0.0001, text = "30 m", color=:white, fontsize=12, font=:bold)
-xlims!(ax, -97.7168, -97.7125)
-ylims!(ax, 33.70075, 33.7035)
+lines!(ax, [λ_scale_l - lon_min, λ_scale_r - lon_min], [ϕ_scale - lat_min, ϕ_scale - lat_min], color=:white, linewidth=5)
+text!(ax, λ_scale_l - lon_min, ϕ_scale - lat_min - 0.0001, text = "30 m", color=:white, fontsize=12, font=:bold)
+
+# add North arrow
+scatter!(ax, [λ_scale_l - lon_min + 0.00003,], [ϕ_scale - lat_min + 0.000075], color=:white, marker=:utriangle, markersize=15)
+text!(ax, [λ_scale_l - lon_min,], [ϕ_scale - lat_min + 0.000125], text="N", color=:white, fontsize=12, font=:bold)
+
+xlims!(ax, 0, -97.7125 - lon_min)
+ylims!(ax, 0, 33.7035 - lat_min)
+
 fig
 
 
@@ -137,7 +143,7 @@ f_list_dye = [
 @assert all(ispath.(f_list_dye))
 
 
-function in_water(Datacube, varnames; threshold=0.3)
+function in_water(Datacube, varnames; threshold=0.25)
     idx_ndwi = findfirst(varnames .== "NDWI1")
     return findall(Datacube[idx_ndwi,:,:] .> threshold)
 end
@@ -235,6 +241,7 @@ function get_data_for_heatmap(h5path, Δx = 0.1,)
 end
 
 
+exemplar_spectra = JSON.parsefile("./models/exemplar-spectra.json")
 
 
 # now we have all of our files that we will
@@ -273,7 +280,6 @@ c_low = colorant"#f73a2d"
 c_high = colorant"#450a06"
 cmap = cgrad([c_high, c_low])
 clims = (0.05, ns3_thresh)
-
 
 
 R, X, Y, Lon, Lat, ij_inbounds, IsInbounds = get_data_for_heatmap(f_list_dye[1]);
@@ -342,6 +348,10 @@ ylims!(ax, 33.7015 - lat_min, 33.7035 - lat_min)
 # add 30 meter scale bar
 lines!(ax, [λ_scale_l - lon_min, λ_scale_r - lon_min], [ϕ_scale + Δϕ - lat_min,  ϕ_scale + Δϕ - lat_min], color=:white, linewidth=5)
 text!(ax, λ_scale_l - lon_min, ϕ_scale + Δϕ - 0.0001 - lat_min, text = "30 m", color=:white, fontsize=12, font=:bold)
+
+# add North arrow
+scatter!(ax, [λ_scale_l - lon_min + 0.00003,], [ϕ_scale - lat_min + Δϕ + 0.000075], color=:white, marker=:utriangle, markersize=15)
+text!(ax, [λ_scale_l - lon_min,], [ϕ_scale + Δϕ - lat_min + 0.000125], text="N", color=:white, fontsize=12, font=:bold)
 
 cb = Colorbar(fig[1,2], colormap=cmap, colorrange=clims, lowclip=c_high, highclip=c_low, label="Normalized Spectral Similarity Score")
 text!(fig.scene, 0.625, 0.905, text="Total Area = $(round(tot_area, digits=1)) m²", space=:relative, )
@@ -421,6 +431,11 @@ ylims!(ax, 33.7015 - lat_min, 33.7035 - lat_min)
 lines!(ax, [λ_scale_l - lon_min, λ_scale_r - lon_min], [ϕ_scale + Δϕ - lat_min,  ϕ_scale + Δϕ - lat_min], color=:white, linewidth=5)
 text!(ax, λ_scale_l - lon_min, ϕ_scale + Δϕ - 0.0001 - lat_min, text = "30 m", color=:white, fontsize=12, font=:bold)
 
+# add North arrow
+scatter!(ax, [λ_scale_l - lon_min + 0.00003,], [ϕ_scale - lat_min + Δϕ + 0.000075], color=:white, marker=:utriangle, markersize=15)
+text!(ax, [λ_scale_l - lon_min,], [ϕ_scale + Δϕ - lat_min + 0.000125], text="N", color=:white, fontsize=12, font=:bold)
+
+
 cb = Colorbar(fig[1,2], colormap=cmap, colorrange=clims, lowclip=c_high, highclip=c_low, label="Normalized Spectral Similarity Score")
 text!(fig.scene, 0.625, 0.905, text="Total Area = $(round(tot_area, digits=1)) m²", space=:relative, )
 
@@ -438,11 +453,17 @@ save(joinpath(figures_path, "plume-map-2.png"), fig)
 c_low = colorant"#b5faaf"
 c_high = colorant"#11ab03"
 cmap = cgrad([c_high, c_low])
-ns3_thresh = 0.6
-clims = (0.1, ns3_thresh)
+ns3_thresh = 0.4275
+clims = (0.25, ns3_thresh)
 
-lon_min, lon_max = (-97.7168, -97.7125)
-lat_min, lat_max = (33.70075, 33.7035)
+# lon_min, lon_max = (-97.7168, -97.7125)
+# lat_min, lat_max = (33.70075, 33.7035)
+
+#lon_min, lon_max = (-97.7168, -97.7145)
+lon_min, lon_max = (-97.7165, -97.7150)
+# lat_min, lat_max = (33.7015, 33.7035)
+lat_min, lat_max = (33.7015, 33.7026)
+
 
 fig = Figure(; size=(800, 600));
 ax = CairoMakie.Axis(
@@ -450,6 +471,7 @@ ax = CairoMakie.Axis(
     xlabel="Longitude", xtickformat = x -> string.(round.(x .+ lon_min, digits=6)),#  xticklabelfont = 13,
     ylabel="Latitude",  ytickformat = y -> string.(round.(y .+ lat_min, digits=6)),#  yticklabelfont = 13,
     title="Algae Distribution",
+    titlealign=:left
 );
 bg = heatmap!(
     ax,
@@ -458,67 +480,54 @@ bg = heatmap!(
     satmap.img
 )
 
-
+Δλ = 0.00025
+Δϕ = 33.7015 - 33.70075
 xlims!(ax, 0, lon_max - lon_min)
 ylims!(ax, 0, lat_max - lat_min)
-lines!(ax, [λ_scale_l - lon_min, λ_scale_r - lon_min], [ϕ_scale - lat_min,  ϕ_scale - lat_min], color=:white, linewidth=5)
-text!(ax, λ_scale_l - lon_min, ϕ_scale - 0.0001 - lat_min, text = "30 m", color=:white, fontsize=12, font=:bold)
+
+# add 30 meter scale bar
+lines!(ax, [λ_scale_l - lon_min + Δλ, λ_scale_r - lon_min + Δλ], [ϕ_scale + Δϕ - lat_min,  ϕ_scale + Δϕ - lat_min], color=:white, linewidth=5)
+text!(ax, λ_scale_l - lon_min + Δλ, ϕ_scale + Δϕ - 0.00005 - lat_min, text = "30 m", color=:white, fontsize=12, font=:bold)
+
+# add North arrow
+scatter!(ax, [λ_scale_l - lon_min + Δλ + 0.0000115,], [ϕ_scale - lat_min + Δϕ + 0.00003], color=:white, marker=:utriangle, markersize=15)
+text!(ax, [λ_scale_l - lon_min + Δλ,], [ϕ_scale + Δϕ - lat_min + 0.00005], text="N", color=:white, fontsize=12, font=:bold)
 
 
-mins = []
-maxes = []
+λ_l, λ_r = [-97.71575,-97.715621]
+ϕ_b, ϕ_t = [ϕ_scale + Δϕ - 0.00005, 33.701875]
+
+# scatter!(ax, [λ_l, λ_l, λ_r, λ_r] .- lon_min, [ϕ_b, ϕ_t, ϕ_b, ϕ_t] .- lat_min, markersize=15, color=:white)
+# fig
+
+# flist_to_use = vcat(f_list_1[1:7], f_list_2[1:7], f_list_dye)
+# flist_to_use = vcat(f_list_1[1:7], f_list_dye[end])
+flist_to_use = vcat(f_list_1[1:7], "/Users/johnwaczak/data/robot-team/processed/hsi/12-09/Dye_2/Dye_2-1.h5", f_list_dye[1])
+f_list_dye
 
 
-# minimum(mins)
-# maximum(maxes)
+n_good = 0
 
-@showprogress for h5path ∈ vcat(f_list_1, f_list_2)
-    # h5path = f_list_1[1]
-
+@showprogress for h5path ∈ flist_to_use
     R, X, Y, Lon, Lat, ij_inbounds, IsInbounds = get_data_for_heatmap(h5path)
-    ij_outbounds = findall(.!(IsInbounds));
-    # if any([occursin(piece, split(h5path, "/")[end]) for piece in ["1-19", "1-20", "1-21", "1-22", "1-23"]])
-    #     idx_use = findall(Lat .> 33.70152)
-    #     R = R[:, idx_use]
-    #     X = X[idx_use]
-    #     Y = Y[idx_use]
-    #     Lon = Lon[idx_use]
-    #     Lat = Lat[idx_use]
-    # end
 
-    # if any([occursin(piece, split(h5path, "/")[end]) for piece in ["1-3", "2-3"]])
-    #     idx_use = findall(Lon .< -97.7152)
-    #     R = R[:, idx_use]
-    #     X = X[idx_use]
-    #     Y = Y[idx_use]
-    #     Lon = Lon[idx_use]
-    #     Lat = Lat[idx_use]
-    # end
 
-    ns3_algae = ones(size(R,2), size(R,3));
-    ns3_algae[:,:] .= NaN
+    ns3_algae= zeros(size(R,2), size(R,3));
+    ns3_algae[:,:] .= NaN;
+    for i ∈ axes(ns3_algae, 1), j ∈ axes(ns3_algae,2)
+        ns3 = NS3(R[:, i, j], R_algae)
+        if ns3 ≥ clims[1] && ns3 ≤ clims[2]
+            ns3_algae[i, j] = ns3
+        end
 
-    for ij ∈ ij_inbounds
-        ns3 = NS3(R[:, ij], R_algae)
-        if ns3 ≤ ns3_thresh
-            ns3_algae[ij] = ns3
+
+        # check if we're in the bounding box to ignore the Camper
+        if λ_l ≤ Lon[i,j] && Lon[i,j] ≤ λ_r && ϕ_b ≤ Lat[i,j] && Lat[i,j] ≤ ϕ_t
+            ns3_algae[i,j] = NaN
         end
     end
 
-    push!(mins, minimum(ns3_algae[.!isnan.(ns3_algae)]))
-    push!(maxes, maximum(ns3_algae[.!isnan.(ns3_algae)]))
-
-    # for i ∈ axes(ns3_algae, 1), j ∈ axes(ns3_algae, 2)
-    #     ns3= RMSE(R[:,i,j], R_algae)
-    #     ns3_algae[i,j] = ns3
-    #     # if ns3 ≤ ns3_thresh
-    #     #     ns3_algae[i,j] = ns3
-    #     # else
-    #     #     ns3_algae[i,j] = NaN
-    #     # end
-    # end
-
-
+    n_good += length(findall(ns3_algae .≥ clims[1] .&& ns3_algae .≤ clims[2]))
 
     lon_l, lon_h = extrema(Lon)
     lat_l, lat_h = extrema(Lat)
@@ -535,12 +544,22 @@ maxes = []
     )
 end
 
+# add total area to top of plot
+tot_area = (n_good) * 0.1 * 0.1
+text!(fig.scene, 0.625, 0.905, text="Total Area = $(round(tot_area, digits=1)) m²", space=:relative, )
+
 cb =  Colorbar(fig[1,2], colormap=cmap, colorrange=clims, highclip=c_low, lowclip=c_high, label="Normalized Spectral Similarity Score")
+
 fig
-
-
-
 
 save(joinpath(figures_path, "algae.png"), fig)
 
 
+
+
+
+# class map (w/ land):
+
+
+
+# class map (w/o land):
