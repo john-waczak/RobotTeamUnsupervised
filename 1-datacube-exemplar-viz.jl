@@ -111,9 +111,12 @@ R_road = Data[1:idx_900, 20, 760] ./ maximum(Data[1:idx_900, 20, 760])
 
 
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
 
 GLMakie.activate!()
+colgap!(fig3.layout, 1, -200)
 save(joinpath(figs_path, "11-23_Scotty_1-2.png"), fig1)
+save(joinpath(figs_path, "11-23_Scotty_1-2_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "11-23_Scotty_1-2__colorbar.svg"), fig2)
@@ -122,9 +125,14 @@ save(joinpath(figs_path, "11-23_Scotty_1-2__colorbar.svg"), fig2)
 
 h5path = files_dict["11-23"]["no-dye"][2]
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
 
 GLMakie.activate!()
+colgap!(fig3.layout, 1, -200)
+fig3
+
 save(joinpath(figs_path, "11-23_Scotty_2-1.png"), fig1)
+save(joinpath(figs_path, "11-23_Scotty_2-1_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "11-23_Scotty_2-1__colorbar.svg"), fig2)
@@ -133,9 +141,14 @@ save(joinpath(figs_path, "11-23_Scotty_2-1__colorbar.svg"), fig2)
 
 h5path = files_dict["11-23"]["dye"][1]
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=0)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
 
 GLMakie.activate!()
+colgap!(fig3.layout, 1, -200)
+fig3
+
 save(joinpath(figs_path, "11-23_Scotty_4-1.png"), fig1)
+save(joinpath(figs_path, "11-23_Scotty_4-1_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "11-23_Scotty_4-1__colorbar.svg"), fig2)
@@ -146,7 +159,11 @@ h5path = files_dict["11-23"]["dye"][2]
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+colgap!(fig3.layout, 1, -200)
+
 save(joinpath(figs_path, "11-23_Scotty_5-1.png"), fig1)
+save(joinpath(figs_path, "11-23_Scotty_5-1_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "11-23_Scotty_5-1__colorbar.svg"), fig2)
@@ -155,16 +172,13 @@ save(joinpath(figs_path, "11-23_Scotty_5-1__colorbar.svg"), fig2)
 
 h5path = files_dict["12-09"]["dye"][1]
 
-h5 = h5open(h5path, "r")
-Δx = 0.1
-xs = h5["data-Δx_$(Δx)/X"][:];
-ys = h5["data-Δx_$(Δx)/Y"][:];
-close(h5)
-
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16, ibounds=(100, length(xs)))
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-09_Dye_1-6.png"), fig1)
+save(joinpath(figs_path, "12-09_Dye_1-6_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "12-09_Dye_1-6__colorbar.svg"), fig2)
@@ -310,7 +324,11 @@ close(h5)
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=1π/8,)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+colgap!(fig3.layout, 1, -200)
+
 save(joinpath(figs_path, "12-09_Dye_2-5.png"), fig1)
+save(joinpath(figs_path, "12-09_Dye_2-5_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "12-09_Dye_2-5__colorbar.svg"), fig2)
@@ -322,10 +340,11 @@ h5path = files_dict["12-10"]["dye"][1]
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16,)
-
-fig1
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-10_Dye_1-6.png"), fig1)
+save(joinpath(figs_path, "12-10_Dye_1-6_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "12-10_Dye_1-6__colorbar.svg"), fig2)
@@ -344,7 +363,11 @@ close(h5)
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=2π/16,)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+colgap!(fig3.layout, 1, -200)
+
 save(joinpath(figs_path, "12-10_Dye_2-1.png"), fig1)
+save(joinpath(figs_path, "12-10_Dye_2-1_cb.png"), fig3)
 
 CairoMakie.activate!()
 save(joinpath(figs_path, "12-10_Dye_2-1__colorbar.svg"), fig2)
