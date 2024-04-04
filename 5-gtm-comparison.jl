@@ -232,7 +232,7 @@ function generate_tex_table(df)
     out = out * "  \\newcolumntype{C}{>{\\centering\\arraybackslash}X}\n"
     out = out * "  \\begin{tabularx}{\\fulllength}{CCCCCC}\n"
     out = out * "    \\toprule\n"
-    out = out * "    \\textbf{k} & \\textbf{\$\alpha\$} & \\textbf{s} & \\textbf{k} & \\textbf{BIC} & \\textbf{AIC} \\\\\n"
+    out = out * "    \\textbf{m} & \\textbf{\$\alpha\$} & \\textbf{s} & \\textbf{k} & \\textbf{BIC} & \\textbf{AIC} \\\\\n"
     out = out * "    \\midrule\n"
 
     for i ∈ 1:25
@@ -258,7 +258,9 @@ end
 
 tex_table = generate_tex_table(df)
 
-open("./models/hp-search-table.tex", "w") do f
+println(tex_table)
+
+open("./paper/hp-search-table.tex", "w") do f
     println(f, tex_table)
 end
 
