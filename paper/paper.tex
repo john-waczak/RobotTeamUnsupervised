@@ -113,10 +113,11 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 \section{Materials and Methods}
 
 \begin{figure}[t]
-\begin{adjustwidth}{-\extralength}{0cm}
+%\begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=15.5cm]{paper/figures/methods/sample-spectra.pdf}
-\end{adjustwidth}
+%\includegraphics[width=15.5cm]{paper/figures/methods/sample-spectra.pdf}
+\includegraphics[width=\columnwidth]{paper/figures/methods/sample-spectra.pdf}
+%\end{adjustwidth}
 \caption{(a) Sample hyperspectral data cube. Spectra are plotted using their geographic position with the log10-reflectance colored along the z axis and a pseudo-color image on top. (b) Points taken from a sample hyperspectral data cube corresponding to algae, rhodamine dye, water, and dry grass. (c) The associated spectra for the exemplar points scaled so that the peak value of each spectrum is 1. (d) The location of the pond in Montague, Texas where data were collected for this study.\label{fig:sample-spectra}}
 \end{figure}  
 
@@ -130,11 +131,73 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 \section{Results}
 
 \subsection{GTM Fit}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\columnwidth]{paper/figures/results/square-ndvi.pdf}
+\caption{GTM Map: We plot the mean position of each data point in the latent space with points colored by the their associated NDVI values. The locations of the exemplar points for algae, rhodamine dye, water, and dry grass are shown in the latent space illustrating that the GTM has clearly distinguished land, near-land, and water pixels.\label{fig:}}
+\end{figure}  
+
+
 \subsection{Hyperparamter Optimization with BIC}
+
+
+\begin{figure}[t]
+%\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=\textwidth]{paper/figures/results/bic.pdf}
+%\end{adjustwidth}
+\caption{Results of the hyperparameter search. Left: Variation of BIC with $m$ and $s$ for fixed $\alpha=0.1$. Right: Variation of the BIC with with $m$ and $\alpha$ for fixed $s=1.0$. The white star in each plot indicates the parameters with the lowest BIC.\label{fig:hp-results}}
+\end{figure}  
+
+
 \subsection{Spectral Signatures}
+
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=15.5cm]{paper/figures/results/spectral-signatures.png}
+\end{adjustwidth}
+\caption{GTM Node Signatures corresponding to the exemplar spectra for the rhodamine plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). \label{fig:spectral-signautes}}
+\end{figure}  
+
 \subsection{Water Class Map}
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=18.0cm]{paper/figures/results/gtm-water.png}
+\end{adjustwidth}
+\caption{Classification map for GTM trained solely on water pixels (no land and no rhodamine plume). \textbf{(a)} GTM applied to all water pixels colored by their associated position in the latent space. \textbf{(b)} Representation of the poitns from the training set in the latent space. The points are colored with $\xi_1$ corresponding to red and $\xi_2$ corresponding to blue. \textbf{(c)} The associated GTM spectral signatures, $\Psi_i$, corresponding to the four corners and center of the GTM latent space. \label{fig:gtm-water}}
+\end{figure}  
+
+
 \subsection{Algae Identification}
+
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=15.5cm]{paper/figures/results/algae.png}
+\end{adjustwidth}
+\caption{\label{fig:algae-map}}
+\end{figure}  
+
+
+
 \subsection{Rhodamine Dye Plume Identification}
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=15.5cm]{paper/figures/results/rhodamine.png}
+\end{adjustwidth}
+\caption{\label{fig:rhodamine-map}}
+\end{figure}  
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
@@ -214,11 +277,49 @@ LD & Linear dichroism
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Optional
-\appendixtitles{no} % Leave argument "no" if all appendix headings stay EMPTY (then no dot is printed after "Appendix A"). If the appendix sections contain a heading then change the argument to "yes".
+\appendixtitles{yes} % Leave argument "no" if all appendix headings stay EMPTY (then no dot is printed after "Appendix A"). If the appendix sections contain a heading then change the argument to "yes".
 \appendixstart
 \appendix
-\section[\appendixname~\thesection]{}
-\subsection[\appendixname~\thesubsection]{}
+\section[\appendixname~\thesection]{Hyperparameter Search Results}
+
+\begin{table}[H]
+  \caption{The top 25 models from the hyperparameter search. A variety of GTM were trained to explore the the impact of varying m, $\alpha$, and s.\label{tab:hp-search}}
+  \begin{adjustwidth}{-\extralength}{0cm}
+  \newcolumntype{C}{>{\centering\arraybackslash}X}
+  \begin{tabularx}{\fulllength}{CCCCCC}
+    \toprule
+    \textbf{m} & \textbf{$\alpha$} & \textbf{s} & \textbf{k} & \textbf{BIC} & \textbf{AIC} \\
+    \midrule
+    14 & 0.1 & 1.0 & 32 & -1.918e8 & -1.926e8\\
+    13 & 0.01 & 1.0 & 32 & -1.917e8 & -1.923e8\\
+    16 & 0.01 & 1.5 & 32 & -1.917e8 & -1.926e8\\
+    14 & 10.0 & 1.0 & 32 & -1.917e8 & -1.924e8\\
+    16 & 0.001 & 1.5 & 32 & -1.917e8 & -1.926e8\\
+    13 & 1.0 & 1.0 & 32 & -1.917e8 & -1.923e8\\
+    13 & 10.0 & 1.0 & 32 & -1.917e8 & -1.923e8\\
+    14 & 0.001 & 1.5 & 32 & -1.916e8 & -1.924e8\\
+    13 & 0.1 & 1.0 & 32 & -1.916e8 & -1.923e8\\
+    14 & 0.01 & 1.0 & 32 & -1.916e8 & -1.924e8\\
+    15 & 0.01 & 1.5 & 32 & -1.916e8 & -1.925e8\\
+    14 & 0.01 & 1.5 & 32 & -1.916e8 & -1.923e8\\
+    15 & 1.0 & 1.0 & 32 & -1.916e8 & -1.924e8\\
+    18 & 0.01 & 1.5 & 32 & -1.916e8 & -1.928e8\\
+    12 & 0.01 & 1.0 & 32 & -1.916e8 & -1.921e8\\
+    15 & 0.01 & 0.5 & 32 & -1.915e8 & -1.924e8\\
+    17 & 1.0 & 1.0 & 32 & -1.915e8 & -1.926e8\\
+    16 & 0.1 & 1.0 & 32 & -1.915e8 & -1.925e8\\
+    18 & 0.001 & 1.5 & 32 & -1.915e8 & -1.928e8\\
+    13 & 0.001 & 1.0 & 32 & -1.915e8 & -1.922e8\\
+    12 & 1.0 & 1.0 & 32 & -1.915e8 & -1.921e8\\
+    17 & 0.001 & 1.5 & 32 & -1.915e8 & -1.926e8\\
+    15 & 0.001 & 1.5 & 32 & -1.915e8 & -1.923e8\\
+    15 & 10.0 & 1.0 & 32 & -1.915e8 & -1.923e8\\
+    12 & 0.1 & 1.5 & 32 & -1.915e8 & -1.92e8\\
+    \bottomrule
+  \end{tabularx}
+  \end{adjustwidth}
+\end{table}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{adjustwidth}{-\extralength}{0cm}
