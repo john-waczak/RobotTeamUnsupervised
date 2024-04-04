@@ -266,6 +266,7 @@ end
 fig[1,1] = Legend(fig, ls, ["Water Spectrum", "GTM Node Signatures"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 xlims!(ax, wavelengths[1], 900)
 ylims!(ax, 0, 1)
+
 heatmap!(ax_inset, rgb_image)
 scatter!(ax_inset, [sample_coords["water"]["img_idxs"][1]], [sample_coords["water"]["img_idxs"][2]], markersize=7, color=:white, marker = :xcross)
 
@@ -378,6 +379,17 @@ save(joinpath(figures_path, "square-ndvi.pdf"), fig)
 
 
 # colored class map with identified pixels
+function map_color(ξ₁, ξ₂)
+    red = (ξ₁ + 1.0) / 2.0
+    blue = (ξ₂ + 1.0) / 2.0
+
+    red = (red < 0.0) ? 0.0 : red
+    blue = (blue < 0.0) ? 0.0 : blue
+
+    RGBA(red, 0.0, blue, 1.0)
+end
+
+
 fig = Figure();
 ax = CairoMakie.Axis(fig[2,1], xlabel="ξ₁", ylabel="ξ₂");
 mean_proj = DataFrame(MLJ.transform(mach, X))
@@ -473,19 +485,6 @@ f_list_2 = joinpath.(hsipath, "11-23", "Scotty_2", f_list_2)
 @assert all(ispath.(f_list_1))
 @assert all(ispath.(f_list_2))
 
-
-
-
-
-function map_color(ξ₁, ξ₂)
-    red = (ξ₁ + 1.0) / 2.0
-    blue = (ξ₂ + 1.0) / 2.0
-
-    red = (red < 0.0) ? 0.0 : red
-    blue = (blue < 0.0) ? 0.0 : blue
-
-    RGBA(red, 0.0, blue, 1.0)
-end
 
 
 

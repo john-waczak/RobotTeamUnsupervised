@@ -210,12 +210,12 @@ important_coords = Dict(
         "R" => Data[1:462, 400, 80] ./ maximum(Data[1:idx_900, 400, 80]),
         "λs" => λs,
     ),
-    "road" => Dict(
-        "x" => x_road,
-        "y" => y_road,
-        "R" => R_road,
-        "λs" => λs
-    )
+    # "road" => Dict(
+    #     "x" => x_road,
+    #     "y" => y_road,
+    #     "R" => R_road,
+    #     "λs" => λs
+    # )
 )
 
 
@@ -235,9 +235,10 @@ darktan = colorant"#ba8a50"
 
 
 fig = Figure();
-ax = CairoMakie.Axis(fig[2,1]);
+ax = CairoMakie.Axis(fig[2,1],
+                     );
 
-# hidedecorations!(ax)
+hidedecorations!(ax)
 # hidespines!(ax)
 
 img = heatmap!(ax, rgb_image);
@@ -265,8 +266,9 @@ la = lines!(ax, important_coords["algae"]["λs"][1:idx_900], important_coords["a
 lp = lines!(ax, important_coords["plume"]["λs"][1:idx_900], important_coords["plume"]["R"][1:idx_900], linewidth=2, label="Rhodamine", color=red)
 lw = lines!(ax, important_coords["water"]["λs"][1:idx_900], important_coords["water"]["R"][1:idx_900], linewidth=2, label="Water", color=blue)
 lg = lines!(ax, important_coords["grass"]["λs"][1:idx_900], important_coords["grass"]["R"][1:idx_900], linewidth=2, label="Grass", color=tan)
-lr = lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=2, label="Road", color=brown)
-fig[1,1] = Legend(fig, [la, lp, lw, lg, lr], ["Algae", "Rhodamine", "Water", "Grass", "Road"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+# lr = lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=2, label="Road", color=brown)
+#fig[1,1] = Legend(fig, [la, lp, lw, lg, lr], ["Algae", "Rhodamine", "Water", "Grass", "Road"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [la, lp, lw, lg], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][idx_900])
 ylims!(ax, 0, 1)
 fig
