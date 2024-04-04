@@ -125,7 +125,7 @@ save(joinpath(figs_path, "11-23_Scotty_1-2__colorbar.svg"), fig2)
 
 h5path = files_dict["11-23"]["no-dye"][2]
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4, colorbar=true)
 
 GLMakie.activate!()
 colgap!(fig3.layout, 1, -200)
@@ -141,7 +141,7 @@ save(joinpath(figs_path, "11-23_Scotty_2-1__colorbar.svg"), fig2)
 
 h5path = files_dict["11-23"]["dye"][1]
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=0)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=0, colorbar=true)
 
 GLMakie.activate!()
 colgap!(fig3.layout, 1, -200)
@@ -159,7 +159,7 @@ h5path = files_dict["11-23"]["dye"][2]
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=π/4, colorbar=true)
 colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "11-23_Scotty_5-1.png"), fig1)
@@ -174,7 +174,7 @@ h5path = files_dict["12-09"]["dye"][1]
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16, ibounds=(100, length(xs)))
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16, ibounds=(100, length(xs)), colorbar = true)
 colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-09_Dye_1-6.png"), fig1)
@@ -324,7 +324,7 @@ close(h5)
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=1π/8,)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=3π/4, elevation=1π/8, colorbar=true)
 colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-09_Dye_2-5.png"), fig1)
@@ -340,7 +340,7 @@ h5path = files_dict["12-10"]["dye"][1]
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16,)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=3π/4, elevation=3π/16, colorbar=true)
 colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-10_Dye_1-6.png"), fig1)
@@ -363,7 +363,7 @@ close(h5)
 
 GLMakie.activate!()
 fig1, fig2 = vis_rectified_cube(h5path; azimuth=-π/3, elevation=2π/16,)
-fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=5π/16, colorbar=true)
+fig3, _ = vis_rectified_cube(h5path; azimuth=-π/3, elevation=2π/16, colorbar=true)
 colgap!(fig3.layout, 1, -200)
 
 save(joinpath(figs_path, "12-10_Dye_2-1.png"), fig1)
