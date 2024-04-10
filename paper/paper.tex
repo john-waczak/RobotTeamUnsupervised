@@ -51,29 +51,23 @@
 \newcommand{\orcidauthorE}{0000-0003-4265-9543} % David
 \newcommand{\orcidauthorF}{0000-0003-0667-2345} % Ash
 \newcommand{\orcidauthorG}{0000-0002-0126-218X} % Adam
+% \newcommand{\orcidauthorH}{} % Gokul
 
 % Authors, for the paper (add full first names)
-% \Author{John Waczak \orcidA{}, Adam Aker \orcidG{}, Lakitha O. H. Wijeratne \orcidB{}, Shawhin Talebi \orcidC{}, Ashen Fernando \orcidF{}, Prabuddha M. H. Dewage \orcidD{}, Mazhar Iqbal, Matthew Lary, David Schaefer and David J. Lary *\orcidE{}}
-\Author{John Waczak \orcidA{} and David J. Lary *\orcidE{}}
+\Author{John Waczak \orcidA{}, Adam Aker \orcidG{}, Lakitha O. H. Wijeratne \orcidB{}, Shawhin Talebi \orcidC{}, Ashen Fernando \orcidF{}, Prabuddha M. H. Dewage \orcidD{}, Mazhar Iqbal, Matthew Lary, David Schaefer, Gokul Balagopal, and David J. Lary *\orcidE{}}
 
 %\longauthorlist{yes}
 
 % MDPI internal command: Authors, for metadata in PDF
-% \AuthorNames{John Waczak, Adam Aker, Lakitha O. H. Wijeratne, Shawhin Talebi, Bharana Fernando, Prabuddha Hathurusinghe, Mazhar Iqbal, Matthew Lary, David Schaefer and David J. Lary}
-\AuthorNames{John Waczak and David J. Lary}
+\AuthorNames{John Waczak, Adam Aker, Lakitha O. H. Wijeratne, Shawhin Talebi, Bharana Fernando, Prabuddha Hathurusinghe, Mazhar Iqbal, Matthew Lary, David Schaefer, Gokul Balagopal, and David J. Lary}
 
 % MDPI internal command: Authors, for citation in the left column
-% \AuthorCitation{Waczak, J.; Aker, A.; Wijeratne, L.O.H.; Talebi, S.; Fernando, B.; Hathurusinghe, P.; Iqbal, M.; Lary, M.; Schaefer, D.; Lary, D.J.}
-\AuthorCitation{Waczak, J.; Lary, D.J.}
+ \AuthorCitation{Waczak, J.; Aker, A.; Wijeratne, L.O.H.; Talebi, S.; Fernando, B.; Hathurusinghe, P.; Iqbal, M.; Lary, M.; Schaefer, Balagopal, G.; D.; Lary, D.J.}
 % If this is a Chicago style journal: Lastname, Firstname, Firstname Lastname, and Firstname Lastname.
 
 % Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
-% \address[1]{%
-% Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 75080, USA;  john.waczak@utdallas.edu (J.W.); adam.aker@utdallas.edu (A.A.); lhw150030@utdallas.edu (L.O.H.W.); shawhintalebi@gmail.com (S.T.); ashen.fernando@utdallas.edu  (B.F.); pxh180012@utdallas.edu (P.M.H.D.); mazhar.iqbal@utdallas.edu (M.I.); MDL210001@utdallas.edu (M.L.); captdaveschaefer@gmail.com (D.S.)}
-
 \address[1]{%
-Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 75080, USA;  john.waczak@utdallas.edu (J.W.);}
-\corres{\hangafter=1 \hangindent=1.05em \hspace{-0.82em}Correspondence: {David.Lary@utdallas.edu}}
+Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 75080, USA;  john.waczak@utdallas.edu (J.W.); adam.aker@utdallas.edu (A.A.); lhw150030@utdallas.edu (L.O.H.W.); shawhintalebi@gmail.com (S.T.); ashen.fernando@utdallas.edu  (B.F.); pxh180012@utdallas.edu (P.M.H.D.); mazhar.iqbal@utdallas.edu (M.I.); MDL210001@utdallas.edu (M.L.); captdaveschaefer@gmail.com (D.S.); gokul.balagopal@utdallas.edu (G.B.);}
 
 % Contact information of the corresponding author
 \corres{Correspondence: david.lary@utdallas.edu} %; Tel.: (optional; include country code; if there are multiple corresponding authors, add author initials) +xx-xxxx-xxx-xxxx (F.L.)}
@@ -96,18 +90,24 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
     - Endmember Identification and Spectral Unmixing is sub-problem specific to hyperspectral data
 
 2. HSI Size allows their incorporation onto drones
+    - \cite{robot-team-1}
+    - \cite{robot-team-2}
 
 3. Provided with in situ measurements, HSI can be used to predict a variety of relevant water quality and water composition parameters. Here we can describe our previous work
 
 4. However, we would like to be able to identify the presence of spectral signatures for which we do not already have an in situ sensor. 
 
-5. Unsupervised classification techniques are nice however standard algorithms like k-means clustering require prior knowledge of the number of constituent endmembers and do not, in general, provide any interpretable relationship between classes e.g. how is class 1 more similar to class 2 than to class 10. 
+5. Unsupervised classification techniques are nice however standard algorithms like k-means clustering require prior knowledge of the number of constituent endmembers and do not, in general, provide any interpretable relationship between classes e.g. how is class 1 more similar to class 2 than to class 10. The Self Organizing map introduced by Kohonen is a popular technique which enables an unsupervised classification of data where classes 
+
+- We should make a note about Autoencoders and VAEs here. While they work well in many contexts, they do not provide a relationship between classes and there is no obvious way to choose the size of the encoding
 
 6. "In this paper, we extend our previous work into the unsupervised classification domain..." Here we demonstrate the application of Generative Topographic mapping which addresses these issues by providing a probability distribution of resulting classes. 
 
 7. We apply the GTM to datasets collected by our Robot Team specifically showcasing the identification of spectral signatures for Rhodamine Dye, Algae, etc... 
 
 8. With the signatures identified, class abundance, and therefore area estimation, can be performed rapidly, in real time, by utilizing the learned signatures with the nromalized spectral similarity score (or other similar metrics). 
+
+IDEA: spectral unmixing of water is challenging due to nonlinear effects of scattering by solids and absorption by dissolved chemicals (dyes etc...) this motivates a nonlinear approach to endmember identification, etc...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Materials and Methods}
@@ -125,6 +125,11 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 \subsection{Autonomous Robot Team}
 \subsection{Data Collection and Pre-Processing}
 \subsection{Generative Topographic Mapping}
+
+- GTM paper oricinal \cite{gtm-bishop-1}
+- GTM developments paper \cite{gtm-biship-2}
+
+
 \subsection{Image Segmentation with the Normalized Spectral Similarity Score}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -290,7 +295,7 @@ LD & Linear dichroism
     \toprule
     \textbf{m} & \textbf{$\alpha$} & \textbf{s} & \textbf{k} & \textbf{BIC} & \textbf{AIC} \\
     \midrule
-    14 & 0.1 & 1.0 & 32 & -1.918e8 & -1.926e8\\
+    14 & 0.1 & 1.0 & 32 & \textbf{-1.918e8} & -1.926e8\\
     13 & 0.01 & 1.0 & 32 & -1.917e8 & -1.923e8\\
     16 & 0.01 & 1.5 & 32 & -1.917e8 & -1.926e8\\
     14 & 10.0 & 1.0 & 32 & -1.917e8 & -1.924e8\\

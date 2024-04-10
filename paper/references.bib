@@ -19,10 +19,762 @@
 
 # ---- DRONE PAPERS --------------------------------------------------------------------------------------
 
+@article{banerjee2020uav,
+  title={UAV-hyperspectral imaging of spectrally complex environments},
+  author={Banerjee, Bikram Pratap and Raval, Simit and Cullen, PJ},
+  journal={International Journal of Remote Sensing},
+  volume={41},
+  number={11},
+  pages={4136--4159},
+  year={2020},
+  publisher={Taylor \& Francis},
+  notes={
+    - Near-earth HSI address spectral, spatial, and temporal limitations of traditional satellite & airborne platforms 
+    - UAV-based HSI enable fine-scale mapping applications needed to differentiate vegetation in threatened swamp communities
+  }
+}
+
+@article{arroyo2019implementation,
+  title={Implementation of a UAV--hyperspectral pushbroom imager for ecological monitoring},
+  author={Arroyo-Mora, J Pablo and Kalacska, Margaret and Inamdar, Deep and Soffer, Raymond and Lucanus, Oliver and Gorman, Janine and Naprstek, Tomas and Schaaf, Erica Skye and Ifimov, Gabriela and Elmer, Kathryn and others},
+  journal={Drones},
+  volume={3},
+  number={1},
+  pages={12},
+  year={2019},
+  publisher={MDPI},
+  notes={
+      - UAV based HSI can be geocorrected accurately to the centimeter scale w/o ground control points using GPS/IMU
+  }
+}
+
+@article{lu2021retrieval,
+  title={Retrieval of water quality from UAV-borne hyperspectral imagery: A comparative study of machine learning algorithms},
+  author={Lu, Qikai and Si, Wei and Wei, Lifei and Li, Zhongqiang and Xia, Zhihong and Ye, Song and Xia, Yu},
+  journal={Remote Sensing},
+  volume={13},
+  number={19},
+  pages={3928},
+  year={2021},
+  publisher={MDPI}, 
+  notes={
+      - Evaluated ML methods for mapping UAV-based HSI to water quality parameters including chlorophyll-a and suspended solids.
+      - Supervised ML techniques for HSI and water quality
+      - Tree-based models were superior
+  }
+}
+
+@article{zhang2022selection,
+  title={Selection and quantification of best water quality indicators using UAV-mounted hyperspectral data: a case focusing on a local river network in Suzhou City, China},
+  author={Zhang, Dingyu and Zeng, Siyu and He, Weiqi},
+  journal={Sustainability},
+  volume={14},
+  number={23},
+  pages={16226},
+  year={2022},
+  publisher={MDPI},
+  notes={
+      - use polynomial combinations of reflectance bins to estimate six water quality indicators
+  }
+}
+
+@article{vogt2016near,
+  title={Near-remote sensing of water turbidity using small unmanned aircraft systems},
+  author={Vogt, Michael C and Vogt, Mark E},
+  journal={Environmental Practice},
+  volume={18},
+  number={1},
+  pages={18--31},
+  year={2016},
+  publisher={Taylor \& Francis},
+  notes={
+      - used a multispectral imager on a UAV to measure turbidity
+  }
+}
+
+@article{horstrand2019uav,
+  title={A UAV platform based on a hyperspectral sensor for image capturing and on-board processing},
+  author={Horstrand, Pablo and Guerra, Ra{\'u}l and Rodr{\'\i}guez, Aythami and D{\'\i}az, Mar{\'\i}a and L{\'o}pez, Sebasti{\'a}n and L{\'o}pez, Jos{\'e} Fco},
+  journal={IEEE Access},
+  volume={7},
+  pages={66919--66938},
+  year={2019},
+  publisher={IEEE},
+  notes={
+      - describe a drone equipped with a HSI sensor which can be used for precision agriculture
+      - On-board compute enables the computation of spectral/vegetation indices 
+  }
+}
+
+# ---- REMOTE SENSING ------------------------------------------------------------------------------------
+
+@article{ritchie2003remote,
+  title={Remote sensing techniques to assess water quality},
+  author={Ritchie, Jerry C and Zimba, Paul V and Everitt, James H},
+  journal={Photogrammetric engineering \& remote sensing},
+  volume={69},
+  number={6},
+  pages={695--704},
+  year={2003},
+  publisher={American Society for Photogrammetry and Remote Sensing},
+  notes={
+      - remote sensing can be used to monitor optically-active water quality parameters e.g. turbidity, chlorophyll, and temperature
+      - remote sensing platforms are also excellent for change-detection at small spatial scales
+      - useful for resource management
+      - suspended sediment: most common pollutant by weight/volume in surface waters of freshwater systems. Measurements affected by    
+                            type, texture, color, viewing geometry, and water depth
+      - algae/chlorophyll: monitoring is important for managing eutrophication. Determination by remote sensing can be confounded by 
+                           presence of suspended sediments. HSI data can help distinguish between algal groups, e.g. green vs blue algae.
+      - aquatic vascular plants: overgrowth of macrophytes can clog reservoirs. Focus on three species: hyacinth, hydrilla, giant 
+                                 salvinia. UAV systems can be used to detect noxious aquatic weeds.
+      - temperature: remote sensing can be used to map thermal discharge into water bodies. 
+      
+  }
+}
+
+@article{melesse2007remote,
+  title={Remote sensing sensors and applications in environmental resources mapping and modelling},
+  author={Melesse, Assefa M and Weng, Qihao and Thenkabail, Prasad S and Senay, Gabriel B},
+  journal={Sensors},
+  volume={7},
+  number={12},
+  pages={3209--3241},
+  year={2007},
+  publisher={Molecular Diversity Preservation International},
+  notes={
+      - remote sensing can be used for environmental resource mapping, e.g. urban studies, hydrological modelling, land-cover mapping, 
+        floodplain mapping, vegetation cover, etc. 
+      - urban component surfaces exhibit unique radiative, thermal, moisture, and aerodynamic properties
+      - remote sensing enables indirect estimation of hydrological parameters
+  }
+}
+
+@article{joyce2009review,
+  title={A review of the status of satellite remote sensing and image processing techniques for mapping natural hazards and disasters},
+  author={Joyce, Karen E and Belliss, Stella E and Samsonov, Sergey V and McNeill, Stephen J and Glassey, Phil J},
+  journal={Progress in physical geography},
+  volume={33},
+  number={2},
+  pages={183--207},
+  year={2009},
+  publisher={Sage Publications Sage UK: London, England},
+  notes={
+      - remote sensing applications for natural hazards/disasters: earthquakes, faulting, volcanic activity, flooding, wildfires, and 
+        associated damage.
+      - key challenge: rapid acquisition, processing, and product delivery to emergency services as an end user
+  }
+}
+
+@article{ross2019aquasat,
+  title={AquaSat: A data set to enable remote sensing of water quality for inland waters},
+  author={Ross, Matthew RV and Topp, Simon N and Appling, Alison P and Yang, Xiao and Kuhn, Catherine and Butman, David and Simard, Marc and Pavelsky, Tamlin M},
+  journal={Water Resources Research},
+  volume={55},
+  number={11},
+  pages={10012--10025},
+  year={2019},
+  publisher={Wiley Online Library},
+  notes={
+      - created large dataset of 600,000 water quality records matching suspended sediment, dissolved organic carbon, chlorophyll-a, and secchi disk depth to remote sensing imagery from Landsat 5, 7, 8 covering 1984 to 2019 
+  }
+}
+
+
+@article{aurin2018remote,
+  title={Remote sensing of CDOM, CDOM spectral slope, and dissolved organic carbon in the global ocean},
+  author={Aurin, Dirk and Mannino, Antonio and Lary, David J},
+  journal={Applied Sciences},
+  volume={8},
+  number={12},
+  pages={2687},
+  year={2018},
+  publisher={MDPI},
+  notes={
+      - comprehensive dataset combining in-situ measurements from 500 field compaigns over 30 years with paired remote sensing imagery for CDOM, particulate organic carbon, etc. 
+  }
+}
+
+@article{fingas2017review,
+  title={A review of oil spill remote sensing},
+  author={Fingas, Merv and Brown, Carl E},
+  journal={sensors},
+  volume={18},
+  number={1},
+  pages={91},
+  year={2017},
+  publisher={MDPI},
+  notes={
+      - oil shows minor optical properties in UV-IR region of EM spectrum. Variability in reflectance/absorbance dpends on oil type, 
+        oil evaporation, weather conditions, and solar illumination
+      - visible spectrum remains active research area as well as economical method for monitoring oil spills
+  }
+}
+
+@article{bonansea2015using,
+  title={Using multi-temporal Landsat imagery and linear mixed models for assessing water quality parameters in R{\'\i}o Tercero reservoir (Argentina)},
+  author={Bonansea, Matias and Rodriguez, Mar{\'\i}a Claudia and Pinotti, Lucio and Ferrero, Susana},
+  journal={Remote Sensing of Environment},
+  volume={158},
+  pages={28--41},
+  year={2015},
+  publisher={Elsevier},
+  notes={
+      - estimate chlorphyll-a and Secchi Disk Transparency using Landsat imagery + ancillary data with linear mixed models (LMM)
+  }
+}
+
+@article{sagan2020monitoring,
+  title={Monitoring inland water quality using remote sensing: Potential and limitations of spectral indices, bio-optical simulations, machine learning, and cloud computing},
+  author={Sagan, Vasit and Peterson, Kyle T and Maimaitijiang, Maitiniyazi and Sidike, Paheding and Sloan, John and Greeling, Benjamin A and Maalouf, Samar and Adams, Craig},
+  journal={Earth-Science Reviews},
+  volume={205},
+  pages={103187},
+  year={2020},
+  publisher={Elsevier},
+  notes={
+      - optically and active and inactive parameters can be inferred from spectra
+  }
+}
+
 # ---- HSI PAPERS ----------------------------------------------------------------------------------------
+
+@article{zhang2019hyperspectral,
+  title={Hyperspectral image unsupervised classification by robust manifold matrix factorization},
+  author={Zhang, Lefei and Zhang, Liangpei and Du, Bo and You, Jane and Tao, Dacheng},
+  journal={Information Sciences},
+  volume={485},
+  pages={154--169},
+  year={2019},
+  publisher={Elsevier}, 
+  notes={
+      -  unsupervised HSI classification using manifold matrix factorization
+      -  Good intro with citation for other approaches, e.g. fuzzy C-means, k-NN density clustering, memetic fuzzy clustering
+      - Shortcomings: 
+            - methods not purpose-designed for hyperspectral data
+            - methods include stochastic steps and there therefore not reproducible
+            - methods have high computational cost (spectral methods or O(N^3))
+      - nonnegative matrix factorization (NMF) is another technqiue which is becoming more popular
+      - robust manifold matrix factorization used in this paper
+  }
+}
+
+
+
+@article{liang2010hyperspectral,
+  title={Hyperspectral remote sensing image classification based on ICA and SVM algorithm},
+  author={Liang, Liang and Yang, Min-hua and Li, Ying-fang and others},
+  journal={Spectroscopy and spectral analysis},
+  volume={30},
+  number={10},
+  pages={2724--2728},
+  year={2010},
+  publisher={Editorial Office, Spectroscopy and Spectral Analysis},
+  notes={
+      - supervised classification of HSI using a combination of ICA and SVM
+  }
+}
+
+
+@inproceedings{zhangSVM2014,
+    author = {Chunsen Zhang and Yiwei Zheng},
+    title = {{Hyperspectral remote sensing image classification based on combined SVM and LDA}},
+    volume = {9263},
+    booktitle = {Multispectral, Hyperspectral, and Ultraspectral Remote Sensing Technology, Techniques and Applications V},
+    editor = {Allen M. Larar and Makoto Suzuki and Jianyu Wang},
+    organization = {International Society for Optics and Photonics},
+    publisher = {SPIE},
+    pages = {92632P},
+    keywords = {Hyperspectral , MNF, SVM, LDA , Classification},
+    year = {2014},
+    doi = {10.1117/12.2070688},
+    URL = {https://doi.org/10.1117/12.2070688},
+    notes={
+        - supervised classification using combination of LDA with SVM
+    }
+}
+
+
+
+@article{khan2018modern,
+  title={Modern trends in hyperspectral image analysis: A review},
+  author={Khan, Muhammad Jaleed and Khan, Hamid Saeed and Yousaf, Adeel and Khurshid, Khurram and Abbas, Asad},
+  journal={Ieee Access},
+  volume={6},
+  pages={14118--14129},
+  year={2018},
+  publisher={IEEE},
+  notes={
+      - Applications: Food Quality & Safety, Medical Diagnosis, Precision Agriculture, Water Resource & Flood 
+        Management, Forensic Document Examination, 
+      - Hyperpsectral unmixing for inks used for forgery detection
+  }
+}
+
+@article{koponen2002lake,
+  title={Lake water quality classification with airborne hyperspectral spectrometer and simulated MERIS data},
+  author={Koponen, Sampsa and Pulliainen, Jouni and Kallio, Kari and Hallikainen, Martti},
+  journal={Remote Sensing of Environment},
+  volume={79},
+  number={1},
+  pages={51--59},
+  year={2002},
+  publisher={Elsevier},
+  notes={
+      - Classifify water quality by categories of Secchi Depth, Turbidity, and Chlorophyll-a. 
+  }
+}
+
+@article{adao2017hyperspectral,
+  title={Hyperspectral imaging: A review on UAV-based sensors, data processing and applications for agriculture and forestry},
+  author={Ad{\~a}o, Telmo and Hru{\v{s}}ka, Jon{\'a}{\v{s}} and P{\'a}dua, Lu{\'\i}s and Bessa, Jos{\'e} and Peres, Emanuel and Morais, Raul and Sousa, Joaquim Joao},
+  journal={Remote sensing},
+  volume={9},
+  number={11},
+  pages={1110},
+  year={2017},
+  publisher={MDPI},
+  notes={
+      - UAVs are emerging as a popular, cost-effective remote sensing solution
+      - Coupled with minaturized HSI, such a platform provides significant advantages
+  }
+}
+
+@book{thenkabail2018hyperspectral,
+  title={Hyperspectral indices and image classifications for agriculture and vegetation},
+  author={Thenkabail, Prasad S and Lyon, John G and Huete, Alfredo},
+  year={2018},
+  publisher={CRC press},
+  notes={
+      - lots of details about spectral indices
+  }
+}
+
+@inproceedings{yousefi2016mineral,
+  title={Mineral identification in hyperspectral imaging using Sparse-PCA},
+  author={Yousefi, Bardia and Sojasi, Saeed and Castanedo, Clemente Ibarra and Beaudoin, Georges and Huot, Fran{\c{c}}ois and Maldague, Xavier PV and Chamberland, Martin and Lalonde, Erik},
+  booktitle={Thermosense: thermal infrared applications XXXVIII},
+  volume={9861},
+  pages={312--322},
+  year={2016},
+  organization={SPIE}, 
+  notes={
+      - identification of mineral grains by sparse principal component analysis
+      - endmembers identified as highest sparse principle component
+      - abundance identified using kernel Extreme Learning Machine
+  }
+}
 
 # ---- SPECTRAL UNMIXING PAPERS---------------------------------------------------------------------------
 
+@article{spectral-unmixing-orig,
+  author={Keshava, N. and Mustard, J.F.},
+  journal={IEEE Signal Processing Magazine}, 
+  title={Spectral unmixing}, 
+  year={2002},
+  volume={19},
+  number={1},
+  pages={44-57},
+  keywords={Hyperspectral sensors;Layout;Reflectivity;Remote sensing;Spectroscopy;Hyperspectral imaging;Spatial resolution;Data mining;Atmospheric modeling;Analytical models},
+  doi={10.1109/79.974727}, 
+  notes={
+      - Mixed pixels
+        - low spatial resolution means multiple materials co-occupy a single pixel
+        - disparete sources combine into a homogenous mixture
+      - Linear Mixing Model
+        - Assumption: surface dominated by small number of materials  (endmembers) with consistant spectral properties
+        - Two requirements for abundances: nonnegativity and sum-to-one
+        - Argument for LMM: at the resolution of georectified images, we can think of pixels as being linear 
+          combinations of constituents. Any nonlinear mixtures will have mixing scales with fundamental lengths less thatn the pixel scale.
+  }
+}
+
+@inproceedings{cantero2004analysis,
+  title={Analysis of the behavior of a neural network model in the identification and quantification of hyperspectral signatures applied to the determination of water quality},
+  author={Cantero, MC and Perez, RM and Martinez, Pablo J and Aguilar, PL and Plaza, Javier and Plaza, Antonio},
+  booktitle={Chemical and Biological Standoff Detection II},
+  volume={5584},
+  pages={174--185},
+  year={2004},
+  organization={SPIE},
+  notes={
+      - use SOM to get endmembers 
+      - use "Hopfield" Recurrent Neural Network to get abundances
+  }
+}
+
+@article{jiang2020classification,
+  title={Classification endmember selection with multi-temporal hyperspectral data},
+  author={Jiang, Tingxuan and van der Werff, Harald and van der Meer, Freek},
+  journal={Remote Sensing},
+  volume={12},
+  number={10},
+  pages={1575},
+  year={2020},
+  publisher={MDPI},
+  notes={
+      - used spatial-spectral endmember extraction method w/ spectral angle mapper to classify HSIs
+  }
+}
+
+@article{palsson2020convolutional,
+  title={Convolutional autoencoder for spectral--spatial hyperspectral unmixing},
+  author={Palsson, Burkni and Ulfarsson, Magnus O and Sveinsson, Johannes R},
+  journal={IEEE Transactions on Geoscience and Remote Sensing},
+  volume={59},
+  number={1},
+  pages={535--549},
+  year={2020},
+  publisher={IEEE},
+  notes={
+      - used autoencoder with convolutional layers
+      - softmax enforces sum-to-one constraint
+      - can use exp or similar activation to get positive weights
+  }
+}
+
+@inproceedings{non-negative-autoencoders,
+  author={Su, Yuanchao and Marinoni, Andrea and Li, Jun and Plaza, Antonio and Gamba, Paolo},
+  booktitle={2017 IEEE International Geoscience and Remote Sensing Symposium (IGARSS)}, 
+  title={Nonnegative sparse autoencoder for robust endmember extraction from remotely sensed hyperspectral images}, 
+  year={2017},
+  volume={},
+  number={},
+  pages={205-208},
+  keywords={Training;Hyperspectral imaging;Algorithm design and analysis;Feature extraction;Image reconstruction;Hyperspectral unmixing;endmember extraction;automatic sampler;nonnegative sparse autoencoder},
+  doi={10.1109/IGARSS.2017.8126930},
+  notes={
+    - Autoencoder with weights that sum to one and enforced non-negativity via modified update function
+  }
+}
+
+
+@article{su2019daen,
+  title={DAEN: Deep autoencoder networks for hyperspectral unmixing},
+  author={Su, Yuanchao and Li, Jun and Plaza, Antonio and Marinoni, Andrea and Gamba, Paolo and Chakravortty, Somdatta},
+  journal={IEEE Transactions on Geoscience and Remote Sensing},
+  volume={57},
+  number={7},
+  pages={4309--4321},
+  year={2019},
+  publisher={IEEE},
+  notes={
+      - combine stacked Autoencoders and VAEs for spectral unmixing of HSI data
+  }
+}
+
+@article{borsoi2019deep,
+  title={Deep generative endmember modeling: An application to unsupervised spectral unmixing},
+  author={Borsoi, Ricardo Augusto and Imbiriba, Tales and Bermudez, Jos{\'e} Carlos Moreira},
+  journal={IEEE Transactions on Computational Imaging},
+  volume={6},
+  pages={374--384},
+  year={2019},
+  publisher={IEEE}, 
+  notes={
+      - Use autoencoder for HSI unmixing
+  }
+}
+
+@article{berman2004ice,
+  title={ICE: A statistical approach to identifying endmembers in hyperspectral images},
+  author={Berman, Mark and Kiiveri, Harri and Lagerstrom, Ryan and Ernst, Andreas and Dunne, Rob and Huntington, Jonathan F},
+  journal={IEEE transactions on Geoscience and Remote Sensing},
+  volume={42},
+  number={10},
+  pages={2085--2095},
+  year={2004},
+  publisher={IEEE},
+  notes={
+      - use statistical approach for finding endmembers with least squares fitting
+      - suggest normalization is helpful and is equivalent to assuming endmember brightness is equal within each pixel
+  }
+}
+
+@article{plaza2012endmember,
+  title={On endmember identification in hyperspectral images without pure pixels: A comparison of algorithms},
+  author={Plaza, Javier and Hendrix, Eligius MT and Garc{\'\i}a, Inmaculada and Mart{\'\i}n, Gabriel and Plaza, Antonio},
+  journal={Journal of Mathematical Imaging and Vision},
+  volume={42},
+  pages={163--175},
+  year={2012},
+  publisher={Springer},
+  notes={
+      - compare endmember extraction algorithms w/o pure pixel assumption
+      - 
+  }
+}
+
+@article{nascimento2005vertex,
+  title={Vertex component analysis: A fast algorithm to unmix hyperspectral data},
+  author={Nascimento, Jos{\'e} MP and Dias, Jos{\'e} MB},
+  journal={IEEE transactions on Geoscience and Remote Sensing},
+  volume={43},
+  number={4},
+  pages={898--910},
+  year={2005},
+  publisher={IEEE}
+}
+
+
+
+# ---- SOM PAPERS-------------------------------------------------------------------------------------
+
+@article{kohonen-som-1,
+  title={The self-organizing map},
+  author={Kohonen, Teuvo},
+  journal={Proceedings of the IEEE},
+  volume={78},
+  number={9},
+  pages={1464--1480},
+  year={1990},
+  publisher={IEEE}
+}
+
+@article{som-satellite,
+  title={Using self-organizing maps to identify patterns in satellite imagery},
+  author={Richardson, Anthony J and Risien, C and Shillington, Frank Alan},
+  journal={Progress in Oceanography},
+  volume={59},
+  number={2-3},
+  pages={223--239},
+  year={2003},
+  publisher={Elsevier}
+}
+
+
+@article{som-hsi,
+  title={Feature Selection Using Self Organizing Map Oriented Evolutionary Approach},
+  author={Oğuzhan Ceylan and G{\"u}lsen Taskin Kaya},
+  journal={2021 IEEE International Geoscience and Remote Sensing Symposium IGARSS},
+  year={2021},
+  pages={4003-4006},
+  url={https://api.semanticscholar.org/CorpusID:238750026}
+}
+
+@inproceedings{msom-remote-sensing,
+  title={A multiple self-organizing map scheme for remote sensing classification},
+  author={Wan, Weijian and Fraser, Donald},
+  booktitle={International Workshop on Multiple Classifier Systems},
+  pages={300--309},
+  year={2000},
+  organization={Springer}
+}
+
+@incollection{som-cost-function,
+  title={Energy functions for self-organizing maps},
+  author={Heskes, Tom},
+  booktitle={Kohonen maps},
+  pages={303--315},
+  year={1999},
+  publisher={Elsevier}
+}
+
 # ---- GTM PAPERS-------------------------------------------------------------------------------------
 
+@article{gtm-bishop-1,
+  title={GTM: The generative topographic mapping},
+  author={Bishop, Christopher M and Svens{\'e}n, Markus and Williams, Christopher KI},
+  journal={Neural computation},
+  volume={10},
+  number={1},
+  pages={215--234},
+  year={1998},
+  publisher={MIT Press}
+}
+
+@article{gtm-bishop-2,
+  title={Developments of the generative topographic mapping},
+  author={Bishop, Christopher M and Svens{\'e}n, Markus and Williams, Christopher KI},
+  journal={Neurocomputing},
+  volume={21},
+  number={1-3},
+  pages={203--224},
+  year={1998},
+  publisher={Elsevier}
+}
+
 # ---- NS3 PAPERS-------------------------------------------------------------------------------------
+
+@article{deborah2015comprehensive,
+  title={A comprehensive evaluation of spectral distance functions and metrics for hyperspectral image processing},
+  author={Deborah, Hilda and Richard, No{\"e}l and Hardeberg, Jon Yngve},
+  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing},
+  volume={8},
+  number={6},
+  pages={3224--3234},
+  year={2015},
+  publisher={IEEE}
+}
+
+@article{heylen2014review,
+  title={A review of nonlinear hyperspectral unmixing methods},
+  author={Heylen, Rob and Parente, Mario and Gader, Paul},
+  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing},
+  volume={7},
+  number={6},
+  pages={1844--1868},
+  year={2014},
+  publisher={IEEE}
+}
+
+@inproceedings{de2000spectral,
+  title={Spectral correlation mapper (SCM): an improvement on the spectral angle mapper (SAM)},
+  author={De Carvalho, O Abilio and Meneses, Paulo Roberto},
+  booktitle={Summaries of the 9th JPL Airborne Earth Science Workshop, JPL Publication 00-18},
+  volume={9},
+  pages={2},
+  year={2000},
+  organization={JPL publication Pasadena, CA, USA}
+}
+
+@article{nidamanuri2010normalized,
+  title={Normalized Spectral Similarity Score ($$\{$$\backslash$hbox $\{$NS$\}$$\}$\^{}$\{$3$\}$ $) as an Efficient Spectral Library Searching Method for Hyperspectral Image Classification},
+  author={Nidamanuri, Rama Rao and Zbell, Bernd},
+  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing},
+  volume={4},
+  number={1},
+  pages={226--240},
+  year={2010},
+  publisher={IEEE}
+}
+
+
+# ---- ALGAL BLOOM PAPERS-----------------------------------------------------------------------------
+@article{boyer2009phytoplankton,
+  title={Phytoplankton bloom status: Chlorophyll a biomass as an indicator of water quality condition in the southern estuaries of Florida, USA},
+  author={Boyer, Joseph N and Kelble, Christopher R and Ortner, Peter B and Rudnick, David T},
+  journal={Ecological indicators},
+  volume={9},
+  number={6},
+  pages={S56--S67},
+  year={2009},
+  publisher={Elsevier}
+}
+
+@article{ghatkar2019classification,
+  title={Classification of algal bloom species from remote sensing data using an extreme gradient boosted decision tree model},
+  author={Ghatkar, Jayesh Ganpat and Singh, Rakesh Kumar and Shanmugam, Palanisamy},
+  journal={International Journal of Remote Sensing},
+  volume={40},
+  number={24},
+  pages={9412--9438},
+  year={2019},
+  publisher={Taylor \& Francis}
+}
+
+@article{khan2021meta,
+  title={A meta-analysis on harmful algal bloom (HAB) detection and monitoring: a remote sensing perspective},
+  author={Khan, Rabia Munsaf and Salehi, Bahram and Mahdianpari, Masoud and Mohammadimanesh, Fariba and Mountrakis, Giorgos and Quackenbush, Lindi J},
+  journal={Remote Sensing},
+  volume={13},
+  number={21},
+  pages={4347},
+  year={2021},
+  publisher={MDPI}
+}
+
+# ---- OIL SPILL PAPERS-------------------------------------------------------------------------------
+
+@article{kokaly2013spectroscopic,
+  title={Spectroscopic remote sensing of the distribution and persistence of oil from the Deepwater Horizon spill in Barataria Bay marshes},
+  author={Kokaly, Raymond F and Couvillion, Brady R and Holloway, JoAnn M and Roberts, Dar A and Ustin, Susan L and Peterson, Seth H and Khanna, Shruti and Piazza, Sarai C},
+  journal={Remote Sensing of Environment},
+  volume={129},
+  pages={210--230},
+  year={2013},
+  publisher={Elsevier}
+}
+
+
+@article{fingas2014review,
+  title={Review of oil spill remote sensing},
+  author={Fingas, Merv and Brown, Carl},
+  journal={Marine pollution bulletin},
+  volume={83},
+  number={1},
+  pages={9--23},
+  year={2014},
+  publisher={Elsevier}
+}
+
+@article{khanna2018comparing,
+  title={Comparing the potential of multispectral and hyperspectral data for monitoring oil spill impact},
+  author={Khanna, Shruti and Santos, Maria J and Ustin, Susan L and Shapiro, Kristen and Haverkamp, Paul J and Lay, Mui},
+  journal={Sensors},
+  volume={18},
+  number={2},
+  pages={558},
+  year={2018},
+  publisher={MDPI}
+}
+
+@article{leifer2012state,
+  title={State of the art satellite and airborne marine oil spill remote sensing: Application to the BP Deepwater Horizon oil spill},
+  author={Leifer, Ira and Lehr, William J and Simecek-Beatty, Debra and Bradley, Eliza and Clark, Roger and Dennison, Philip and Hu, Yongxiang and Matheson, Scott and Jones, Cathleen E and Holt, Benjamin and others},
+  journal={Remote Sensing of Environment},
+  volume={124},
+  pages={185--209},
+  year={2012},
+  publisher={Elsevier}
+}
+
+@article{yang2020characterization,
+  title={Characterization analysis and identification of common marine oil spill types using hyperspectral remote sensing},
+  author={Yang, Junfang and Wan, Jianhua and Ma, Yi and Zhang, Jie and Hu, Yabin},
+  journal={International Journal of Remote Sensing},
+  volume={41},
+  number={18},
+  pages={7163--7185},
+  year={2020},
+  publisher={Taylor \& Francis}
+}
+
+
+# ---- GEORECTIFICATION PAPERS-------------------------------------------------------------------------
+
+@article{muller2002program,
+  title={A program for direct georeferencing of airborne and spaceborne line scanner images},
+  author={Muller, R and Lehner, Manfred and Muller, Rainer and Reinartz, Peter and Schroeder, Manfred and Vollmer, Beate},
+  journal={International Archives of Photogrammetry Remote Sensing and Spatial Information Sciences},
+  volume={34},
+  number={1},
+  pages={148--153},
+  year={2002},
+  publisher={NATURAL RESOURCES CANADA}
+}
+
+@inproceedings{baumker2001new,
+  title={New calibration and computing method for direct georeferencing of image and scanner data using the position and angular data of an hybrid inertial navigation system},
+  author={B{\"a}umker, M and Heimes, FJ},
+  booktitle={OEEPE Workshop, Integrated Sensor Orientation},
+  pages={1--17},
+  year={2001}
+}
+
+@article{mostafa2000multi,
+  title={A multi-sensor system for airborne image capture and georeferencing},
+  author={Mostafa, Mohamed MR and Schwarz, Klaus-Peter},
+  journal={Photogrammetric engineering and remote sensing},
+  volume={66},
+  number={12},
+  pages={1417--1424},
+  year={2000},
+  publisher={ASPRS AMERICAN SOCIETY FOR PHOTOGRAMMETRY AND}
+}
+
+
+
+# ---- JULIA PAPERS-----------------------------------------------------------------------------------
+@article{bezanson2012julia,
+  title={Julia: A fast dynamic language for technical computing},
+  author={Bezanson, Jeff and Karpinski, Stefan and Shah, Viral B and Edelman, Alan},
+  journal={arXiv preprint arXiv:1209.5145},
+  year={2012}
+}
+
+@article{blaom2020mlj,
+  title={MLJ: A Julia package for composable machine learning},
+  author={Blaom, Anthony D and Kiraly, Franz and Lienart, Thibaut and Simillides, Yiannis and Arenas, Diego and Vollmer, Sebastian J},
+  journal={arXiv preprint arXiv:2007.12285},
+  year={2020}
+}
