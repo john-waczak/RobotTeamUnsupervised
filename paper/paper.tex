@@ -77,7 +77,7 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 \abstract{FIXME}
 
 % Keywords
-\keyword{FIXME} 
+\keyword{Hyperspectral Imaging; Remote Sensing; Unsupervised Classification; Spectral Unmixing} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,26 +86,78 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-1. Classification is a common remote sensing and hyperspectral imaging problem
-    - Endmember Identification and Spectral Unmixing is sub-problem specific to hyperspectral data
+0. Specific applications of remote sensing and HSI include harmful algal bloom (HAB) identification and oil spill mapping. 
+    - Macine learning methods have been used for species identification of algal blooms from remote sensing imagery \cite{ghatkar2019classification}
+    - Another paper on HAB identification. Machine learning is identified as a useful tehcnique \cite{thenkabail2018hyperspectral}
+    - Remote sensing has been used for analysis of oil spills such as the 2010 Deepwater Horizon spill \cite{kokaly2013spectroscopic}
+    - Neural networks and other ML techniques used in conjunction with multispectral data from AVIRIS and MODIS for oil slick thickness and emulsion ratio identification for Deepwater Horizon spill \cite{leifer2012state}
+    - Sun glitter remains a challenge. Multi-spectral and hyperspectral imaging have been utilized for oil spill identification and to identify their impacts via vegetation stress and mortality \cite{fingas2014review, khan2018modern} 
+    - Hyperspectral data can help distinguish oils by type, e.g. crude, diesel, gasoline, and palm oil \cite{yang2020characterization}
 
+1. Classification is a common remote sensing and hyperspectral imaging problem
+    - Remote sensing applications for water quality include monitoring optically-active parameters like turbidity, temerpature, chlorophyll-a, blue-green algae, etc. \cite{ritchie2003remote}.
+    - Remote sensing useful for mapping natural hazzards such as earthquakes, volcanic activity, flooding, and wildfires \cite{joyce2009review}.
+    - Other applications of hyperspectral imaging include food quality, food safety, medical diagnosis, precision agriculture, and forensic document examination \cite{khan2018modern}
+    - Remote sensing imagery from satellite sources such as Landsat have been used for inversion of water quality parameters such as Chlorophyll-a and Secchi Disk Transparency \cite{bonansea2015using}.
+    - Analysis of inland water ways remains a challenge due to small-scale spatial variability and complicated spectral signatures. 
+    - Spectral indices together with machine learning and simulation remain key approaches \cite{sagan2020monitoring}.
+    - When high resolution ground truth data are not available, one approach is to classify water quality into a set of categories ranging from bad to good \cite{koponen2002lake}.
+    - When ground truth data are not available, we may still want to partition imagery into groups or clusters. 
+    - Many data-driven, unsupervised classification techniques have been employed for this task for remotely sensed multi-spectral and hyperspectral imagery including various matrix factorization methods, k-nearest neighbors, fuzzy c-means, density estimation, etc... \cite{zhang2019hyperspectral}
+    - Additionally, ICA, LDA, and similar tecniques can be used to perform nonlinear dimensionality reduction (as opposed to PCA) for visualization or as a preprocessing step for supervised regression and classification tasks \cite{liang2010hyperspectral, zhangSVM2014}
+    
+1b. Endmember extraction and spectral unmixing are a related problem in whic the goal is to identify the spectral signatures of relevant sources within a scene. Once signatures have been identified, we then desire to model their interaction, typically through linear mixings, in order to determine the relative abundance of each source for each pixel of an HSI \cite{spectral-unmixing-orig, heylen2014review}.
+    - statistical approaches for finding endmembers using least squares \cite{berman2004ice}
+    - Popular approach is to treat pure endmembers as vertices of a simplex \cite{plaza2012endmember, nascimento2005vertex}
+    - Sparce PCA used for mineral endmember extraction and abundance mapping \cite{yousefi2016mineral}
+    - Self organizing map used for endmember extraction and neural network used for abundance mapping \cite{cantero2004analysis}
+    - spectral angle mapper is popular similarity function used in endmember extraction. The SAM is nice because it is more sensitive to shape than scale \cite{jiang2020classification}
+    - Convolutional neural networks and auto-encoders have also been used for endmember extraction and abundance mapping \cite{palsson2020convolutional}
+    - Non-negative autoencoders with a structure and loss function that enforces the sum-to-one and non-negativity constraints \cite{non-negative-autoencoders}
+    - Variational Autoencoders build on this by trying to learn the distribution of latent vectors \cite{su2019daen}
+    - Another autoencoder paper \cite{borsoi2019deep}
+    
+    
+    
 2. HSI Size allows their incorporation onto drones
+    -  Nearth-earth HSI addresses spatial, spectral, temporal limitations of satellite and airborne platforms. UAV-based HSI enable fine-scale mapping applications \cite{banerjee2020uav}
+    - Drones can readily be equipped with HSI sensors and on-board compute enables rapid generation of spectral indices like the NDVI for applications to precision agriculture \cite{horstrand2019uav}
+    - UAV-based HSI can be geocrorrected accurately to the centimeter scale w/o ground control points \cite{arroyo2019implementation}
     - \cite{robot-team-1}
-    - \cite{robot-team-2}
+    - UAVs provide significant advantages over satellite approaches \cite{adao2017hyperspectral}
 
 3. Provided with in situ measurements, HSI can be used to predict a variety of relevant water quality and water composition parameters. Here we can describe our previous work
+    - Simple polynomial regression models can be used with HSI to estimate levels of relevant water quality parameters like chlorophyll-a, turbidity, etc... \cite{zhang2022selection}
+    - UAVs have also been used to rapidly estimate turbidity \cite{vogt2016near}
+    - ML models can be used to extract relevant optically active water quality parameters from HSI \cite{lu2021retrieval}
+    - Key challenge in supervised regression of wate rquality parameters is the collection of necessary in-situ data.
+    - Ross et al. created a comprehensive dataset with over 600,000 water quality records matching optically active water quality parameters with associated satellite imagery from Landsat 5,7,8. To achieve this quantity of data, they needed records spanning 1984 to 2019 \cite{ross2019aquasat}.
+    - Aurin et al. took a similar route combining 30 years of remote sensing imagery with in-situ data from over 500 field compaigns for CDOM, organic carbon, etc... \cite{aurin2018remote}.
+    - This can be extended with an autonomous robotic team. \cite{robot-team-2}
 
 4. However, we would like to be able to identify the presence of spectral signatures for which we do not already have an in situ sensor. 
 
 5. Unsupervised classification techniques are nice however standard algorithms like k-means clustering require prior knowledge of the number of constituent endmembers and do not, in general, provide any interpretable relationship between classes e.g. how is class 1 more similar to class 2 than to class 10. The Self Organizing map introduced by Kohonen is a popular technique which enables an unsupervised classification of data where classes 
-
-- We should make a note about Autoencoders and VAEs here. While they work well in many contexts, they do not provide a relationship between classes and there is no obvious way to choose the size of the encoding
+    - Original SOM paper \cite{kohonen-som-1}
+    - SOM has been a popular technique for remote sensing as well. 
+    - SOM used for identifying synoptic-scale patterns in wind and sea surface temperature \cite{som-satellite}
+    - There are drawbacks to the SOM. However Heskes reinterpreted the algorithm so that the training procedure can bee seen as stochastic gradient descent on an energy surface, i.e. with a cost function \cite{som-cost-function}
+    - SOM have also been used with HSI for feature extraction \cite{som-hsi}
+    - SOM used for classification of remote sensing imagery \cite{msom-remote-sensing}
+    - SOM used for clustering and data compression of HSI data on-board a cube sat \cite{danielsen2021self}
+    - SOM used for analysis of land-use and landcover change \cite{penfound2021analysis}
+    
 
 6. "In this paper, we extend our previous work into the unsupervised classification domain..." Here we demonstrate the application of Generative Topographic mapping which addresses these issues by providing a probability distribution of resulting classes. 
+    - Original GTM paper \cite{gtm-bishop-1}
+    - Extensions of the GTM for incremental learning and other approaches \cite{gtm-bishop-2}
 
 7. We apply the GTM to datasets collected by our Robot Team specifically showcasing the identification of spectral signatures for Rhodamine Dye, Algae, etc... 
 
 8. With the signatures identified, class abundance, and therefore area estimation, can be performed rapidly, in real time, by utilizing the learned signatures with the nromalized spectral similarity score (or other similar metrics). 
+    - Many different spectral distance functions exist for comparing spectra and abundance mapping such as spectral anagle mapper, euclidean distance, spectral correlation mapper, etc... These have trade-offs between the ability to discriminate changes in intensity and changes in hue (i.e. location of peaks) \cite{deborah2015comprehensive}
+    - The spectral correlation mapper was introduced as a statistically motivated alternative to the spectral angle mapper \cite{de2000spectral}
+    - We adopt the normalized spectral similarity score developed by nNidamanuri et al. which combines the mean-squared-error euclidean type distance with the spectral angle \cite{nidamanuri2010normalized}
 
 IDEA: spectral unmixing of water is challenging due to nonlinear effects of scattering by solids and absorption by dissolved chemicals (dyes etc...) this motivates a nonlinear approach to endmember identification, etc...
 
@@ -124,10 +176,17 @@ IDEA: spectral unmixing of water is challenging due to nonlinear effects of scat
 
 \subsection{Autonomous Robot Team}
 \subsection{Data Collection and Pre-Processing}
+
+- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
+
+- Julia programming language used \cite{bezanson2012julia}
+
 \subsection{Generative Topographic Mapping}
 
 - GTM paper oricinal \cite{gtm-bishop-1}
 - GTM developments paper \cite{gtm-biship-2}
+
+- implementation designed to work in MLJ ecosystem \cite{blaom2020mlj}
 
 
 \subsection{Image Segmentation with the Normalized Spectral Similarity Score}
@@ -210,6 +269,9 @@ IDEA: spectral unmixing of water is challenging due to nonlinear effects of scat
 \subsection{Summary of GTM applications in our paper}
 \subsection{Comparison to other existing approaches in literature}
 - Is there much done for classification in real time? 
+\subsection{Comparison to Spectral Unmixing}
+- Here we can re-interpret the GTM model as performing a type of Bayesian spectral unmixing and suggest how the method could be further extended to work in this domain. Critically, other traditional methods work by observing that pure endmembers form the vertices of a simplex. 
+
 \subsection{Other applications of GTM}
 - Discuss use of GTM means/modes/responsibilities feature transformer for supervised models (e.g. better than PCA) 
 - Use of GTM classes to aid autonomous data collection by identification of "interesting" regons
