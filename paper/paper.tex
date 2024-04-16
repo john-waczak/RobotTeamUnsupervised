@@ -86,41 +86,24 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-1. Water quality classification
+Inland water bodies pose a unique challenge for analysis by remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has gone into the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature (citation). Machine learning techniques have proven to be a powerful tool in this domain, facilitating the development of data-driven models which map observed reflectance to parameters of interest. However, these methods rely on the availability of significant volumes of in-situ reference data needed to calibrate models and asses their uncertainty. For example Aurin et al... Similarly, Ross et al developed... The challenge posed by in-situ data collection together with long satellite revisit times limits the utility of remote sensing imagery for real-time applications.
 
-Inland water bodies pose a unique challenge for classification by remote sensing imagery due to their complex spectral characteristics, which stem from a combination of chemical, biological, and environmental factors.
+- supervised classification of water quality with XGBoost \cite{ghatkar2019classification}
 
-The complex spectral characteristics of inland water bodies pose a unique challenge to their classification by remote sensing methods due to the combination of chemical, biological, and environmental sources. Remote sensing applications for water quality include monitoring optically-active parameters like turbidity, temperature, chlorophyll-a, blue-green algae, etc. \cite{ritchie2003remote}. Spectral indices together with machine learning and simulation remain key approaches \cite{sagan2020monitoring}. Remote sensing has been used for analysis of oil spills such as the 2010 Deepwater Horizon spill \cite{leifer2012state,kokaly2013spectroscopic}. Another application is for the identification and classification of harmful algal blooms (HABs) \cite{thenkabail2018hyperspectral,ghatkar2019classification}. The application of remote sensing to water quality monitoring is largely focused on the estimation of optically-active constituents such as chlorophyll-a, blue-green algae, temperature, and turbidity \cite{ritchie2003remote}. 
+Unsupervised classification
 
-2. Limitations of traditional remote sensing: Limited spectral resolution and need for expensive in-situ reference data 
+endmember extraction, spectral unmixing
 
-A key limitation is the need for sufficient quantities of in-situ reference data. Aurin et al. took a similar route combining 30 years of remote sensing imagery with in-situ data from over 500 field compaigns for CDOM, organic carbon, etc... \cite{aurin2018remote}. Ross et al. created a comprehensive dataset with over 600,000 water quality records matching optically active water quality parameters with associated satellite imagery from Landsat 5,7,8. To achieve this quantity of data, they needed records spanning 1984 to 2019 \cite{ross2019aquasat}.
+Hyperspectral imaging has emerged as a pivotal technology in this space. With their increased spectral resolution, hyperspectral imagers (HSIs) capture the complex chemical, biological, environmental characteristics of reflectance spectra. (add references for specific applications of HSIs). Continued development of HSI technology has led to a dramatic reduction in their size enabling their utilize as the payload of small autonomous aerial vehicles (UAVs) (citation). By flying close to the ground UAV-born hyperspectral imagers can produce centimeter-scale imagery while simulatenously limiting the need for complicated atmospheric corrections required for satellite platforms (citation).  
 
-3. Data Driven methods for classification
+In our previous work, we introduced a robot team designed to rapidly characterize water composition in novel environments \cite{robot-team-1}. 
+Joining UAV-borne HSI together with collection of in-situ reference data by an autonomous boat dramatically reduces the time required to generate .
 
-When high resolution ground truth data are not available, one approach is to classify water quality into a set of categories ranging from bad to good \cite{koponen2002lake}. Many data-driven, unsupervised classification techniques have been employed for this task for remotely sensed multi-spectral and hyperspectral imagery including various matrix factorization methods, k-nearest neighbors, fuzzy c-means, density estimation, etc... \cite{zhang2019hyperspectral}. Additionally, ICA, LDA, and similar techniques can be used to perform nonlinear dimensionality reduction (as opposed to PCA) for visualization or as a preprocessing step for supervised regression and classification tasks \cite{liang2010hyperspectral, zhangSVM2014}.
+By carefully coordinating the simultanous collection of ground-truth water quality data and hyperspectral imagery, this team can rapidly estimate concentrations of optically-active components including colored dissolved organic matter (CDOM), blue-green algae, crude oil, temperature as well 
 
-4. Hyperspectral imaging addresses the first limitation by providing improved spectral resolution 
-
-Hyperspectral data can help distinguish oils by type, e.g. crude, diesel, gasoline, and palm oil \cite{yang2020characterization}. Other applications of hyperspectral imaging include food quality, food safety, medical diagnosis, precision agriculture, and forensic document examination \cite{khan2018modern}
-
-5. 
+In this paper, we demonstrate how Generative Topographic Mapping (GTM), a Bayesian alternative to the Self Organizing Map, can be utilized to rapidly identify relevant spectral signatures within a scene. Using data collected at site in Montague, North Texas, we demonstrate the ability of this paradigm with two case studies. First, we demonstrate how the GTM can be used to provide a high-resolution unsupervised classification of a water body enabling the rapid identification of relevant regions which can then be used to direct further investigation by reference-sensor equipped boats. Second, we demonstrate the ability to perform endmember extraction and abundance mapping using imagery from a test-release of rhodamine dye. Together with the normalized spectral similarity score, these spectral signatures are identified and their associated area in the scene is determined.
 
 
-
-1. Hyperspectral imaging is a powerful tool. Specifically for water quality, the increased spectral resolution enables the identification and discernment of a variety of contaminants from harmful algal blooms (HABs) to oil spills which pose a significant challenge to traditional multi-spectral remote sensing systems... 
-
-2. Traditionally, the applications of such imagers to water quality monitoring relies on ground-truth observations using reference instruments. For example... chorophyll-a, blue-green algae, crude oil, etc. However reference instruments are expensive to deploy and challenging to maintain often requiring complicated calibration 
-
-3. Unsupervised classification of hyperspectral imagery. Discuss ML approaches including Self Organizing Map (SOM).
-
-4. A related involves the data-driven identification of unique spectral constituents within a scene known as endmember extraction. A variety of statistical and machine learning based approaches have been developed to extract unique spectral signatures corresponding to different sources. Once these libraries of spectral signatures are obtained, they can be combined to model the spectrum of each pixel in a HSI. This approach is known as spectral unmixing and has been used to great success for a variety of applications including 
-
-4. While HSI offer superior spectral resolution, the limited spatial and temporal resolution provided by satellite-based platforms remains a challenge for the analysis of inland waters with small-scale spatial variability. Additionally, the infrequency of satellite overpasses makes it challenging to identify sources of contamination or spills in real time. With the continual development of hyperspectral imaging technology, the incorporation of hyperspectral imagers as the payload of autonomous aerial vehicles (UAVs) such as quadcopters, hexacopters, and other drones offers unparalleled capabilities with nearly centimeter accuracy. 
-
-5. Robot team
-
-6. In this paper, we demonstrate how Generative Topographic Mapping (GTM), a Bayesian alternative to the Self Organizing Map, can be utilized to rapidly identify relevant spectral signatures within a scene. Using data collected at site in Montague, North Texas, we demonstrate the ability of this paradigm with two case studies. First, we demonstrate how the GTM can be used to provide a high-resolution unsupervised classification of a water body enabling the rapid identification of relevant regions which can then be used to direct further investigation by reference-sensor equipped boats. Second, we demonstrate the ability to perform endmember extraction and abundance mapping using imagery from a test-release of rhodamine dye. Together with the normalized spectral similarity score, these spectral signatures are identified and their associated area in the scene is determined.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
