@@ -1,14 +1,14 @@
-%  LaTeX support: latex@mdpi.com 
+%  LaTeX support: latex@mdpi.com
 %  For support, please attach all files needed for compiling as well as the log file, and specify your operating system, LaTeX version, and LaTeX editor.
 
 %=================================================================
-\documentclass[remotesensing,article,submit,pdftex,moreauthors]{Definitions/mdpi} 
+\documentclass[remotesensing,article,submit,pdftex,moreauthors]{Definitions/mdpi}
 
 %=================================================================
 % MDPI internal commands - do not modify
-\firstpage{1} 
-\makeatletter 
-\setcounter{page}{\@firstpage} 
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
 \makeatother
 \pubvolume{1}
 \issuenum{1}
@@ -16,10 +16,10 @@
 \pubyear{2024}
 \copyrightyear{2024}
 %\externaleditor{Academic Editor: Firstname Lastname}
-\datereceived{ } 
+\datereceived{ }
 \daterevised{ } % Comment out if no revised date
-\dateaccepted{ } 
-\datepublished{ } 
+\dateaccepted{ }
+\datepublished{ }
 %\datecorrected{} % For corrected papers: "Corrected: XXX" date in the original paper.
 %\dateretracted{} % For corrected papers: "Retracted: XXX" date in the original paper.
 \hreflink{https://doi.org/} % If needed use \linebreak
@@ -89,12 +89,47 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 Inland water bodies pose a unique challenge for analysis by remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has gone into the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature (citation). Machine learning techniques have proven to be a powerful tool in this domain, facilitating the development of data-driven models which map observed reflectance to parameters of interest. However, these methods rely on the availability of significant volumes of in-situ reference data needed to calibrate models and asses their uncertainty. For example Aurin et al... Similarly, Ross et al developed... The challenge posed by in-situ data collection together with long satellite revisit times limits the utility of remote sensing imagery for real-time applications.
 
 - supervised classification of water quality with XGBoost \cite{ghatkar2019classification}
+- Spectral signatures of classes are complex and often overlapping \cite{thenkabail2018hyperspectral}
+- Remote sensing used for oil spill analysis: extent and thickness mapping \cite{kokaly2013spectroscopic, leifer2012state}
+- Sun glitter remains a key challenge for sensing in the visible portion of the spectrum but multi and hyperspectral imagers have been used for oil spill identification and to identify their impacts on vegetation stress and mortality \cite{fingas2014review, khan2018modern}
+- common approach is inversion of optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature \cite{ritchie2003remote}
+- Combining spectral indices such as the NDVI together with machine learning is a popular approach \cite{thenkabail2018hyperspectral, sagan2020monitoring, lu2021retrieval}
+- Polynomial regression models for chlorophyll-a, turbidity \cite{zhang2022selection}
+- Ross et al. created a comprehensive dataset with over 600,000 water quality records matching optically active water quality parameters with associated satellite imagery from Landsat 5,7,8. To achieve this quantity of data, they needed records spanning 1984 to 2019 \cite{ross2019aquasat}
+- Aurin et al. took a similar route combining 30 years of remote sensing imagery with in-situ data from over 500 field compaigns for CDOM, organic carbon, etc... \cite{aurin2018remote}.
+- When ground truth data aren't available in sufficient quantity, classification into water quality categories is another approach (ground truth can be easier to obtain by expert analysis of scene) \cite{koponen2002lake}
 
 Unsupervised classification
+- When no ground-truth data are available, unsupervised classification can still help partition imagery into groups or clusters.
+- Many data-driven, ML methods have been employed for the task including various matrix factorizations, k-nearest neighbors, fuzzy c-means, density estimation methods, etc. \cite{zhang2019hyperspectral}
+- Additionally unsupervised approaches can be used to perform nonlinear dimensionality reduction & pre-processing for supervised approaches.
+- Many unsupervised approaches can be challenging to interpret due to the lack of a relationship between the identified classes, e.g. is class 1 more similar to class 2 than class 10?
+- The Self Organizing Map is a popular technique which classifies data while enforcing topological relationships between the resulting classes such that classes close to each  other in the latent space are more similar than classes that are far apart.
+- SOM used for remote sensing imagery classification \cite{msom-remote-sensing}
+- SOM used for clustering and data compression of HSI cube-sat \cite{danielsen2021self}
+- SOM used for land-use and land-cover change analysis \cite{penfound2021analysis}
+- SOM has bee nused for identifying synoptic-scale patterns in wind and sea surface temperature data {som-satellite}
+
 
 endmember extraction, spectral unmixing
+- This is a related problem where the goal is to identify unique spectral signatures which combine (linearly or non-linearly) to produce the measured signal.
+- Having identified the set of endmembers, we then seek to determine their relative abundance in each pixel
+- Many statistical approaches for extracting endmembers \cite{berman2004ice}
+- Sparse PCA used for endmember extraction \cite{yousefi2016mineral}
+- Popular spectral unmixing approach is to treat "pure" endmembers as vertices of a simplex \cite{plaza2012endmember, nascimento2005vertex}
+- Convolutional Neural Networks with Autoencoder architectures are a popular ML approach which identify endmembers and perform non-linear unmixing \cite{palsson2020convolutional, non-negative-autoencoders, su2019daen, borsoi2019deep}
+- Self Organizing Map is another approach which has been used for endmember extraction together with neural networks for abundance mapping (unmixing) \cite{cantero2004analysis}
 
-Hyperspectral imaging has emerged as a pivotal technology in this space. With their increased spectral resolution, hyperspectral imagers (HSIs) capture the complex chemical, biological, environmental characteristics of reflectance spectra. (add references for specific applications of HSIs). Continued development of HSI technology has led to a dramatic reduction in their size enabling their utilize as the payload of small autonomous aerial vehicles (UAVs) (citation). By flying close to the ground UAV-born hyperspectral imagers can produce centimeter-scale imagery while simulatenously limiting the need for complicated atmospheric corrections required for satellite platforms (citation).  
+
+Hyperspectral imaging has emerged as a pivotal technology in this space. With their increased spectral resolution, hyperspectral imagers (HSIs) capture the complex chemical, biological, environmental characteristics of reflectance spectra. (add references for specific applications of HSIs). Continued development of HSI technology has led to a dramatic reduction in their size enabling their utilize as the payload of small autonomous aerial vehicles (UAVs) (citation). By flying close to the ground UAV-born hyperspectral imagers can produce centimeter-scale imagery while simulatenously limiting the need for complicated atmospheric corrections required for satellite platforms (citation).
+
+- applications include food quality & safety, medical diagnoses, precision agriculture, and forensic document examination \cite{khan2018modern}
+- Hyperspectral data were used to distinguish oils by type, e.g. crude, diesel, gasoline, and palm \cite{yang2020characterization}
+- Near-earth HSI addresses spatial, spectral, and temporal limitations of satellite and airborne platforms. UAV-based HSI enable fine-scale mapping \cite{banerjee2020uav}
+- Drones can be equipped with HSI and compute to enable rapid generation of spectral indices like the NDVI for applications such as precision agriculture \cite{horstrand2019uav}
+- UAV-based HSI can be georectified to centimeter-scales without need for ground control points by using on-board GPS and IMU \cite{arroyo2019implementation}
+- UAV-based HSI for turbidity estimation \cite{vogt2016near}
+
 
 In our previous work, we introduced a robot team designed to rapidly characterize water composition in novel environments \cite{robot-team-1}. 
 Joining UAV-borne HSI together with collection of in-situ reference data by an autonomous boat dramatically reduces the time required to generate .
