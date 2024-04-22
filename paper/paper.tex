@@ -74,10 +74,20 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 
 
 % Abstract (Do not insert blank lines, i.e. \\) 
-\abstract{FIXME}
+\abstract{Advancements in hyperspectral imaging technology have lead to a continual decrease in their size facilitating their inclusion as the payload of small, highly maneuverable unmanned aerial vehicles (UAVs) such as drones. Consequently, much work has gone into the development of UAV platforms and associated techniques 
+- generative topographic mapping (GTM) as an efficient unsupervised method 
+- additionally the GTM can be used to perform nonlinear endmember extraction
+- We demonstrate the abilities of this approach using hyperspectral imagery collected at a pond in Montague, North Texas.
+- First, we apply the GTM to perform an unsupervised classification for all water pixels. 
+    - benefit: GTM classes maintain topological relationships in the latent space resulting in a smooth relationship between the obtained classes...
+    - ... revealing the small-scale spatial variability within the pond
+- Second, we utilize the GTM to identify reflectance spectra corresponding to specific features. 
+- Using these extracted features, we are able to map the extent of algae in the pond in addition to the time evolution of a rhodamine dye tracer. 
+- This approach demonstrates the value of unsupervised techniques coupled with UAV-born hyperspectral imaging for rapid water quality assessment.
+}
 
 % Keywords
-\keyword{Hyperspectral Imaging; Remote Sensing; Unsupervised Classification; Spectral Unmixing} 
+\keyword{Hyperspectral Imaging; Remote Sensing; Unsupervised Classification; Endmember Extraction, Spectral Unmixing} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,21 +96,16 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Inland water bodies pose a unique challenge for analysis with remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature \cite{ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others demonstrating success \cite{thenkabail2018hyperspectral, sagan2020monitoring}
+Inland water bodies pose a unique challenge for analysis with remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature \cite{ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others providing data-driven approaches to map imagery to relevant quantities of interest \cite{thenkabail2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the training and evaluation of these models demands significant volumes of in-situ reference data. This process is both time consuming and expensive. For example, Aurin et al. developed a comprehensive dataset of combined in-situ measurements from over 500 field campaigns together with paired remote sensing imagery spanning over 30 years in order to develop accurate inventories for colored dissolved organic matter (CDOM), particulate organic carbon, and more \cite{aurin2018remote}. Similarly, Ross et al. combined over 600,000 water quality records for suspended sediment, dissolved organic carbon, chlorophyll-a, and Secchi-disk depth with paired imagery from Landsat.
 
-facilitating the development of data-driven models mapping observed reflectance to parameters of interest.
+Achieving this data volume 
+spanning 1984 to 2019. 
 
-However, these methods rely on the availability of significant volumes of in-situ reference data needed to calibrate models and asses their uncertainty. For example Aurin et al... Similarly, Ross et al developed... The challenge posed by in-situ data collection together with long satellite revisit times limits the utility of remote sensing imagery for real-time applications.
-
+- Example: distinguishing species for harmful algal blooms (HABs) and distinguishing types of oil for oil spill monitoring
 - Remote sensing used for oil spill analysis: extent and thickness mapping \cite{kokaly2013spectroscopic, leifer2012state}
 
 - Sun glitter remains a key challenge for sensing in the visible portion of the spectrum but multi and hyperspectral imagers have been used for oil spill identification and to identify their impacts on vegetation stress and mortality \cite{fingas2014review, khan2018modern}
 
-
-- Combining spectral indices such as the NDVI together with machine learning is a popular approach \cite{thenkabail2018hyperspectral, sagan2020monitoring, lu2021retrieval}
-
-- Ross et al. created a comprehensive dataset with over 600,000 water quality records matching optically active water quality parameters with associated satellite imagery from Landsat 5,7,8. To achieve this quantity of data, they needed records spanning 1984 to 2019 \cite{ross2019aquasat}
-- Aurin et al. took a similar route combining 30 years of remote sensing imagery with in-situ data from over 500 field compaigns for CDOM, organic carbon, etc... \cite{aurin2018remote}.
 
 - When ground truth data aren't available in sufficient quantity, classification into water quality categories is another approach (ground truth can be easier to obtain by expert analysis of scene) \cite{koponen2002lake}
 
