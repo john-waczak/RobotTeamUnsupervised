@@ -96,18 +96,17 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-Inland water bodies pose a unique challenge for analysis with remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, turbidity, and temperature \cite{ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others providing data-driven approaches to map imagery to relevant quantities of interest \cite{thenkabail2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the training and evaluation of these models demands significant volumes of in-situ reference data. This process is both time consuming and expensive. For example, Aurin et al. developed a comprehensive dataset of combined in-situ measurements from over 500 field campaigns together with paired remote sensing imagery spanning over 30 years in order to develop accurate inventories for colored dissolved organic matter (CDOM), particulate organic carbon, and more \cite{aurin2018remote}. Similarly, Ross et al. combined over 600,000 water quality records for suspended sediment, dissolved organic carbon, chlorophyll-a, and Secchi-disk depth with paired imagery from Landsat.
+Inland water bodies pose a unique challenge for analysis with remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability; nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, colored dissolved organic matter (CDOM), turbidity, and temperature \cite{koponen2002lake,ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others providing data-driven approaches to map imagery to parameters of interest \cite{thenkabail2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the training and evaluation of these models demands significant volumes of coincident, in situ data. Collecting these datasets is both time consuming and expensive often requiring observations spanning decades \cite{aurin2018remote, ross2019aquasat}. 
 
-Achieving this data volume 
-spanning 1984 to 2019. 
 
+ 
+- \cite{koponen2002lake}
 - Example: distinguishing species for harmful algal blooms (HABs) and distinguishing types of oil for oil spill monitoring
 - Remote sensing used for oil spill analysis: extent and thickness mapping \cite{kokaly2013spectroscopic, leifer2012state}
 
 - Sun glitter remains a key challenge for sensing in the visible portion of the spectrum but multi and hyperspectral imagers have been used for oil spill identification and to identify their impacts on vegetation stress and mortality \cite{fingas2014review, khan2018modern}
 
 
-- When ground truth data aren't available in sufficient quantity, classification into water quality categories is another approach (ground truth can be easier to obtain by expert analysis of scene) \cite{koponen2002lake}
 
 - supervised classification of water quality with XGBoost \cite{ghatkar2019classification}
 
@@ -331,6 +330,7 @@ The following abbreviations are used in this manuscript:\\
 
 \noindent 
 \begin{tabular}{@{}ll}
+CDOM & Colored Dissolved Organic Matter \\
 HAB & Harmful Algal Bloom \\ 
 HSI & Hyperspectral Image \\ 
 SOM & Self Organizing Map \\ 
