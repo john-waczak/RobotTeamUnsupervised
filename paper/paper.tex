@@ -103,17 +103,6 @@ Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged
 \end{figure}  
 
 
-at a pond in Montague, north Texas (shown in panel d of Fig~\ref{fig:sample-spectra})
-
-
-\subsection{UAV-Based Hyperspectral Imaging}
-A Freefly Alta-X autonomous quadcopter was used as a UAV platform for the robotic team. The Alta-X is specifically designed to carry cameras and has a payload of up to 35 lbs. We equipped the UAV with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager. For each image pixel, this camera samples 462 wavelengths ranging from 391 to 1011 nm. Additionally, the UAV includes an upward facing Ocean Optics UV-Vis-NIR spectrometer with a cosine corrector to capture the incident downwelling irradiance spectrum. Data collection by the hyperspectral imager is controlled by an attached Intel NUC small-form-factor computer. A second processing NUC is also included for onboard georectification and generation of data products. The collected hyperspectral images (HSIs) are stored locally on a solid state drive that is simultaneously mounted by the processing computer.
-
-- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
-
-\subsection{Data Collection and Pre-Processing}
-- Julia programming language used \cite{bezanson2012julia}
-
 \subsection{Generative Topographic Mapping}
 
 The Generative Topographic Mapping (GTM) is an unsupervised latent variable model developed by Bishop, Svens\'en, and Williams \cite{gtm-bishop-1}. The GTM takes inspiration from Kohonen's self-organizing map which enables an unsupervised classification of high dimensional data into a (typically) two-dimensional grid of nodes such that nodes near each near each other in the mapping space
@@ -167,6 +156,32 @@ and all others $0$.
 - GTM developments paper \cite{gtm-bishop-2}
 - GTM code \cite{gtm-code}
 - implementation designed to work in MLJ ecosystem \cite{blaom2020mlj}
+
+
+at a pond in Montague, north Texas (shown in panel d of Fig~\ref{fig:sample-spectra})
+
+
+\subsection{UAV-Based Hyperspectral Imaging}
+A Freefly Alta-X autonomous quadcopter was used as a UAV platform for the robotic team.
+
+The Alta-X is specifically designed to carry cameras and has a payload of up to 35 lbs. We equipped the UAV with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager. 
+
+For each image pixel, this camera samples 462 wavelengths ranging from 391 to 1011 nm. 
+
+Additionally, the UAV includes an upward facing Ocean Optics UV-Vis-NIR spectrometer with a cosine corrector to capture the incident downwelling irradiance spectrum.
+
+Data collection by the hyperspectral imager is controlled by an attached Intel NUC small-form-factor computer. 
+
+A second processing NUC is also included for onboard georectification and generation of data products.
+
+The collected hyperspectral images (HSIs) are stored locally on a solid state drive that is simultaneously mounted by the processing computer.
+
+- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
+
+\subsection{Data Collection and Pre-Processing}
+- Julia programming language used \cite{bezanson2012julia}
+
+
 
 \subsection{Image Segmentation with the Normalized Spectral Similarity Score}
 
