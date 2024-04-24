@@ -41,17 +41,25 @@ NOTE: We should move the description of the GTM algroithm to the top of the meth
 
 
 \1 Materials and Methods
-    \2 Data Collection
-        \3 Describe collection site in Montague, North Texas
-    \2 Autonomous Robot Team
+    \2 Overview paragraph about project, i.e. plan is to use the Generative Topographic Mapping to analyze drone-based hyperspectral imagery collected at a pond in Montague North Texas on 23-November 2021. 
+   \2 Autonomous Robot Team
         \3 Describe drone setup
             \4 Alta X Quadcopter
             \4 Resonon Pika SC2 HSI
-                \5 462 wavelengths per pixel
-               \5 1600 pixels per scan-line
-               \5 embedded GPS/IMU
+                \begin{itemize}
+                    \item 462 wavelengths per pixel
+                    \item 1600 pixels per scan-line
+                    \item embedded GPS/IMU
+               \end{itemize}
              \4 Intel NUC for on-board compute
+   \2 Data Collection
+        \3 Describe collection site in Montague, North Texas
+        \3 Collection was performed near solar noon to maximize incident light. At this time of year, the maximum solar elevation was $\approx 60^\circ$ so that sun-glint is not as much of an issue. (Cite sun-glint paper here).
     \2 Pre-processing
+        \3 Reflectance conversion of radiance imagery using on-board downwelling irradiance spectrometer
+        \3 Georectification of collected
+        \3 Wavelength selection to $\lambda \leq 900 \text{nm}$ as longer wavelengths are noisy
+        \3 Rescaling of spectra so that peak has $\tilde{R}  = 1.0$  to account for variability in incident lighting conditions due 
     \2 Generative Topographic Mapping
         \3 Start off with Kohonen SOM paper. Key benefit:
             \4 Topological relationship between classes i.e. similarity vs dissimilarity as a function of distance in mapping space (latent space)
@@ -67,10 +75,19 @@ NOTE: We should move the description of the GTM algroithm to the top of the meth
             \4 As an alternative to performing full Bayesian treatment for marginalization over hyperparameters
         \3 Abundance mapping with spectral similarity score
             \4 paper comparing different distance functions for spectra
-                \5 curse of dimensionality can be pernicious here as we have > 462 wavelengths per pixel
+                \begin{itemize}
+                    \item curse of dimensionality can be pernicious here as we have > 462 wavelengths per pixel
+                \end{itemize}
             \4 NS3 offers good trade off between spectral angle and euclidean-like distance (MSE)
         \3 Describe use of thresholded NS3 for mapping abundance of GTM derived endmembers.
-
+    \2 Overview of two approaches
+        \3 GTM trained on water-only pixels for unsupervised classification of pond
+            \4 Goal: Reveal the small-scale spatial variability of pond water
+            \4 Discuss how unsupervised classification can help inform autnomous data collection by robot team (save for discussion?)
+        \3 GTM trained on combined dataset including water, land, and dye plume pixels
+            \4 Fit GTM
+            \4 Identify spectral signatures of key exemplar spectra (endmembers)
+            \4 Use endmembers to map algal abundance and time evolution of rhodamine dye plume
 \1 Results
     \2  GTM fit on Full Dataset
     \2 Hyperparameter optimization
@@ -97,7 +114,9 @@ NOTE: We should move the description of the GTM algroithm to the top of the meth
     \2 Extensions and future work
         \3 Incorporation of GTM extensions for efficient online-learning
             \4 Comment on time to train standard GTM
-                \5 Key parameters are size of dataset (number of records) and number of RBF centers, $M$.
+                \begin{itemize}
+                    \item Key parameters are size of dataset (number of records) and number of RBF centers, $M$.
+                \end{itemize}
             \4 Bishop suggest extension for on-line training of GTM using batches.
             \4 All of this could be done in the field limiting the time and cost of surveying as well as optimizing the time-to-insights
         \3 Utilize GTM with further in situ data collection to identify spectral signatures of specific algal species for HAB detection
