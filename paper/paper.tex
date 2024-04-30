@@ -88,6 +88,47 @@ Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
+1. Introductory paragraph 
+
+Inland water bodies pose a unique challenge to characterization via remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability (cite reviews here). Hyperspectral imaging has emerged as a pivotal technology in this space, where increased spectral resolution enables the inversion of optically-active water quality parameters such as colored dissolved organic matter (CDOM), chlorophyll-a, blue-green algae, turbidity, and temperature from captured reflectance spectra \cite{koponen2002lake,ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others architectures providing data-driven approaches to map observed reflectance spectra to parameters of interest \cite{thenkabail2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the training and evaluation of these models demands significant volumes of coincident, in situ data. Collecting these datasets is time consuming and expensive, often requiring observations spanning decades \cite{aurin2018remote, ross2019aquasat}. 
+
+
+
+2. HSI equipped drones + in situ reference sensing --> still require that we know what to look for. 
+
+
+due to the dramatic improvement in spectral resolution afforded by HSI platforms. Specifically, the combination with hyperspectral imaging together with autonomous collection by UAVs enables unparalleled spectral, spatial, and temporal resolution. Significant effort has developed the use of hyperspectral imagery for the inversion of optically-active water quality parameters. However, this approach requires access to sufficient quantities of in situ reference data to fit and evaluate each model. Traditionally, this process has required collocation of remote sensing imagery with data from field campaigns spanning decades (cite Aurin and Ross). Recently, we have demonstrated how combining autonomous collection of in situ data with UAV-borne hyperspectral imagery dramatically reduces the time required to collect these data. Both of these approaches require we already know what to look for. 
+
+Nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, colored dissolved organic matter (CDOM), turbidity, and temperature from these sources. 
+
+To take complete advantage we need unsupervised methods which can aid in the identification of sources (in order to alert our attention for further investigation) AND to identify relvant spectral signatures corresponding to quantities of interest. UAV based HSI address the spectral, spatial, and temporal resolution limitations of remote sensing platforms however, the collection of reference data remains the key limitation hindering the real time characterization of inland waters. In our previous work, we demonstrated how a coordinated approach combining UAV-borne HSI together with autonomous collection in situ data by an Unmanned Surface Vessel (USV) dramatically reduces the time needed to perform such analyses \cite{robot-team-1, robot-team-2}. Nevertheless, these approaches all presuppose that we already know what to look for- contaminants which we are not equipped to measure in situ can not be estimated in this paradigm. Therefore, the identification of unique sources purely from their reflectance signatures is of keen interest for two key reasons. First: we want to be able to direct in situ sensor payloads to areas of interest. Second, we desire to identify relevant spectral signatures which can readily be related to parameters of interest and used for source identification.
+
+
+
+3. Unsupervised methods in remote sensing and HSI
+- Describe classical ML methods such as k-means, fuzzy c-means, DBSCAN, etc in remote sensing and HSI. 
+    - Key limitation: how do you determine the correct number of classes?
+    - This can be very hard to do without a Bayesian interpretation for the model. e.g. you have to rely on heuristics like the Silhouette diagram.
+- Describe related problem of endmember extraction and spectral unmixing. Specifically there are geometric and statistical approaches to solving the problem with ML methods a popular choice for the identification of the relvant family of spectral endmembers.
+- To date, much of the focus on drone-based HSI platforms has been on supervised regression of parameters OR the determination of spectral indices.
+- An ideal unsupervised approach should accomplish three things
+    1. Segmentation of captured imagery into a set of distinct classes
+    2. Mapping of distinct spatial regions in collected imagery using the identified classes
+    3. Simultaneous identification of relevant spectral endmembers
+
+4. Generative topographic mapping 
+Describe the self organizing map (SOM) as an interesting approach due to the ability to 
+    - classify data 
+    - maintain topographic relationship between classes which can be used to produces a lower dimensional representation of data distribution (i.e. cluster identification)
+    - the weight vector for each class can be interpreted as an endmember in the original data space such that common classes can be interpreted as a family of spectral endmembers.
+Cite a few uses ofthe SOM for remote sensing and HSI analysis...
+However, the original SOM training algorithm relies on heuristics for controlling the updates during training and offers no clear probabilitistic interpreation. The GTM was developed to specifically address this, providing a fully Bayesian alternative to the SOM.
+
+5. This study
+
+In this study, we explore the use of the GTM to perform rapid unsupervised classification of hyperspectral imagery captured by 
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Materials and Methods}
