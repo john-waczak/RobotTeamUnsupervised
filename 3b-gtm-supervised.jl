@@ -198,6 +198,86 @@ save(joinpath(figures_path, "gtm-classes-selected.png"), fig)
 save(joinpath(figures_path, "gtm-classes-selected.pdf"), fig)
 
 
+
+
+# plot with in latent space with color by the Supervised boat values
+
+
+
+# CDOM
+fig = Figure();
+ax = CairoMakie.Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+mean_proj = DataFrame(MLJ.transform(mach, X))
+target_color = Vector(df_Y.CDOM)
+clims = (20.1, 21.6)
+cm = cgrad(:roma, rev=true)
+
+s = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=9, alpha=0.85, color=target_color, colormap=cm, colorrange=clims)
+cb = Colorbar(fig[1,2], label="CDOM", colorrange=clims, colormap=cm, lowclip = cm[1], highclip = cm[end])
+fig
+save(joinpath(figures_path, "CDOM.png"), fig)
+save(joinpath(figures_path, "CDOM.pdf"), fig)
+
+
+names(df_Y)
+
+# Temperature
+fig = Figure();
+ax = CairoMakie.Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+mean_proj = DataFrame(MLJ.transform(mach, X))
+target_color = Vector(df_Y.Temp3488)
+clims = (13.25, 13.95)
+cm = cgrad(:roma, rev=true)
+
+s = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=9, alpha=0.85, color=target_color, colormap=cm, colorrange=clims)
+cb = Colorbar(fig[1,2], label="Temperature", colorrange=clims, colormap=cm, lowclip = cm[1], highclip = cm[end])
+fig
+save(joinpath(figures_path, "temperature.png"), fig)
+save(joinpath(figures_path, "Temperature.pdf"), fig)
+
+
+# Na
+fig = Figure();
+ax = CairoMakie.Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+mean_proj = DataFrame(MLJ.transform(mach, X))
+target_color = Vector(df_Y.Na)
+clims = (200, 380)
+cm = cgrad(:roma, rev=true)
+
+s = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=9, alpha=0.85, color=target_color, colormap=cm, colorrange=clims)
+cb = Colorbar(fig[1,2], label="Na⁺", colorrange=clims, colormap=cm, lowclip = cm[1], highclip = cm[end])
+fig
+save(joinpath(figures_path, "Na.png"), fig)
+save(joinpath(figures_path, "Na.pdf"), fig)
+
+
+
+
+# CO
+fig = Figure();
+ax = CairoMakie.Axis(fig[1,1], xlabel="ξ₁", ylabel="ξ₂");
+mean_proj = DataFrame(MLJ.transform(mach, X))
+target_color = Vector(df_Y.CO)
+clims = (25.7, 27.3)
+cm = cgrad(:roma, rev=true)
+
+s = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=9, alpha=0.85, color=target_color, colormap=cm, colorrange=clims)
+cb = Colorbar(fig[1,2], label="Crude Oil", colorrange=clims, colormap=cm, lowclip = cm[1], highclip = cm[end])
+fig
+
+save(joinpath(figures_path, "CO.png"), fig)
+save(joinpath(figures_path, "CO.pdf"), fig)
+
+
+
+
+
+
+
+
+
+
+
 # now let's figure out how to make a map of the class label
 hsipath = "/Users/johnwaczak/data/robot-team/processed/hsi"
 
