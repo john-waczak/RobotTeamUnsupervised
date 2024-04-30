@@ -92,32 +92,99 @@ Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Materials and Methods}
 
+
 \begin{figure}[t]
 %\begin{adjustwidth}{-\extralength}{0cm}
 \centering
 %\includegraphics[width=15.5cm]{paper/figures/methods/sample-spectra.pdf}
 \includegraphics[width=\columnwidth]{paper/figures/methods/sample-spectra.pdf}
 %\end{adjustwidth}
-\caption{(a) Sample hyperspectral data cube. Spectra are plotted using their geographic position with the log10-reflectance colored along the z axis and a pseudo-color image on top. (b) Points taken from a sample hyperspectral data cube corresponding to algae, rhodamine dye, water, and dry grass. (c) The associated spectra for the exemplar points scaled so that the peak value of each spectrum is 1. (d) The location of the pond in Montague, Texas where data were collected for this study.\label{fig:sample-spectra}}
+\caption{(\textbf{a}) Sample hyperspectral data cube. Spectra are plotted using their geographic position with the log10-reflectance colored along the z axis and a pseudo-color image on top. (\textbf{b}) Points taken from a sample hyperspectral data cube corresponding to algae, rhodamine dye, water, and dry grass. (\textbf{c}) Reflectance spectra for the exemplar points scaled so the peak value of each spectrum is $1.0$. (\textbf{d}) The location of the pond in Montague, Texas where data were collected for this study.\label{fig:sample-spectra}}
 \end{figure}  
 
 
-\subsection{Autonomous Robot Team}
-\subsection{Data Collection and Pre-Processing}
-
-- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
-
-- Julia programming language used \cite{bezanson2012julia}
-
 \subsection{Generative Topographic Mapping}
 
-- GTM paper oricinal \cite{gtm-bishop-1}
-- GTM developments paper \cite{gtm-biship-2}
+The Generative Topographic Mapping (GTM) is an unsupervised latent variable model developed by Bishop, Svens\'en, and Williams \cite{gtm-bishop-1}. The GTM takes inspiration from Kohonen's self-organizing map which enables an unsupervised classification of high dimensional data into a (typically) two-dimensional grid of nodes such that nodes near each near each other in the mapping space
 
+- mention 
+
+\begin{equation}\label{eq:latent-prob}
+    p(\xi) = \frac{1}{K}\sum_k^K \delta(\xi - \xi_k)
+\end{equation}
+
+\begin{equation}\label{eq:data-prob}
+    p\left( \mathbf{x} \mid \xi, W, \beta \right)  = \mathcal{N}(\psi,\, \beta^{-1})
+\end{equation}
+
+\begin{equation}\label{eq:psi}
+    \psi = W\phi(\xi)
+\end{equation}
+
+Parameter prior (used for model weight regularization), i.e. assuming a Gaussian distribution with mean 0 for each weight where $\lVert \cdot \rVert_{F}$ is the Frobenius norm.
+\begin{equation}\label{eq:weight-prior}
+    p(W \mid \alpha) =  \left( \frac{\alpha}{2\pi} \right)^{MD/2}\exp\left(-\frac{\alpha}{2}\lVert W \rVert_{F}^2\right)
+\end{equation}
+\begin{equation}\label{eq:llh}
+    \mathcal{L}(W, \beta) = \sum_n^N \ln \left(\dfrac{1}{K}\sum_k^K p(\mathbf{x}_n \mid \xi_k, W, \beta) \right)
+\end{equation}
+
+Expectation Maximization Algorithm:
+
+Expectation step:
+\begin{equation}\label{eq:responsibility}
+    R_{kn} = p(\xi_k \mid \mathbf{x}_n, W, \beta) = \dfrac{p(\mathbf{x}_n \mid \xi_k, W, \beta)}{\sum\limits_{k'}^{K} p(\mathbf{x}_n \mid \xi_{k'}, W, \beta)}
+\end{equation}
+
+Maximization step:
+
+Definition of the diagonal matrix, $G$, with entries
+\begin{equation}
+    G_{kk}  = \sum\limits_n^N R_{kn}
+\end{equation}
+and all others $0$.
+
+\begin{equation}\label{eq:W-update}
+    \left(\Phi^T G \Phi + \dfrac{\alpha}{\beta}I \right)W_{\text{new}} = \Phi^T R X 
+\end{equation}
+
+\begin{equation}
+    \hat{\xi}_n = \sum_{k}^K R_{kn}\xi_k
+\end{equation}
+
+- GTM paper original \cite{gtm-bishop-1}
+- GTM developments paper \cite{gtm-bishop-2}
+- GTM code \cite{gtm-code}
 - implementation designed to work in MLJ ecosystem \cite{blaom2020mlj}
 
 
+at a pond in Montague, north Texas (shown in panel d of Fig~\ref{fig:sample-spectra})
+
+
+\subsection{UAV-Based Hyperspectral Imaging}
+A Freefly Alta-X autonomous quadcopter was used as a UAV platform for the robotic team.
+
+The Alta-X is specifically designed to carry cameras and has a payload of up to 35 lbs. We equipped the UAV with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager. 
+
+For each image pixel, this camera samples 462 wavelengths ranging from 391 to 1011 nm. 
+
+Additionally, the UAV includes an upward facing Ocean Optics UV-Vis-NIR spectrometer with a cosine corrector to capture the incident downwelling irradiance spectrum.
+
+Data collection by the hyperspectral imager is controlled by an attached Intel NUC small-form-factor computer. 
+
+A second processing NUC is also included for onboard georectification and generation of data products.
+
+The collected hyperspectral images (HSIs) are stored locally on a solid state drive that is simultaneously mounted by the processing computer.
+
+- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
+
+\subsection{Data Collection and Pre-Processing}
+- Julia programming language used \cite{bezanson2012julia}
+
+
+
 \subsection{Image Segmentation with the Normalized Spectral Similarity Score}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}

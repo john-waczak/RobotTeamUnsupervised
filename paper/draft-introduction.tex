@@ -6,6 +6,26 @@
 
 \section{Introduction}
 
+
+
+1. Remote sensing for water quality
+2. Unsupervised approaches for remote sensing
+3. UAV based Hyperspectral Imaging offers advantages for water composition analysis and characterization
+4. Approaches for "Unsupervised" Analysis of 
+    - Traditional Unsupervised Classification methods from ML
+    - Endmember Extraction and Spectral Unmixing (i.e. assumption of linear mixing and projection-based and statistical methods for endmember extraction + abundance mapping)
+5. Goal of this paper
+    - The generative topographic mapping is an attractive algorithm 
+        - Probabilistic interpretation
+        - Topographic relationship maintained between classes (not just orthogonality)
+        - clear fitting criterion with Maximum Likelihood Estimation / Maximum A-Posteriori Estimation
+    - We use the GTM to analyze hyperspectral imagery acquired by a drone over pond to 
+        - Present method for unsupervised characterization of small-scale variability of pond (i.e. identifying regions of interest which can be used to direct robot boat for further instructions) 
+        - Use GTM to extract endmember for algae and map the algal distribution near shore (relevant for Harmful Algal Bloom detection)
+        - Use GTM to extract endmember for rhodamine dye and use it to mape evolution of dye plume. This is a demonstration of source identification and mapping. Relevant for the identification of pollution events such as oil spills, industrial seepage, etc...
+
+
+
 Inland water bodies pose a unique challenge for analysis with remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability. Nevertheless, significant effort has driven the development of techniques for estimating optically-active water quality parameters such as chlorophyll-a, blue-green algae, colored dissolved organic matter (CDOM), turbidity, and temperature from these sources\cite{koponen2002lake,ritchie2003remote, bonansea2015using}. Machine learning has proven to be a powerful tool in this domain, with tree-based models, support vector machines, deep neural networks, and others architectures providing data-driven approaches mapping imagery to parameters of interest \cite{thenkabail2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the training and evaluation of these models demands significant volumes of coincident, in situ data. Collecting these datasets is time consuming and expensive, often requiring observations spanning decades \cite{aurin2018remote, ross2019aquasat}. 
 
 To support and enhance real-time decision making, data-driven techniques...
@@ -103,6 +123,9 @@ The method is fully Bayesian, providing an attractive method for the unsupervise
 - Second, we utilize the GTM to identify reflectance spectra corresponding to specific features. 
 - Using these extracted features, we are able to map the extent of algae in the pond in addition to the time evolution of a rhodamine dye tracer. 
 
+
+
+The primary goal of this study...
 
 \bibliographystyle{plain}
 \bibliography{paper/references.bib}

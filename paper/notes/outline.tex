@@ -1,0 +1,887 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Paper Outline},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Paper Outline}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Characterization of Inland Water Bodies via Remote Sensing is
+  Challenging
+
+  \begin{itemize}
+  \tightlist
+  \item
+    complex spectral signatures
+  \item
+    limited spatial and temporal resolution (long satellite overpasses)
+  \item
+    nevertheless remote sensing has significant potential
+  \item
+    Harmful Algal Bloom (HAB) classification and mapping
+  \item
+    Oil Spill mapping
+  \end{itemize}
+\item
+  Hyperspectral Imaging addresses spectral limitations of traditional
+  remote sensing platforms
+\item
+  Supervised methods
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Inversion of optically-active parameters
+  \item
+    Key limitation: availability of in-situ reference data
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Cite Aurin et al.~and Ross et al.~here
+    \end{itemize}
+  \item
+    When ground truth data are limited, classification is an alternative
+    approach, e.g.~``bad'' to ``good'' water quality
+  \end{itemize}
+\item
+  Unsupervised methods
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Unsupervised classification \& ML Techniques
+  \item
+    Endmember Extraction and Spectral Unmixing
+  \end{itemize}
+\item
+  Robot Teams and HSI equipped Drones
+\item
+  This paper
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Extend capabilities of robot team by showcasing capabilities for
+    unsupervised classification
+  \item
+    Utilize GTM as Bayesian extension of SOM to enable unsupervised
+    classification
+  \item
+    GTM also enables extraction of spectral features associated with
+    each node
+  \item
+    Two case studies
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \tightlist
+    \item
+      GTM trained on water-only HSI data for lake
+
+      \begin{itemize}
+      \tightlist
+      \item
+        Identify interesting regions for further examination by robot
+        team
+      \item
+        Investigate spectral variability of water
+      \end{itemize}
+    \item
+      GTM on dataset combining grass and water pixels with a simulated
+      pollution event using Rhodamine tracer dye
+
+      \begin{itemize}
+      \tightlist
+      \item
+        Use extracted GTM ``endmembers'' together with NS3 to map
+        abundance
+      \item
+        Identify abundance of algae
+      \item
+        Map evolution of Rhodamine dye plume
+      \end{itemize}
+    \end{enumerate}
+  \end{itemize}
+\end{enumerate}
+
+\section{Materials and Methods}\label{materials-and-methods}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data Collection
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Describe collection at site in Montague, North Texas
+  \end{itemize}
+\item
+  Autonomous Robot Team
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Describe drone
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Alta X Quadcopter
+    \item
+      Resonon Pika XC2 HSI
+    \item
+      Intel Nuc compute
+    \end{itemize}
+  \item
+    describe georectification procedure
+  \end{itemize}
+\item
+  Pre-Processing
+\item
+  Generative Topographic Mapping
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Original SOM paper (Kohonen 1990)
+\item
+  Heskes reinterpretation of SOM algorithm as stochastic gradient
+  descent on an energy suface i.e.~justification with a cost function
+  (Heskes 1999)
+\item
+  GTM paper (Bishop, Svensén, and Williams 1998b)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Describe algorithm
+  \item
+    Describe parameters
+  \end{itemize}
+\item
+  Bayesian Information Criterion and Akaike Information Criterion for
+  Hyperparameter Optimization
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A full Bayesian treatment would involve marginalization over all
+    possible parameter values but this is much more computational
+    efficient.
+  \end{itemize}
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Abundance Mapping with the Normalized Spectral Similarity Score
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Describe different metrics for comparison of spectra
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Trade-off between metrics that distinguish changes in overall
+      intensity and changes in peak location, i.e.~hue
+    \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\section{Results}\label{results}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Two Case Studies
+\item
+  GTM Fit on Full Dataset
+\item
+  Hyperparameter Optimization with BIC
+\item
+  Spectral Signature Identification
+\item
+  Water Class Map (Water Only GTM)
+\item
+  Algae Identification
+\item
+  Dye Plume Identification
+\end{enumerate}
+
+\section{Discussion}\label{discussion}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  GTM Applications in our Paper
+\item
+  Comparison to existing approaches
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Unsupervised Classification
+  \item
+    Endmember Extraction \& Spectral Unmixing
+  \item
+    Applications for either of these with Drones?
+  \end{itemize}
+\item
+  Use of GTM and Unsupervised methods for Robot Team
+
+  \begin{itemize}
+  \tightlist
+  \item
+    As a feature transformer/preprocessor for supervised methods (as
+    opposed to, say, PCA or k-NN)
+  \item
+    identification of ``interesting'' regions for intelligent deployment
+    of robotic boat
+
+    \begin{itemize}
+    \tightlist
+    \item
+      don't continue collecting data in region that is similar
+    \item
+      provision boat to maximize data collection across distribution of
+      GTM classes
+    \end{itemize}
+  \end{itemize}
+\item
+  Extensions and future work
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Incorporation of GTM extensions for efficient online-learning
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Currently GTM classes can quickly be applied (in real time) once
+      they are trained to generate abundance maps e.g.~chlorophyll,
+      algae, etc\ldots{}
+    \item
+      Key limitation of GTM is similar to SOM and k-NN: you need to
+      compute distances between samples and latent nodes. This can scale
+      poorly for very large datasets
+    \item
+      Bishop suggests a way to augment GTM training algorithm to enable
+      online training of GTM. This could be deployed on-board the UAV to
+      perform classification and identify spectral signatures in
+      near-real time.
+    \item
+      Extensions of GTM (Bishop, Svensén, and Williams 1998a)
+    \end{itemize}
+  \item
+    Utilize the GTM with in-situ data collection to identify spectral
+    signatures of specific algal species
+  \end{itemize}
+\end{enumerate}
+
+\section{Conclusions}\label{conclusions}
+
+\section{NOTES AND CITATIONS}\label{notes-and-citations}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Applications of remote sensing to water quality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    machine learning (XGBoost) used with paired remote sensing imagery
+    and in-situ data to classify imagery into 5 categories including 3
+    for harmful algal blooms (Ghatkar, Singh, and Shanmugam 2019)
+  \item
+    Spectral signatures of classes are complex and often overlapping
+    (Thenkabail, Lyon, and Huete 2018)
+  \item
+    Remote sensing used for oil spill analysis: extent and thickness
+    mapping (Kokaly et al. 2013; Leifer et al. 2012)
+  \item
+    Sun glitter remains a key challenge for sensing in the visible
+    portion of the spectrum but multi and hyperspectral imagers have
+    been used for oil spill identification and to identify their impacts
+    on vegetation stress and mortality (Fingas and Brown 2014; Khan et
+    al. 2018)
+  \end{itemize}
+\item
+  Hyperspectral Imagery
+
+  \begin{itemize}
+  \tightlist
+  \item
+    applications include food quality \& safety, medical diagnoses,
+    precision agriculture, and forensic document examination (Khan et
+    al. 2018)
+  \item
+    Hyperspectral data were used to distinguish oils by type,
+    e.g.~crude, diesel, gasoline, and palm (Yang et al. 2020)
+  \end{itemize}
+\item
+  Supervised regression and classification for water quality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    common approach is inversion of optically-active water quality
+    parameters such as chlorophyll-a, blue-green algae, turbidity, and
+    temperature (Ritchie, Zimba, and Everitt 2003)
+  \item
+    Combining spectral indices such as the NDVI together with machine
+    learning is a popular approach (Thenkabail, Lyon, and Huete 2018;
+    Sagan et al. 2020; Lu et al. 2021)
+  \item
+    Polynomial regression models for chlorophyll-a, turbidity (D. Zhang,
+    Zeng, and He 2022)
+  \item
+    Key limitation is collection of sufficient quantity of in-situ
+    reference data
+  \item
+    Ross et al.~created a comprehensive dataset with over 600,000 water
+    quality records matching optically active water quality parameters
+    with associated satellite imagery from Landsat 5,7,8. To achieve
+    this quantity of data, they needed records spanning 1984 to 2019
+    (Ross et al. 2019)
+  \item
+    Aurin et al.~took a similar route combining 30 years of remote
+    sensing imagery with in-situ data from over 500 field compaigns for
+    CDOM, organic carbon, etc\ldots{} (Aurin, Mannino, and Lary 2018).
+  \item
+    When ground truth data aren't available in sufficient quantity,
+    classification into water quality categories is another approach
+    (ground truth can be easier to obtain by expert analysis of scene)
+    (Koponen et al. 2002)
+  \item
+    When no ground-truth data are available, unsupervised classification
+    can still help partition imagery into groups or clusters.
+  \item
+    Many data-driven, ML methods have been employed for the task
+    including various matrix factorizations, k-nearest neighbors, fuzzy
+    c-means, density estimation methods, etc. (L. Zhang et al. 2019)
+  \item
+    Additionally unsupervised approaches can be used to perform
+    nonlinear dimensionality reduction \& pre-processing for supervised
+    approaches.
+  \item
+    SOM used for remote sensing imagery classification (Wan and Fraser
+    2000)
+  \item
+    SOM used for clustering and data compression of HSI cube-sat
+    (Danielsen, Johansen, and Garrett 2021)
+  \item
+    SOM used for land-use and land-cover change analysis (Penfound and
+    Vaz 2021)
+  \end{itemize}
+\item
+  Endmember Extraction and Spectral Unmixing
+
+  \begin{itemize}
+  \tightlist
+  \item
+    This is a related problem where the goal is to identify unique
+    spectral signatures which combine (linearly or non-linearly) to
+    produce the measured signal.
+  \item
+    Having identified the set of endmembers, we then seek to determine
+    their relative abundance in each pixel
+  \item
+    Many statistical approaches for extracting endmembers (Berman et al.
+    2004)
+  \item
+    Sparse PCA used for endmember extraction (Yousefi et al. 2016)
+  \item
+    Popular spectral unmixing approach is to treat ``pure'' endmembers
+    as vertices of a simplex {[}Plaza et al. (2012);
+    nascimento2005vertex{]}
+  \item
+    Convolutional Neural Networks with Autoencoder architectures are a
+    popular ML approach which identify endmembers and perform non-linear
+    unmixing (Palsson, Ulfarsson, and Sveinsson 2020; Su et al. 2017,
+    2019; Borsoi, Imbiriba, and Bermudez 2019)
+  \item
+    Self Organizing Map is another approach which has been used for
+    endmember extraction together with neural networks for abundance
+    mapping (unmixing) (Cantero et al. 2004)
+  \item
+    SOM has bee nused for identifying synoptic-scale patterns in wind
+    and sea surface temperature data (Richardson, Risien, and
+    Shillington 2003)
+  \item
+    SOM used for HSI feature extraction (Ceylan and Kaya 2021)
+  \item
+    drawback of autoencoder and other statistical approach is lack of a
+    (topological) relationship between the classes/endmembers. Is
+    endmember 1 closer to endmember 2 or endmember 10? The SOM addresses
+    this. The GTM is even better\ldots{}
+  \end{itemize}
+\item
+  Abundance Mapping
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Many different spectral similarity functions exist for comparing
+    spectra. Each have trade-offs between ability to distinguish
+    differences in intensity versus differences in peak location (hue)
+    (Deborah, Richard, and Hardeberg 2015)
+  \item
+    spectral angle mapper is popular similarity function used in
+    endmember extraction. The SAM is nice because it is more sensitive
+    to shape than scale (Jiang, Werff, and Meer 2020)
+  \item
+    spectral correlation mapper introduced to as a statistical
+    alternative to SAM based on covariance instead of spectral angle (De
+    Carvalho and Meneses 2000)
+  \item
+    Normalized spectral similarity score developed by Nidamanuri et
+    al.~combine the mean-squared error with spectral angle for a happy
+    medium (Nidamanuri and Zbell 2011)
+  \end{itemize}
+\item
+  Drone-based HSI
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Near-earth HSI addresses spatial, spectral, and temporal limitations
+    of satellite and airborne platforms. UAV-based HSI enable fine-scale
+    mapping (Banerjee, Raval, and Cullen 2020)
+  \item
+    Drones can be equipped with HSI and compute to enable rapid
+    generation of spectral indices like the NDVI for applications such
+    as precision agriculture (Horstrand et al. 2019)
+  \item
+    UAV-based HSI can be georectified to centimeter-scales without need
+    for ground control points by using on-board GPS and IMU (Arroyo-Mora
+    et al. 2019)
+  \item
+    UAV-based HSI for turbidity estimation (Vogt and Vogt 2016)
+  \end{itemize}
+\end{enumerate}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-arroyo2019implementation}
+Arroyo-Mora, J Pablo, Margaret Kalacska, Deep Inamdar, Raymond Soffer,
+Oliver Lucanus, Janine Gorman, Tomas Naprstek, et al. 2019.
+{``Implementation of a UAV--Hyperspectral Pushbroom Imager for
+Ecological Monitoring.''} \emph{Drones} 3 (1): 12.
+
+\bibitem[\citeproctext]{ref-aurin2018remote}
+Aurin, Dirk, Antonio Mannino, and David J Lary. 2018. {``Remote Sensing
+of CDOM, CDOM Spectral Slope, and Dissolved Organic Carbon in the Global
+Ocean.''} \emph{Applied Sciences} 8 (12): 2687.
+
+\bibitem[\citeproctext]{ref-banerjee2020uav}
+Banerjee, Bikram Pratap, Simit Raval, and PJ Cullen. 2020.
+{``UAV-Hyperspectral Imaging of Spectrally Complex Environments.''}
+\emph{International Journal of Remote Sensing} 41 (11): 4136--59.
+
+\bibitem[\citeproctext]{ref-berman2004ice}
+Berman, Mark, Harri Kiiveri, Ryan Lagerstrom, Andreas Ernst, Rob Dunne,
+and Jonathan F Huntington. 2004. {``ICE: A Statistical Approach to
+Identifying Endmembers in Hyperspectral Images.''} \emph{IEEE
+Transactions on Geoscience and Remote Sensing} 42 (10): 2085--95.
+
+\bibitem[\citeproctext]{ref-gtm-bishop-2}
+Bishop, Christopher M, Markus Svensén, and Christopher KI Williams.
+1998a. {``Developments of the Generative Topographic Mapping.''}
+\emph{Neurocomputing} 21 (1-3): 203--24.
+
+\bibitem[\citeproctext]{ref-gtm-bishop-1}
+---------. 1998b. {``GTM: The Generative Topographic Mapping.''}
+\emph{Neural Computation} 10 (1): 215--34.
+
+\bibitem[\citeproctext]{ref-borsoi2019deep}
+Borsoi, Ricardo Augusto, Tales Imbiriba, and José Carlos Moreira
+Bermudez. 2019. {``Deep Generative Endmember Modeling: An Application to
+Unsupervised Spectral Unmixing.''} \emph{IEEE Transactions on
+Computational Imaging} 6: 374--84.
+
+\bibitem[\citeproctext]{ref-cantero2004analysis}
+Cantero, MC, RM Perez, Pablo J Martinez, PL Aguilar, Javier Plaza, and
+Antonio Plaza. 2004. {``Analysis of the Behavior of a Neural Network
+Model in the Identification and Quantification of Hyperspectral
+Signatures Applied to the Determination of Water Quality.''} In
+\emph{Chemical and Biological Standoff Detection II}, 5584:174--85.
+SPIE.
+
+\bibitem[\citeproctext]{ref-som-hsi}
+Ceylan, Oğuzhan, and Gülsen Taskin Kaya. 2021. {``Feature Selection
+Using Self Organizing Map Oriented Evolutionary Approach.''} \emph{2021
+IEEE International Geoscience and Remote Sensing Symposium IGARSS},
+4003--6. \url{https://api.semanticscholar.org/CorpusID:238750026}.
+
+\bibitem[\citeproctext]{ref-danielsen2021self}
+Danielsen, Aksel S, Tor Arne Johansen, and Joseph L Garrett. 2021.
+{``Self-Organizing Maps for Clustering Hyperspectral Images on-Board a
+Cubesat.''} \emph{Remote Sensing} 13 (20): 4174.
+
+\bibitem[\citeproctext]{ref-de2000spectral}
+De Carvalho, O Abilio, and Paulo Roberto Meneses. 2000. {``Spectral
+Correlation Mapper (SCM): An Improvement on the Spectral Angle Mapper
+(SAM).''} In \emph{Summaries of the 9th JPL Airborne Earth Science
+Workshop, JPL Publication 00-18}, 9:2. JPL publication Pasadena, CA,
+USA.
+
+\bibitem[\citeproctext]{ref-deborah2015comprehensive}
+Deborah, Hilda, Noël Richard, and Jon Yngve Hardeberg. 2015. {``A
+Comprehensive Evaluation of Spectral Distance Functions and Metrics for
+Hyperspectral Image Processing.''} \emph{IEEE Journal of Selected Topics
+in Applied Earth Observations and Remote Sensing} 8 (6): 3224--34.
+
+\bibitem[\citeproctext]{ref-fingas2014review}
+Fingas, Merv, and Carl Brown. 2014. {``Review of Oil Spill Remote
+Sensing.''} \emph{Marine Pollution Bulletin} 83 (1): 9--23.
+
+\bibitem[\citeproctext]{ref-ghatkar2019classification}
+Ghatkar, Jayesh Ganpat, Rakesh Kumar Singh, and Palanisamy Shanmugam.
+2019. {``Classification of Algal Bloom Species from Remote Sensing Data
+Using an Extreme Gradient Boosted Decision Tree Model.''}
+\emph{International Journal of Remote Sensing} 40 (24): 9412--38.
+
+\bibitem[\citeproctext]{ref-som-cost-function}
+Heskes, Tom. 1999. {``Energy Functions for Self-Organizing Maps.''} In
+\emph{Kohonen Maps}, 303--15. Elsevier.
+
+\bibitem[\citeproctext]{ref-horstrand2019uav}
+Horstrand, Pablo, Raúl Guerra, Aythami Rodrı́guez, Marı́a Dı́az, Sebastián
+López, and José Fco López. 2019. {``A UAV Platform Based on a
+Hyperspectral Sensor for Image Capturing and on-Board Processing.''}
+\emph{IEEE Access} 7: 66919--38.
+
+\bibitem[\citeproctext]{ref-jiang2020classification}
+Jiang, Tingxuan, Harald van der Werff, and Freek van der Meer. 2020.
+{``Classification Endmember Selection with Multi-Temporal Hyperspectral
+Data.''} \emph{Remote Sensing} 12 (10): 1575.
+
+\bibitem[\citeproctext]{ref-khan2018modern}
+Khan, Muhammad Jaleed, Hamid Saeed Khan, Adeel Yousaf, Khurram Khurshid,
+and Asad Abbas. 2018. {``Modern Trends in Hyperspectral Image Analysis:
+A Review.''} \emph{Ieee Access} 6: 14118--29.
+
+\bibitem[\citeproctext]{ref-kohonen-som-1}
+Kohonen, Teuvo. 1990. {``The Self-Organizing Map.''} \emph{Proceedings
+of the IEEE} 78 (9): 1464--80.
+
+\bibitem[\citeproctext]{ref-kokaly2013spectroscopic}
+Kokaly, Raymond F, Brady R Couvillion, JoAnn M Holloway, Dar A Roberts,
+Susan L Ustin, Seth H Peterson, Shruti Khanna, and Sarai C Piazza. 2013.
+{``Spectroscopic Remote Sensing of the Distribution and Persistence of
+Oil from the Deepwater Horizon Spill in Barataria Bay Marshes.''}
+\emph{Remote Sensing of Environment} 129: 210--30.
+
+\bibitem[\citeproctext]{ref-koponen2002lake}
+Koponen, Sampsa, Jouni Pulliainen, Kari Kallio, and Martti Hallikainen.
+2002. {``Lake Water Quality Classification with Airborne Hyperspectral
+Spectrometer and Simulated MERIS Data.''} \emph{Remote Sensing of
+Environment} 79 (1): 51--59.
+
+\bibitem[\citeproctext]{ref-leifer2012state}
+Leifer, Ira, William J Lehr, Debra Simecek-Beatty, Eliza Bradley, Roger
+Clark, Philip Dennison, Yongxiang Hu, et al. 2012. {``State of the Art
+Satellite and Airborne Marine Oil Spill Remote Sensing: Application to
+the BP Deepwater Horizon Oil Spill.''} \emph{Remote Sensing of
+Environment} 124: 185--209.
+
+\bibitem[\citeproctext]{ref-lu2021retrieval}
+Lu, Qikai, Wei Si, Lifei Wei, Zhongqiang Li, Zhihong Xia, Song Ye, and
+Yu Xia. 2021. {``Retrieval of Water Quality from UAV-Borne Hyperspectral
+Imagery: A Comparative Study of Machine Learning Algorithms.''}
+\emph{Remote Sensing} 13 (19): 3928.
+
+\bibitem[\citeproctext]{ref-nidamanuri2010normalized}
+Nidamanuri, Rama Rao, and Bernd Zbell. 2011. {``Normalized Spectral
+Similarity Score ( \({\hbox{NS}}^{3}\)) as an Efficient Spectral Library
+Searching Method for Hyperspectral Image Classification.''} \emph{IEEE
+Journal of Selected Topics in Applied Earth Observations and Remote
+Sensing} 4: 226--40.
+\url{https://api.semanticscholar.org/CorpusID:32567143}.
+
+\bibitem[\citeproctext]{ref-palsson2020convolutional}
+Palsson, Burkni, Magnus O Ulfarsson, and Johannes R Sveinsson. 2020.
+{``Convolutional Autoencoder for Spectral--Spatial Hyperspectral
+Unmixing.''} \emph{IEEE Transactions on Geoscience and Remote Sensing}
+59 (1): 535--49.
+
+\bibitem[\citeproctext]{ref-penfound2021analysis}
+Penfound, Elissa, and Eric Vaz. 2021. {``Analysis of Wetland Landcover
+Change in Great Lakes Urban Areas Using Self-Organizing Maps.''}
+\emph{Remote Sensing} 13 (24): 4960.
+
+\bibitem[\citeproctext]{ref-plaza2012endmember}
+Plaza, Javier, Eligius MT Hendrix, Inmaculada Garcı́a, Gabriel Martı́n,
+and Antonio Plaza. 2012. {``On Endmember Identification in Hyperspectral
+Images Without Pure Pixels: A Comparison of Algorithms.''} \emph{Journal
+of Mathematical Imaging and Vision} 42: 163--75.
+
+\bibitem[\citeproctext]{ref-som-satellite}
+Richardson, Anthony J, C Risien, and Frank Alan Shillington. 2003.
+{``Using Self-Organizing Maps to Identify Patterns in Satellite
+Imagery.''} \emph{Progress in Oceanography} 59 (2-3): 223--39.
+
+\bibitem[\citeproctext]{ref-ritchie2003remote}
+Ritchie, Jerry C, Paul V Zimba, and James H Everitt. 2003. {``Remote
+Sensing Techniques to Assess Water Quality.''} \emph{Photogrammetric
+Engineering \& Remote Sensing} 69 (6): 695--704.
+
+\bibitem[\citeproctext]{ref-ross2019aquasat}
+Ross, Matthew RV, Simon N Topp, Alison P Appling, Xiao Yang, Catherine
+Kuhn, David Butman, Marc Simard, and Tamlin M Pavelsky. 2019.
+{``AquaSat: A Data Set to Enable Remote Sensing of Water Quality for
+Inland Waters.''} \emph{Water Resources Research} 55 (11): 10012--25.
+
+\bibitem[\citeproctext]{ref-sagan2020monitoring}
+Sagan, Vasit, Kyle T Peterson, Maitiniyazi Maimaitijiang, Paheding
+Sidike, John Sloan, Benjamin A Greeling, Samar Maalouf, and Craig Adams.
+2020. {``Monitoring Inland Water Quality Using Remote Sensing: Potential
+and Limitations of Spectral Indices, Bio-Optical Simulations, Machine
+Learning, and Cloud Computing.''} \emph{Earth-Science Reviews} 205:
+103187.
+
+\bibitem[\citeproctext]{ref-su2019daen}
+Su, Yuanchao, Jun Li, Antonio Plaza, Andrea Marinoni, Paolo Gamba, and
+Somdatta Chakravortty. 2019. {``DAEN: Deep Autoencoder Networks for
+Hyperspectral Unmixing.''} \emph{IEEE Transactions on Geoscience and
+Remote Sensing} 57 (7): 4309--21.
+
+\bibitem[\citeproctext]{ref-non-negative-autoencoders}
+Su, Yuanchao, Andrea Marinoni, Jun Li, Antonio Plaza, and Paolo Gamba.
+2017. {``Nonnegative Sparse Autoencoder for Robust Endmember Extraction
+from Remotely Sensed Hyperspectral Images.''} In \emph{2017 IEEE
+International Geoscience and Remote Sensing Symposium (IGARSS)}, 205--8.
+\url{https://doi.org/10.1109/IGARSS.2017.8126930}.
+
+\bibitem[\citeproctext]{ref-thenkabail2018hyperspectral}
+Thenkabail, Prasad S, John G Lyon, and Alfredo Huete. 2018.
+\emph{Hyperspectral Indices and Image Classifications for Agriculture
+and Vegetation}. CRC press.
+
+\bibitem[\citeproctext]{ref-vogt2016near}
+Vogt, Michael C, and Mark E Vogt. 2016. {``Near-Remote Sensing of Water
+Turbidity Using Small Unmanned Aircraft Systems.''} \emph{Environmental
+Practice} 18 (1): 18--31.
+
+\bibitem[\citeproctext]{ref-msom-remote-sensing}
+Wan, Weijian, and Donald Fraser. 2000. {``A Multiple Self-Organizing Map
+Scheme for Remote Sensing Classification.''} In \emph{International
+Workshop on Multiple Classifier Systems}, 300--309. Springer.
+
+\bibitem[\citeproctext]{ref-yang2020characterization}
+Yang, Junfang, Jianhua Wan, Yi Ma, Jie Zhang, and Yabin Hu. 2020.
+{``Characterization Analysis and Identification of Common Marine Oil
+Spill Types Using Hyperspectral Remote Sensing.''} \emph{International
+Journal of Remote Sensing} 41 (18): 7163--85.
+
+\bibitem[\citeproctext]{ref-yousefi2016mineral}
+Yousefi, Bardia, Saeed Sojasi, Clemente Ibarra Castanedo, Georges
+Beaudoin, François Huot, Xavier PV Maldague, Martin Chamberland, and
+Erik Lalonde. 2016. {``Mineral Identification in Hyperspectral Imaging
+Using Sparse-PCA.''} In \emph{Thermosense: Thermal Infrared Applications
+XXXVIII}, 9861:312--22. SPIE.
+
+\bibitem[\citeproctext]{ref-zhang2022selection}
+Zhang, Dingyu, Siyu Zeng, and Weiqi He. 2022. {``Selection and
+Quantification of Best Water Quality Indicators Using UAV-Mounted
+Hyperspectral Data: A Case Focusing on a Local River Network in Suzhou
+City, China.''} \emph{Sustainability} 14 (23): 16226.
+
+\bibitem[\citeproctext]{ref-zhang2019hyperspectral}
+Zhang, Lefei, Liangpei Zhang, Bo Du, Jane You, and Dacheng Tao. 2019.
+{``Hyperspectral Image Unsupervised Classification by Robust Manifold
+Matrix Factorization.''} \emph{Information Sciences} 485: 154--69.
+
+\end{CSLReferences}
+
+
+
+\end{document}
