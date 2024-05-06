@@ -2,7 +2,7 @@
 \usepackage{graphicx} % Required for inserting images
 \usepackage[margin=0.75in]{geometry}
 \usepackage{outlines}
-
+\usepackage{amsmath}
 
 \begin{document}
 
@@ -45,18 +45,28 @@
             \4 Mineral endmembers identified from HSI using sparse PCA \cite{yousefi2016mineral}
         \3 t-SNE can be computationally complex 
     \2 Unsupervised Classification
-        \3 k-NN, fuzzy c-means, DBSCAN, etc... matrix factorizations
+        \3 k-NN, fuzzy c-means, DBSCAN, matrix factorizations, Autoencoders
         \3 Can be helpful for identifying clusters, but don't aid in visualization by themselves
             \4 Robust Manifold Matrix Factorization used for dimensionality reduction \textit{and} clustering \cite{zhang2019hyperspectral}
+            \4 Use a convolutional autoencoder with softmax to perfrom endmember extraction and unmixing \cite{palsson2020convolutional}
+            \4 Combine stacked autoencoders and a variational autoencoder for unmixing \cite{su2019daen}
+            \4 Develop a VAE model for unmixing of HSI \cite{borsoi2019deep}
     \2 Endmember extraction and Spectral Unmixing
         \3 Geometric and statistical methods
+            \4 statistical approach \cite{berman2004ice}
+            \4 vertex component analysis: endmembers are vertices of simplex. Note these methods still generally require us to know the number of endmembers in advance \cite{nascimento2005vertex}
+            \4 Non-negative matrix factorization is a popular approach using matrix decomposition into non-negative endmember and abundance matrices. constrained NMF generally requires extensive parameter tuning and generalized NMF takes a long time to compute and rely on assumption of linear mixing \cite{Feng2022HyperspectralUB}
         \3 Can be useful for identifying relevant endmembers but may rely on presence of pure pixels
             \4 This assumption may not be valid for water leafing reflectance spectra due to interactions of suspended solids, dissolved components, etc...
-        \3 Once endmembers are identified, abundance maps can be produced using spectral angle mapper (e.g. cosine distance) or unmixing models
+        \3 Once endmembers are identified, abundance maps can be produced using spectral angle mapper (e.g. cosine distance) or unmixing assuming a mixing model
             \4 However, this does not itself to visualization
-    \2 Need: a (principled) method which simultaneously enables dimensionality reduction \textit{and} classification/endmember extraction.
+            \4 Common assumption is linear mixing however strong nonlinear mixing effects are present in many situations \cite{heylen2014review}
+        \3 The increased spatial resolution affored by UAV platforms suggests UAV-based HSI platforms are ideal for endmember extraction as likelihood of pure endmembers in UAV-based HSI is signifcantly higher than in satelliteet imagery
+            \4 Use unmixing of UAV-hsi to discover endmembers for satellite hsi \cite{alvarez2020can}
+            \4 Use unmixing of UAV-hsi as endmember library for satellite HSI \cite{gu2023intrinsic}
+    \2 Goal: a (principled) method which simultaneously enables dimensionality reduction \textit{and} classification/endmember extraction.
 \1 Self Organizing Map and Generative Topographic Mapping
-    \2 Self Organizing map developed by Kohonen based on principle that \textit{neurons that fire together, wire together}.
+    \2 Self Organizing map developed by Kohonen based on principle that \textit{neurons that fire together, wire together}. \cite{kohonen-som-1}
         \3 Construct an unsupervised classification into $N=n\times n$ classes
         \3 Classes are arranged in a regular grid of typically two dimensions with different possible topologies:
             \4 square vs hexagonal lattice (number of neighbors)
@@ -66,11 +76,16 @@
         \3 SOM nodes can \textit{also} be interpreted as endmembers/classes
             \4 Add citations here, e.g. David's dust sources paper and other SOM related HSI studies
             \4 SOM used for endmember extraction with HSI for water quality \cite{cantero2004analysis}
+            \4 SOM classes used to classify synoptic scale wind and surface temperature data from satellite observations \cite{som-satellite}
+            \4 SOM for feature selection and dimensionality reduction of HSI \cite{som-hsi}
+            \4 SOM for classification of remote sensing imagery \cite{msom-remote-sensing}
+            \4 SOM for land cover change detection from remote sensing imagery \cite{penfound2021analysis}
+            \4 Use SOM for on-board compression of HSI from CubeSat \cite{danielsen2021self}
     \2 Drawbacks of SOM
         \3 Training algorithm is based on heuristic approach
         \3 Does not provide a clear probabilistic interpretation or a principled approach for hyperparameter choice
     \2 The Generative Topographic Mapping addresses these issues
-        \3 Fully Bayesian re-interpretation of the SOM
+        \3 Fully Bayesian re-interpretation of the SOM \cite{gtm-bishop-1, gtm-bishop-2}
         \3 Enables both dimensionality reduction \textit{and} classification like the SOM
         \3 Uses of the GTM in HSI:
 \1 Paper overview
@@ -86,8 +101,109 @@
 \end{outline}
     
 \section*{Materials and Methods}
+
+\begin{outline}[enumerate]
+\1 Overview Paragraph
+\1 Description of GTM Algorithm and Implementation
+    \2 Algorithm  Description
+    \2 Hyperparameter selection and model comparison with the Bayesian Information Criterion rather than full Bayesian treatment (e.g. marginalization over model hyperparameters)
+    \2 Implementation 
+        \3 julia programming language \cite{bezanson2012julia}
+        \3
+\1 Description of UAV + HSI System
+    \2 Description of Drone
+        \3 Alta X Quadcopter
+        \3 Resonon Pika SC2 Hyperspectral Imager
+            \4 462 Wavelengths per pixel
+            \4 1600 Pixels per scanline
+            \4 Embedded GPS/IMU
+        \3 Intel NUC for real-time processing of collected imagery
+    \2 Reflectance Conversion 
+        \3 citation from last paper
+    \2 Georectification
+        \3 Georectification papers \cite{muller2002program, baumker2001new, mostafa2000multi}
+        \3 MLJ package \cite{blaom2020mlj}
+        \3 GTM package implementation \cite{GenerativeTopographicMapping.jl}
+\1 Data Collection
+    \2 Data collected at pond in Montague, North Texas
+        \3 Data collected 23 November 2020
+        \3 Collection performed near solar noon cooresponding to a maximum solar elevation of $\approx 60^\circ$ to maximize incident light. At this angle, sunglint was not a signficant problem
+        \3 First flight with no dye
+        \3 Two subsequent flights after Rhodamine dye release immediately after and 15 minutes after
+    \2 Data preprocessing
+        \3 Wavelengths limited to $\lambda \leq 900$ nm as longer wavelengths were noisy
+        \3 All pixels scaled to a maximum value of $1.0$ to account for incident light variability
+\1 GTM Study
+    \2 GTM trained on water-only pixels    
+        \3 Use resulting GTM to produce detailed map of segmented pixel spectra
+    \2 GTM trained on combined dataset
+        \3 Hyperparamer optimization using BIC
+        \3 Endember identification using exemplar pixel spectra for water, grass, rhodamine, and algae
+        \3 Mapping endmembers using NS3 
+            \4 spectral distance functions evaluated. There is a trade-off between ability to distinguish difference is hue (wavelength shifts) and intensity (peak size)\cite{deborah2015comprehensive}
+            \4 spectral angle mapper is a popular technique for comparison of candidate spectra using the angle as defined by the standard euclidean dot-product
+            \4 spectral correlation mapper uses correlation instead as an improvement \cite{de2000spectral}
+            \4 Normalized Spectral Similarity Score (NS3) is suggested by \cite{nidamanuri2010normalized} to provide a compromise between the Euclidean-like RMSE and the spectral angle with 
+                \begin{align}
+                    \text{RMSE}(R_1, R_2) &= \sqrt{\frac{1}{N-1}\sum_\lambda \left(R_{1}(\lambda) - R_2(\lambda) \right)^2} \\
+                    \cos\theta &= \frac{\langle R_1 , R_2 \rangle}{\lVert R_1\rVert \lVert R_2 \rVert} \\
+                    \text{NS3}(R_1, R_2) &= \sqrt{RMSE(R_1, R_2)^2 + (1-\cos\theta)^2}
+                \end{align}
+            \4 Algae using NS3
+            \4 Mapping Rhodmaine tracer evolution using NS3
+\end{outline}
+
 \section*{Results}
+\begin{outline}[enumerate]
+\1 GTM fit on water-only pixels
+\1 GTM fit on combined dataset
+    \2 Hyperparameter optimization
+    \2 Map in Latent Space
+    \2 Endmember extraction using exemplar spectra 
+    \2 Algae Mapping
+    \2 Rhodamine Mapping
+\end{outline}
+
 \section*{Discussion}
+
+\begin{outline}[enumerate]
+\1 Overview of GTM applications introduced in the paper
+    \2 Dimensionality reduction
+        \3 Latent space representation
+        \3 GTM classes plotted on background map
+    \2 Nonlinear endmember extraction
+        \3 Algae 
+        \3 Rhodamine
+\1 Comparison to existing approaches
+    \2 Unsupervised classification
+        \3 Most do not enforce a relationship between classes .e.g. if we use k-NN, is class 1 "closer" to class 2 than to class 10? 
+    \2 Endmember extraction 
+        \3 most approaches assume linear relationship between classes, e.g. NMF, etc... 
+        \3 GTM nodes are non-linearly mapped from latent space to data space via the map $\psi$
+    \2 Deep learning approaches
+        \3 Time intensive and require you to decide on number of endmembers in network architecture
+        \3 VAE do enable probabilistic approach which is nice...
+\1 Applications of either of these with drones 
+    \2 Increased interest in using drone-based HSI to build endmember libraries due to finer spatial resolution potentially limiting the degree of mixing within each pixel
+    \2 Few papers yet directly doing unmixing of drone-based HSI
+\1 Use of GTM as part of a coordinated robot team for water quality and composition
+    \2 As a non-linear feature transformer / preprocessing step for supervised methods (as opposed to PCA or k-NN) 
+    \2 Classification maps can be used to identify "interesting regions" for intelligent provisioning of robot boat.
+        \3 Without any prior knowledge, the standard approach would be to send out robotic boat in a grid to collect data
+        \3 GTM class map outlines spatial variability within pond and be used to desing smart sampling strategy. That is, construct a route so as to maximize sampled class variability 
+            \4 Since the ultimate goal in this modality is to collect training data for drone, we don't want to spend time collecting "useless" data in regions that are spatially uniform
+\1 Extensions and future work
+    \2 Incorportation of extensions to GTM algorithim from \cite{gtm-bishop-2} for efficient online training of GTM.
+        \3 If optimized, this could be performed on the drone in near real time.
+        \3 Class maps are significantly smaller than full HSI and can be streamed to ground station quickly
+    \2 Use  GTM framework and additional datacollection to explore potential for 
+        \3 discrimination of Algal speices from reflectance spectra for Harmful Algal Bloom (HAB) identification
+            \4 Algae species classified from remote snesing imagery using tree based models\cite{ghatkar2019classification}
+        \3 Discrimination of industrial pollution sources, e.g. for oilspill detection and mapping
+            \4 Oil types can be distinguished from hyperspectral imagery using SVM into categories such as crude oil, fuel, diesel, gasoline, and palm oil \cite{yang2020characterization}
+\end{outline}
+
+
 \section*{Conclusions}
 
 \bibliographystyle{plain}
