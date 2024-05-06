@@ -88,99 +88,7 @@ Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-%   1. Introductory paragraph 
 
-Inland water bodies pose a unique challenge to characterization via remote sensing imagery due to their complex spectral characteristics and small-scale spatial variability \cite{koponen2002lake,ritchie2003remote}. Hyperspectral imaging has emerged as a pivotal technology in this space, where the \textcolor{purple}{heightened} spectral resolution of hyperspectral images (HSIs) enables the inversion of optically-active water quality parameters such as colored dissolved organic matter, chlorophyll-a, blue-green algae, turbidity, and temperature from captured reflectance spectra \cite{brando2003satellite,moses2012estimation}. Machine learning techniques including tree-based models, support vector machines, deep neural networks, and other architectures have proven effective at mapping observed reflectance spectra to parameters of interest \cite{thenkabail2018hyperspectral,keller2018hyperspectral, ghatkar2019classification,sagan2020monitoring}. However, the calibration and evaluation of these models demands a significant volume of coincident, in situ data. Collecting these paired datasets is time consuming and expensive, often relying on rare satellite overpasses spanning decades of collection \cite{aurin2018remote, ross2019aquasat}. This requirement impedes the real-time assessment of water quality change, for example, during oil spills \cite{fingas2014review,fingas2017review}.
-
-% 2. HSI equipped drones + in situ reference sensing --> still require that we know what to look for. 
-
-The continued development of hyperspectral imaging technology has resulted in significant size reductions enabling the deployment of hyperspectral imagers on unmanned aerial vehicles (UAVs) such as drones. UAVs are not only less expensive than their remote sensing counterparts but also limit the need for complicated atmospheric corrections and enable centimeter scale spatial resolution through low altitude flights \cite{adao2017hyperspectral, arroyo2019implementation, banerjee2020uav}. 
-
-- UAV-based HSI can be georectified to centimeter-scales without need for ground control points by using on-board GPS and IMU \cite{arroyo2019implementation}
-- Drones can be equipped with HSI and compute to enable rapid generation of spectral indices like the NDVI for applications such as precision agriculture \cite{horstrand2019uav}
-
-UAV-based hyperspectral imagers have been used estimate chlorophyll-a, suspended solids, and  
-Many such systems have been utilized for the characterization of water quality and composition (cite examples).
-\cite{lu2021retrieval}
-\cite{zhang2022selection}
-
-
-
-The collection of requisite in situ data can be significantly accelerated by coordinating UAV flights with reference-sensor equipped autonomous boats \cite{robot-team-1, robot-team-2}. 
-However, this approach requires prior knowledge of expected contaminants in order to select relevant sensors 
-
-
-
-- Hyperspectral data were used to distinguish oils by type, e.g. crude, diesel, gasoline, and palm \cite{yang2020characterization}
-
-
-Endmember extraction and unmixing approaches can leverage the ability of hyperspectral images to distinguish source types. Example: mineral identification from AVRIS data, algae classification for harmful algal bloom detection, and distinguishing types of oils based on slight difference in spectral shapes.
-
-To take complete advantage we need unsupervised methods which can aid in the identification of sources (in order to alert our attention for further investigation) AND to identify relvant spectral signatures corresponding to quantities of interest. UAV based HSI address the spectral, spatial, and temporal resolution limitations of remote sensing platforms however, the collection of reference data remains the key limitation hindering the real time characterization of inland waters. In our previous work, we demonstrated how a coordinated approach combining UAV-borne HSI together with autonomous collection in situ data by an Unmanned Surface Vessel (USV) dramatically reduces the time needed to perform such analyses \cite{robot-team-1, robot-team-2}. Nevertheless, these approaches all presuppose that we already know what to look for- contaminants which we are not equipped to measure in situ can not be estimated in this paradigm. Therefore, the identification of unique sources purely from their reflectance signatures is of keen interest for two key reasons. First: we want to be able to direct in situ sensor payloads to areas of interest. Second, we desire to identify relevant spectral signatures which can readily be related to parameters of interest and used for source identification.
-
-
-
-% 3. Unsupervised methods in remote sensing and HSI
-- Describe classical ML methods such as k-means, fuzzy c-means, DBSCAN, etc in remote sensing and HSI. 
-    - Key limitation: how do you determine the correct number of classes?
-    - This can be very hard to do without a Bayesian interpretation for the model. e.g. you have to rely on heuristics like the Silhouette diagram.
-- Describe related problem of endmember extraction and spectral unmixing. Specifically there are geometric and statistical approaches to solving the problem with ML methods a popular choice for the identification of the relvant family of spectral endmembers.
-- To date, much of the focus on drone-based HSI platforms has been on supervised regression of parameters OR the determination of spectral indices.
-- An ideal unsupervised approach should accomplish three things
-    1. Segmentation of captured imagery into a set of distinct classes
-    2. Mapping of distinct spatial regions in collected imagery using the identified classes
-    3. Simultaneous identification of relevant spectral endmembers
-
-
-Unsupervised classification
-- When no ground-truth data are available, unsupervised classification can still help partition imagery into groups or clusters.
-- Many data-driven, ML methods have been employed for the task including various matrix factorizations, k-nearest neighbors, fuzzy c-means, density estimation methods, etc. \cite{zhang2019hyperspectral}
-- Additionally unsupervised approaches can be used to perform nonlinear dimensionality reduction & pre-processing for supervised approaches.
-- Many unsupervised approaches can be challenging to interpret due to the lack of a relationship between the identified classes, e.g. is class 1 more similar to class 2 than class 10?
-- The Self Organizing Map is a popular technique which classifies data while enforcing topological relationships between the resulting classes such that classes close to each  other in the latent space are more similar than classes that are far apart.
-- SOM used for remote sensing imagery classification \cite{msom-remote-sensing}
-- SOM used for clustering and data compression of HSI cube-sat \cite{danielsen2021self}
-- SOM used for land-use and land-cover change analysis \cite{penfound2021analysis}
-- SOM has been used for identifying synoptic-scale patterns in wind and sea surface temperature data {som-satellite}
-
-
-endmember extraction, spectral unmixing
-- This is a related problem where the goal is to identify unique spectral signatures which combine (linearly or non-linearly) to produce the measured signal.
-- Having identified the set of endmembers, we then seek to determine their relative abundance in each pixel
-- Many statistical approaches for extracting endmembers \cite{berman2004ice}
-- Sparse PCA used for endmember extraction \cite{yousefi2016mineral}
-- Popular spectral unmixing approach is to treat "pure" endmembers as vertices of a simplex \cite{plaza2012endmember, nascimento2005vertex}
-- Convolutional Neural Networks with Autoencoder architectures are a popular ML approach which identify endmembers and perform non-linear unmixing \cite{palsson2020convolutional, non-negative-autoencoders, su2019daen, borsoi2019deep}
-- Self Organizing Map is another approach which has been used for endmember extraction together with neural networks for abundance mapping (unmixing) \cite{cantero2004analysis}
-
-
-
-
-
-% 4. Generative topographic mapping 
-Describe the self organizing map (SOM) as an interesting approach due to the ability to 
-    - classify data 
-    - maintain topographic relationship between classes which can be used to produces a lower dimensional representation of data distribution (i.e. cluster identification)
-    - the weight vector for each class can be interpreted as an endmember in the original data space such that common classes can be interpreted as a family of spectral endmembers.
-Cite a few uses ofthe SOM for remote sensing and HSI analysis...
-However, the original SOM training algorithm relies on heuristics for controlling the updates during training and offers no clear probabilitistic interpreation. The GTM was developed to specifically address this, providing a fully Bayesian alternative to the SOM.
-
-% 5. This study
-
-In this study, we explore the use of the GTM to perform rapid unsupervised classification of hyperspectral imagery captured by 
-
-    - The generative topographic mapping is an attractive algorithm 
-        - Probabilistic interpretation
-        - Topographic relationship maintained between classes (not just orthogonality)
-        - clear fitting criterion with Maximum Likelihood Estimation / Maximum A-Posteriori Estimation
-    - We use the GTM to analyze hyperspectral imagery acquired by a drone over pond to 
-        - Present method for unsupervised characterization of small-scale variability of pond (i.e. identifying regions of interest which can be used to direct robot boat for further instructions) 
-        - Use GTM to extract endmember for algae and map the algal distribution near shore (relevant for Harmful Algal Bloom detection)
-        - Use GTM to extract endmember for rhodamine dye and use it to mape evolution of dye plume. This is a demonstration of source identification and mapping. Relevant for the identification of pollution events such as oil spills, industrial seepage, etc...
-
-To support and enhance real-time decision making, data-driven techniques...
-
-Using data collected at site in Montague, North Texas, we demonstrate the ability of this paradigm with two case studies. First, we demonstrate how the GTM can be used to provide a high-resolution unsupervised classification of a water body enabling the rapid identification of relevant regions which can then be used to direct further investigation by reference-sensor equipped boats. Second, we demonstrate the ability to perform endmember extraction and abundance mapping using imagery from a test-release of rhodamine dye. Together with the normalized spectral similarity score, these spectral signatures are identified and their associated area in the scene is determined.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Materials and Methods}
@@ -195,10 +103,25 @@ Using data collected at site in Montague, North Texas, we demonstrate the abilit
 \caption{(\textbf{a}) Sample hyperspectral data cube. Spectra are plotted using their geographic position with the log10-reflectance colored along the z axis and a pseudo-color image on top. (\textbf{b}) Points taken from a sample hyperspectral data cube corresponding to algae, rhodamine dye, water, and dry grass. (\textbf{c}) Reflectance spectra for the exemplar points scaled so the peak value of each spectrum is $1.0$. (\textbf{d}) The location of the pond in Montague, Texas where data were collected for this study.\label{fig:sample-spectra}}
 \end{figure}  
 
+In this study, we explore the use of Generative Topographic Mapping as a tool for the unsupervised classification and nonlinear endmember extraction of hyperspectral imagery. To this end, HSIs were collected using a USV mounted hyperspectral imager at a pond in Montague, North Texas on on 23 November 2020 (shown in panel (d) of Fig~\ref{fig:sample-spectra}). In this section we shall first provide a detailed description of the GTM algorithm with subsequent subsections reserved to describe the specific data collection, processing, and analysis techniques employed in the study.
 
+%%% --- Generative 0Topographic Mapping ------------------------------------
 \subsection{Generative Topographic Mapping}
 
+
+The Generative Topographic Mapping (GTM) was developed by Bishop, Svens\'en, and Williams as a Bayesian realization of Kohonen's Self-organizing Map (SOM) \cite{gtm-bishop-1}. Specifically, the 
+
 The Generative Topographic Mapping (GTM) is an unsupervised latent variable model developed by Bishop, Svens\'en, and Williams \cite{gtm-bishop-1}. The GTM takes inspiration from Kohonen's self-organizing map which enables an unsupervised classification of high dimensional data into a (typically) two-dimensional grid of nodes such that nodes near each near each other in the mapping space
+
+
+
+As outlined in the introduction, an effective unsupervised classification algorithm for hyperspectral imagery should accomplish the following three things: 
+\begin{enumerate}
+    \item Segmentation of captured imagery into a set of distinct classes
+    \item Mapping of distinct spatial regions in collected imagery using the identified classes
+    \item Simultaneous identification of relevant spectral endmembers
+\end{enumerate}
+
 
 - mention 
 
@@ -257,6 +180,8 @@ and all others $0$.
 
 
 at a pond in Montague, north Texas (shown in panel d of Fig~\ref{fig:sample-spectra})
+
+
 
 
 \subsection{UAV-Based Hyperspectral Imaging}
@@ -369,6 +294,8 @@ The collected hyperspectral images (HSIs) are stored locally on a solid state dr
 - Discuss use of GTM means/modes/responsibilities feature transformer for supervised models (e.g. better than PCA) 
 - Use of GTM classes to aid autonomous data collection by identification of "interesting" regons
 
+
+- Drones can be equipped with HSI and compute to enable rapid generation of spectral indices like the NDVI for applications such as precision agriculture \cite{horstrand2019uav}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}

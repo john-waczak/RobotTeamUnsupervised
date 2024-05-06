@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[margin=0.75in]{geometry}
+\usepackage{outlines}
+
+
+\begin{document}
+
+NOTE: We should move the description of the GTM algorithm to the top of the methods section.
+
+\section*{Outline}
+
+\begin{outline}[enumerate]
+
+\1 Introduction
+    \2 Characterization of inland water quality via remote sensing is challenging for 4 key reasons:
+        \3 Key limitations:
+            \4 Spectral resolution (visible and multi-spectral imaging)
+            \4 Spatial Resolution (large pixel sizes)
+            \4 Temporal Resolution (long satellite revisit times)
+            \4 Availability of in situ reference data
+        \3 When appropriate data are available, supervised ML approaches can map reflectance from remote sensing imagery to relevant water quality parameters
+    \2 Hyperspectral Imaging addresses spectral resolution
+    \2 UAV addresses spatial and temporal resolution
+    \2 Robot team addresses in situ data... but what do we do if we don't already know which sensors to use? 
+    \2 Unsupervised ML, Endmember extraction, and Spectral Unmixing
+        \3 k-NN, fuzzy c-means, matrix factorizations, etc.
+            \4 Are general but do not provide relationship between classes e.g. is class 1 more similar to class 2 or class 10?
+        \3 SOM addresses this by enforcing a topological relationship between clusters. Classes close to each other in the map are more similar than classes far apart
+        \3 Similarly, we may also be interested in the spectral characteristics of the learned *classes*, i.e. we want to think of the classes as *endmembers*.
+            \4 Traditional approaches rely on assumption of existence of "pure pixels" in the scene
+            \4 additionally, we may have to treat number of endmembers as a hyperparameter
+
+    \2. ...in this paper, we explore how the generative topographic mapping can be used to
+        \3 enable principled unsupervised classification of hyperspectral imagery by
+            \4 Bayesian treatment (as compared to the self organizing map)
+            \4 topological ordering with smooth relationship between classes in latent space
+        \3 Train GTM on water pixels to obtain unsupervised classification mapping the detailed structure and small-scale variability of pond in Montague, North Texas
+        \3 Mapping can be further utilized for smart deployment of robot team (maybe save for discussion section?) i.e. requisition boat to bring reference sensors to "interesting" area
+        \3 Using combined dataset including land, water, and tracer dye, we demonstrate endmember extraction
+        \3 Using learned spectra together with NS3, we are able to evaluate extent of algae (application to harmful algal bloom mapping)
+        \3 Use learned spectra to map extent
+
+
+\1 Materials and Methods
+    \2 Overview o GTM Algorithm
+    \2 Description of UAV + HSI system 
+        \3 Description of system 
+        \3 Description of data collection and processing
+        \3 
+
+    \2 Overview paragraph about project, i.e. plan is to use the Generative Topographic Mapping to analyze drone-based hyperspectral imagery collected at a pond in Montague North Texas on 23-November 2021. 
+   \2 Autonomous Robot Team
+        \3 Describe drone setup
+            \4 Alta X Quadcopter
+            \4 Resonon Pika SC2 HSI
+                \begin{itemize}
+                    \item 462 wavelengths per pixel
+                    \item 1600 pixels per scan-line
+                    \item embedded GPS/IMU
+               \end{itemize}
+             \4 Intel NUC for on-board compute
+   \2 Data Collection
+        \3 Describe collection site in Montague, North Texas
+        \3 Collection was performed near solar noon to maximize incident light. At this time of year, the maximum solar elevation was $\approx 60^\circ$ so that sun-glint is not as much of an issue. (Cite sun-glint paper here).
+    \2 Pre-processing
+        \3 Reflectance conversion of radiance imagery using on-board downwelling irradiance spectrometer
+        \3 Georectification of collected
+        \3 Wavelength selection to $\lambda \leq 900 \text{nm}$ as longer wavelengths are noisy
+        \3 Rescaling of spectra so that peak has $\tilde{R}  = 1.0$  to account for variability in incident lighting conditions due 
+    \2 Generative Topographic Mapping
+        \3 Start off with Kohonen SOM paper. Key benefit:
+            \4 Topological relationship between classes i.e. similarity vs dissimilarity as a function of distance in mapping space (latent space)
+        \3 Limitations of SOM
+            \4 Not probabilistic
+            \4 No clear convergence criterion
+            \4 Heuristic based approach with no clear way to select hyperparameters like neighborhood function, number of classes, etc...
+            \4 Heskes did reinterpret algorithm as stochastic gradient descent on a cost function...
+        \3 GTM Algorithm
+            \4 Describe Algorithm
+            \4 Describe parameters
+        \3 Bayesian information criterion and Akaike information criterion for hyperaprameter optimization
+            \4 As an alternative to performing full Bayesian treatment for marginalization over hyperparameters
+        \3 Abundance mapping with spectral similarity score
+            \4 paper comparing different distance functions for spectra
+                \begin{itemize}
+                    \item curse of dimensionality can be pernicious here as we have > 462 wavelengths per pixel
+                \end{itemize}
+            \4 NS3 offers good trade off between spectral angle and euclidean-like distance (MSE)
+        \3 Describe use of thresholded NS3 for mapping abundance of GTM derived endmembers.
+    \2 Overview of two approaches
+        \3 GTM trained on water-only pixels for unsupervised classification of pond
+            \4 Goal: Reveal the small-scale spatial variability of pond water
+            \4 Discuss how unsupervised classification can help inform autnomous data collection by robot team (save for discussion?)
+        \3 GTM trained on combined dataset including water, land, and dye plume pixels
+            \4 Fit GTM
+            \4 Identify spectral signatures of key exemplar spectra (endmembers)
+            \4 Use endmembers to map algal abundance and time evolution of rhodamine dye plume
+\1 Results
+    \2  GTM fit on Full Dataset
+    \2 Hyperparameter optimization
+    \2 Spectral signature identification
+    \2 Water Class Map (water-only GTM)
+    \2 Algae Identification
+    \2 Dye plume identification
+
+\1 Discussion
+    \2 Overview of GTM applications in our paper
+        \3 Unsupervised classifciation of entire pond (no-dye)
+        \3 Endmember extraction of spectral signatures
+    \2 Comparison to existing approaches
+        \3 unsupervised classification methods (to general, no relationship between classes) 
+        \3 endmember extraction (mostly linear, assume existence of pure spectra)
+        \3 deep learning approaches to endmember extraction don't provide clear way to asses number of endmembers needed
+    \2 Applications of either of these with drones?
+        \3 Are there any papers using unsupervised methods or endmember extraction with drone based imagery (HSI or otherwise)?
+    \2. Use of GTM as component of Robot Team
+        \3 As a feature transformer / preprocessing step for supervised methods (as opposed to PCA, k-NN, etc...)
+        \3 identification of "interesting" regions for smart provisioning of robot boat
+            \4 Standard approach is to survey in a grid
+            \4 Can use classification map with real-time measurement to ensure optimal collection of data by collecting samples with from as many GTM classes as possible
+    \2 Extensions and future work
+        \3 Incorporation of GTM extensions for efficient online-learning
+            \4 Comment on time to train standard GTM
+                \begin{itemize}
+                    \item Key parameters are size of dataset (number of records) and number of RBF centers, $M$.
+                \end{itemize}
+            \4 Bishop suggest extension for on-line training of GTM using batches.
+            \4 All of this could be done in the field limiting the time and cost of surveying as well as optimizing the time-to-insights
+        \3 Utilize GTM with further in situ data collection to identify spectral signatures of specific algal species for HAB detection
+        \3 Same but for crude oil types...
+\end{outline}
+
+\bibliographystyle{plain}
+\bibliography{paper/references.bib}
+
+\end{document}
