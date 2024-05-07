@@ -97,11 +97,36 @@ Inland water bodies pose a unique challenge to characterization by remote sensin
 Significant research efforts have focused on the deveħopment of techniques and algorithms to invert water quality parameters from UAV-captured hyperspectral images (HSIs). On-board compute installed alongside hyperspectral imagers can enable the rapid evaluation of spectral indices from HSI band ratios \cite{horstrand2019uav}. These band ratios and polynomial combinations of bands have been used to successfully invert optically-active water quality parameters such as turbidity directly from UAV acquired imagery \cite{vogt2016near, zhang2022selection}. Supervised machine learning techniques such as tree-based models, support vector machines, and neural networks have also been used to estimate a plethora of parameters such as colored dissolved organic matter, chlorophyll a, blue-green algae, and suspended sediment concentrations \cite{keller2018hyperspectral, lu2021retrieval}. The calibration and evaluation of these data-driven models demand a significant volume of coincident, in situ data. This can be addressed by coordinating UAV flights with reference data collection by autonomous robotic boats \cite{robot-team-1, robot-team-2}. Nevertheless, this approach relies on prior knowledge of expected sources in order to select appropriate reference instruments for model validation. The presence of unanticipated contaminants cannot be directly identified in this paradigm. 
 
 % 3. Unsupervised ML
-To complement these capabilities...
 
-Therefore, unsupervised techniques to segment HSI and identify unique spectral signatures are needed for near-real time applications where detailed knowledge of contaminants may not be available
+To take full advantage of the information contained in HSI for near-real time water quality analysis, unsupervised methods that segment HSI pixels and can extract relevant spectral endmembers are needed. 
+
+A variety of technqiues have 
+
+
+Data-driven techniques such as principal component analysis (PCA), independent component analysis (ICA), and k-nearest neighbors (kNN) have been widely employed for HSI analysis \cite{yousefi2016mineral,} (other citations). While useful, these methods 
+
+Geometric methods such as vertex component analysis (VCA) offer another approach based on the fact that endmember spectra form vertices of a simplex \cite{}. However, these approaches 
+
+Deep learning strategies such as autoencoders...
+
+
+Principal component analysis (PCA) has been widely used for this task as it enables both dimensionality reduction and feature extraction. 
+
+Principal component analysis (PCA) is a popular choice for both dimenionsality reduction and feature extraction. 
+
+Principal component analysis (PCA) is a common method utilized for both dimensionality reduction and feature extraction
+
+
+
+
+Dimensionality Reduction
+Unsupervised Classification
+Endmember Extraction and Spectral Unmixing
+
+Goal: a principled unsupervised method that can both segment HSI imagery and aid in the extraction of relevant spectral endmembers
 
 % 4. SOM and GTM
+
 
 
 % 5. This paper...
