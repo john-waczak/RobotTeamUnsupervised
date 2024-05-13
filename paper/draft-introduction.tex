@@ -12,45 +12,15 @@ Inland water bodies present a unique challenge to characterization by remote sen
 
 Significant research efforts have focused on the development of techniques and algorithms to retrieve water quality parameters from UAV-captured hyperspectral images (HSI). On-board compute installed alongside hyperspectral imagers can enable the rapid evaluation of spectral indices from HSI band ratios \cite{horstrand2019uav}. These band ratios and polynomial combinations of bands have been used to successfully invert optically-active water quality parameters such as turbidity directly from UAV acquired imagery \cite{vogt2016near, zhang2022selection}. Supervised machine learning techniques such as tree-based models, support vector machines, and neural networks have also been used to estimate a plethora of parameters such as colored dissolved organic matter, chlorophyll a, blue-green algae, and suspended sediment concentrations \cite{keller2018hyperspectral, lu2021retrieval}. The calibration and evaluation of these data-driven models demand a significant volume of coincident, in situ data. This can be addressed by coordinating UAV flights with reference data collection using autonomous robotic boats \cite{robot-team-1, robot-team-2}. Nevertheless, this approach relies on prior knowledge of expected sources in order to select appropriate reference instruments for model validation. The presence of unanticipated contaminants cannot be directly identified in this sensing paradigm. 
 
-Extending the capabilities of UAV-based hyperspectral imaging to enable water quality monitoring in real-time scenarios where contaminant sources may not be known in advance requires two additional capabilities: dimensionality reduction techniques to permit the visual comparison of HSI, and endmember extraction techniques which can identify spectral signatures corresponding to unique sources within the imaging scene. In remote sensing where reference data are typically sparse, many such techniques have been developed. Principal component analysis and t-distributed stochastic neighbor embedding are popular dimensionality reduction approaches commonly used to reduce HSI to two or three dimensions for visualization \cite{tyo2003principal,zhang2015hyperspectral}. For endmember extraction there are a variety of approaches including geometric methods like vertex component analysis, statistical methods like k-nearest neighbors and non-negative matrix factorization, and deep learning methods based on autoencoder architectures \cite{heylen2014review,nascimento2005vertex, Feng2022HyperspectralUB, cariou2015unsupervised, su2019daen, borsoi2019deep, palsson2020convolutional}. Ultimately, an ideal approach should enable both visualization and identification of relevant spectral endmembers.
+Extending the capabilities of UAV-based hyperspectral imaging to enable water quality monitoring in real-time scenarios where contaminant sources may not be known in advance requires two additional capabilities: dimensionality reduction techniques to permit the visual comparison of HSI, and endmember extraction techniques which can identify spectral signatures corresponding to unique sources within the imaging scene. In remote sensing where reference data are typically sparse, many approaches have been explored. For example, principal component analysis (PCA) and t-distributed stochastic neighbor embedding (tSNE) are dimensionality reduction methods commonly used to reduce HSI to two or three dimensions for visualization \cite{tyo2003principal,zhang2015hyperspectral}. Similarly for endmember extraction there are a variety of established approaches including geometric methods like vertex component analysis, statistical methods like k-nearest neighbors and non-negative matrix factorization (NMF), and deep learning methods based on autoencoder architectures \cite{heylen2014review,nascimento2005vertex, Feng2022HyperspectralUB, cariou2015unsupervised, su2019daen, borsoi2019deep, palsson2020convolutional}. Methods based on linear mappings like PCA and NMF are often too restrictive for HSI where the assumption of linear mixing is easily broken. However, the increased complexity of nonlinear methods like tSNE and autoencoders often lead to significant increases in computation time. An ideal approach should enable both visualization and nonlinear identification of relevant spectral endmembers.
 
-Among the numerous unsupervised approaches, Kohonen's self-organizing map (SOM) is an attractive option which 
-simultaneously accomplishes both tasks. 
+% neurons that wire together, fire together
+The self-organizing map (SOM) developed by Teuvo Kohonen is an unsupervised machine learning method which nonlinearly maps high dimensional data to the nodes of a two-dimensional grid \cite{kohonen-som-1}. By preserving the topological relationship between nodes during training, the SOM ensures that similar spectral signatures are mapped together such that related HSI pixels naturally cluster together. This presents an attractive compromise by enabling the simultaneous visualization of HSI data and endmember extraction via the weight vector associated with each SOM node \cite{cantero2004analysis, duran2007time,som-hsi}. When reference data are available, the SOM can be utilized to provide semi-supervised labeling of HSI spectra \cite{riese2019supervised}. Furthermore, Danielsen et al. demonstrated that the dimensionality reduction offered by the SOM can even be used for on-board data compression of HSIs acquired by a CubeSat \cite{danielsen2021self}. Despite these clear capabilities, the SOM relies on a heuristic training algorithm with hyperparemeters that can be challenging to tune and offers no direct probabilistic interpretation. To address these limitations, Bishop et al. developed the generative topographic mapping (GTM), a Bayesian latent-variable model inspired by the SOM \cite{gtm-bishop-1}. The GTM has been utilized in a variety of domains including drug design and chemical data visualization but has yet to see adoption for the analysis of hyperspectral imagery \cite{kireeva2012generative, gaspar2015chemical, horvath2019generative}.
 
-provides a low dimensional representation of data into 
+In this paper, we explore the application of the GTM to UAV-acquired HSI for the characterization water quality. Specifically, we use the GTM to 
 
-SOM have been used 
+Using data collected at site in Montague, North Texas, we demonstrate the ability of this paradigm with two case studies. First, we demonstrate how the GTM can be used to provide a high-resolution unsupervised classification of a water body enabling the rapid identification of relevant regions which can then be used to direct further investigation by reference-sensor equipped boats. Second, we demonstrate the ability to perform endmember extraction and abundance mapping using imagery from a test-release of rhodamine dye. Together with the normalized spectral similarity score, these spectral signatures are identified and their associated area in the scene is determined.
 
-However, the SOM suffers from key limitations
-
-\cite{cantero2004analysis} -- use SOM for endmember extraction
-\cite{som-satellite} -- SOM For synoptic scale wind and sea surface temperature patterns
-\cite{som-hsi} -- SOM for HSI feature extraction
-\cite{danielsen2021self} -- SOM for compression of HSI from cubesat
-
-To address these shortcomings, Bishop, Svensen, and () developted the Generative Topographic mapping (GTM) \cite{gtm-bishop-1}. The GTM is a fully Bayesian realization of the SOM which 
-
-
-
-In this paper, we 
-
-% 4. SOM 
-
-% - SOM is an attractive approach as it enables both dimensionality reduction and unsupervised classification. 
-% - Furthermore, the SOM maintains a topological relationship between learned classes such that classes near each other in the SOM grid are more similar than classes far apart
-% - SOM can be used to nonlinearly map data into a 2-dimensional space
-% - Weight vectors corresponding to each SOM node can be interpreted as spectral endmembers. The training algorithm updates weights based on euclidean distance between data record and each node weight vector
-% - Add citations and examples of use in remote sensing / HSI
-% - 
-
-% Among unsupervised methods, Kohonen's self-organizing map provides an attractive compromise enabling both dimensionality reduction and classification...
-
-% 5. GTM
-
-% 6. This paper...
-
-
-% Using data collected at site in Montague, North Texas, we demonstrate the ability of this paradigm with two case studies. First, we demonstrate how the GTM can be used to provide a high-resolution unsupervised classification of a water body enabling the rapid identification of relevant regions which can then be used to direct further investigation by reference-sensor equipped boats. Second, we demonstrate the ability to perform endmember extraction and abundance mapping using imagery from a test-release of rhodamine dye. Together with the normalized spectral similarity score, these spectral signatures are identified and their associated area in the scene is determined.
 
 
 
