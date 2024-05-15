@@ -88,7 +88,7 @@ zs = [fz(xs[i], ys[j]) for i∈1:k, j∈1:k]
 
 pts = [Point3f(xs[i], ys[j], zs[i,j]) for i in 1:k for j ∈ 1:k]
 
-fig = Figure();
+fig = Figure(size=(800,800));
 ax = Axis3(fig[1,1]);
 hidedecorations!(ax)
 hidespines!(ax)
@@ -98,6 +98,6 @@ hidespines!(ax)
 wireframe!(ax, xs, ys, zs, color=:lightgray);
 scatter!(ax, pts, color=mints_colors[3], markersize=10)
 
-save(joinpath(figures_path, "gtm-projected.svg"), fig)
+save(joinpath(figures_path, "gtm-projected.png"), fig)
 
 fig
