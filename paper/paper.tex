@@ -118,11 +118,11 @@ In this paper, we explore the application of the GTM to UAV-acquired HSI for the
 
 In this study, we explore the use of the GTM as a tool for dimensionality reduction and non-linear endmember extraction of hyperspectral imagery. To this end, a dataset of HSI were collected at a pond in Montague, North Texas (shown in panel d of Fig~\ref{fig:sample-spectra}) on 23 November 2020 using a UAV mounted hyperspectral imager configured as described in \cite{robot-team-1, robot-team-2}. In this section we first provide a detailed overview of the GTM algorithm. Next we describe the UAV platform used for HSI collection and the various steps used to processes captured HSI. Finally, we describe the GTM training procedure, hyperparameter optimization, and subsequent visualization methods used to analyze trained GTM models in this study.
 
-%%% --- Generative 0Topographic Mapping ------------------------------------
+%%% --- Generative Topographic Mapping ------------------------------------
 \subsection{Generative Topographic Mapping}
 
 
-The GTM is a probabilistic latent variable model inspired by the SOM for visualizing and clustering high-dimensional data. Like the SOM, the GTM assumes vectors $\mathbf{x}$ in the high-dimensional data space (here representing reflectance spectra) are constrained to a low-dimensional embedded manifold. The SOM describes this manifold using a regular grid of nodes, each having an associated weight vector defining the mapping from the manifold to the data space. The position of each data record $\mathbf{x}$ in the manifold is assigned as the position of the node whose weight vector has the minimum distance to $\mathbf{x}$. An iterative training procedure updates the weight vectors of each node to fit the manifold to the data such that nodes near each other in the SOM grid correspond to similar records (in the Euclidean sense) in the data space.
+The GTM is a probabilistic latent variable model inspired by the SOM for visualizing and clustering high-dimensional data. Like the SOM, the GTM assumes vectors $\mathbf{x}$ in the $d$-dimensional data space (here representing reflectance spectra) are constrained to a low-dimensional embedded manifold. The SOM describes this manifold using a regular grid of nodes, each having an associated weight vector defining the mapping from the manifold to the data space. The position of each data record $\mathbf{x}$ in the manifold is assigned to the position of the node whose weight vector has the minimum Euclidean distance to $\mathbf{x}$. An iterative training procedure updates the weight vectors of each node to fit the manifold to the data such that nodes near each other in the SOM grid correspond to similar records in the data space.
 
 The GTM mimics the grid of the SOM by assuming data are generated from latent variables $\xi$ which are constrained to the $K$-many nodes of a regular grid. This assumption corresponds to establishing a prior distribution on the latent space of the form
 \begin{equation}\label{eq:latent-prob}
@@ -130,17 +130,27 @@ The GTM mimics the grid of the SOM by assuming data are generated from latent va
 \end{equation}
 where $\delta(\cdot)$ is the Dirac delta function.
 
-Points $\xi$ in this latent space are mapped to the embedded manifold by a non-linear function $\psi$ parameterized by weights $W$. However, since real data is rarely noise-free, this embedded manifold will not be perfectly thin. To account for this the points $\xi$ are described in the data space by a radially symmetric Gaussian distribution, $\mathcal{N}(\psi(\xi),\, \beta^{-1})$, with mean $\psi(\xi)$ and variance $\beta^{-1}$. For a dataset consisting of $N$-many i.i.d. records, this choice yields a log-likelihood function of the form
+Points $\xi$ in this latent space are mapped to the embedded manifold by a non-linear function $\psi$ parameterized by weights $W$ as illustrated in Fig~\ref{fig:gtm-diagram}. However, since real data is rarely noise-free, this embedded manifold will not be perfectly thin. To account for this, the points $\xi$ are described in the data space by a radially symmetric Gaussian distribution, $\mathcal{N}(\psi(\xi),\, \beta^{-1})$, with mean $\psi(\xi)$ and variance $\beta^{-1}$. For a dataset $\left\{ \mathbf{x}_n\right\}\limits_{n=1}^N$ consisting of $N$-many i.i.d. records, this choice yields a log-likelihood function of the form
 \begin{equation}\label{eq:llh}
     \mathcal{L}(W, \beta) = \sum_n^N \ln \left(\dfrac{1}{K}\sum_k^K p(\mathbf{x}_n \mid \xi_k, W, \beta) \right)
 \end{equation}
-which can be maximized to fit $W$ and $\beta^{-1}$.
+which can be maximized to yield optimal $W$ and $\beta^{-1}$.
 
-The function $\psi$ is typically chosen to be given by the sum of $M$-many radial basis functions (RBF) evenly distributed in the latent space so that $\psi(\xi) = W\phi(\xi)$ with centers $\mu_m$ and width $\sigma$ so that
+\begin{figure}[t]
+%\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+%\includegraphics[width=\columnwidth]{paper/figures/methods/gtm-diagram.pdf}
+\includegraphics[width=\columnwidth]{paper/figures/methods/gtm-diagram.png}
+%\end{adjustwidth}
+\caption{Illustration of the GTM algorithm. On the left is a regular grid of $K$ many points (green) in the latent space represented by their coordinates $\xi_1$ and $\xi_2$. In red are the $M$-many RBF which define the mapping $\psi$ from the latent space to the data space. Points in the latent space are mapped non-linearly to the data space yielding an embedded manifold in $\mathcal{R}^d$, here illustrated in three dimensions.\label{fig:gtm-diagram}}
+\end{figure}  
+
+
+The function $\psi$ is typically chosen to be given by the sum of $M$-many radial basis functions (RBF) evenly distributed in the latent space such that $\psi(\xi) = W\phi(\xi)$ with centers $\mu_m$ and width $\sigma$ so that
 \begin{equation}
     \phi_m(\xi) = \exp\left(-\dfrac{\lVert \xi - \mu_m \rVert^2}{2\sigma^2}\right).
 \end{equation}
-Together the number of RBFs, $M$, and $\sigma$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be controlled by an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
+Together the number of RBFs, $M$, and $\sigma$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be enforced by introducing an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
 \begin{equation}\label{eq:weight-prior}
     p(W \mid \alpha) =  \left( \frac{\alpha}{2\pi} \right)^{MD/2}\exp\left(-\frac{\alpha}{2}\left\lVert W \right\rVert_{F}^2\right).
 \end{equation}
@@ -149,56 +159,36 @@ The use of RBFs for $\psi$ enables maximizing $\mathcal{L}(W,\beta)$ via an Expe
 \begin{equation}\label{eq:responsibility}
     R_{kn} = p(\xi_k \mid \mathbf{x}_n, W, \beta) = \dfrac{p(\mathbf{x}_n \mid \xi_k, W, \beta)}{\sum\limits_{k'}^{K} p(\mathbf{x}_n \mid \xi_{k'}, W, \beta)}.
 \end{equation}
-Together these responsibilities form a matrix with entries $R_{kn}$ which are kept fixed during the maximization step. The maximization step is performed by updating the weights $W$ and variance $\beta^{-1}$ according to
+Together these responsibilities form a matrix with entries $R_{kn}$ which are kept fixed during the maximization step. The maximization step is then performed by updating the weights $W$ and variance $\beta^{-1}$ according to
 \begin{align}\label{eq:m-step}
     W_{\text{new}} &= \left(\Phi^T G \Phi + \dfrac{\alpha}{\beta}I \right)^{-1} \Phi^T R X  \\
     \frac{1}{\beta_{\text{new}}} &= \frac{1}{ND} \sum\limits_{n}^{N} \sum\limits_{k}^{K} R_{kn} \left\lVert \psi_k - \mathbf{x}_n \right\rVert^2
 \end{align}
-where $\Phi_{km} = \phi_m(\xi_k)$, $X$ is the data matrix formed by concatenating the records $\mathbf{x}_n$, and $G$ is a diagonal matrix with $G_{kk} = \sum\limits_n^N R_{kn}$.
+where $\Phi_{km} = \phi_m(\xi_k)$, $X$ is the data matrix formed by concatenating the records $\mathbf{x}_n$, and $G$ is a diagonal matrix with $G_{kk} = \sum\limits_n^N R_{kn}$. This process is repeated until the log-likelihood converges to a predetermined tolerance level.
 
+Slices $R_{[:,n]}$ of the matrix $R$ define the responsibility of each latent node $\xi_k$ for the $n$th data record $\mathbf{x}_n$. Therefore the final responsibility matrix computed at the end of the GTM training routine can be used to represent each record in the latent space by the mean:
+\begin{equation}
+    \hat{\xi}_n = \sum_{k}^K R_{kn}\xi_k.
+\end{equation}
 
-
-For this study, a freely available implementation of the GTM was developed in the Julia programming language \cite{gtm-code}. Julia is a dy
-
-- GTM paper original \cite{gtm-bishop-1}
-- GTM developments paper \cite{gtm-bishop-2}
-- GTM code \cite{gtm-code}
-- implementation designed to work in MLJ ecosystem \cite{blaom2020mlj}
-
-
-at a pond in Montague, north Texas (shown in panel d of Fig~\ref{fig:sample-spectra})
-
-
-
+A freely available implementation of the GTM algorithm was developed for this study and is accessible at \cite{gtm-code}. The code is written in the Julia programming language and complies with the Machine Learning in Julia (MLJ) common interface \cite{bezanson2012julia,blaom2020mlj}.
 
 \subsection{UAV-Based Hyperspectral Imaging}
-A Freefly Alta-X autonomous quadcopter was used as a UAV platform for the robotic team.
 
-The Alta-X is specifically designed to carry cameras and has a payload of up to 35 lbs. We equipped the UAV with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager. 
+A Freefly Alta-X autonomous quadcopter was used as the UAV platform in this study. This UAV was equipped with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager to capture HSI with $462$ wavelengths per pixel ranging from $391$ to $1011$ nm. This imager is in a pushbroom configuration so that HSI are captured one scan-line at a time resulting in data cubes consisting of $1000$ scan-lines with $1600$ pixels each. Additionally, the camera includes an embedded GPS/INS unit to enable georectification of collected HSI. An upward facing Ocean Optics UV-Vis NIR spectrometer with a cosine corrector was also included to provide measurements of the incident solar irradiance spectrum. Data collection and processing was controlled by an attached Intel NUC small-form-factor computer.
 
-For each image pixel, this camera samples 462 wavelengths ranging from 391 to 1011 nm. 
+To account for the variability of incident light, raw HSI are converted to units of reflectance using the downwelling irradiance spectrum simultaneously captured with each HSI. With the hyperspectral imager oriented to nadir, the reflectance is given by
+\begin{equation}\label{eq:reflectance}
+    R(\lambda) = \pi L(\lambda)/E_d(\lambda)
+\end{equation}
+where $L$ is the spectral radiance, $E_d$ is the downwelling irradiance, and a factor of $\pi$ steradians results from assuming the water surface is Lambertian (diffuse) \cite{ruddick2019review}. HSI collection was performed near solar noon to maximize the amount of incident sunlight illuminating the water. For the site in North Texas, this corresponded to an average solar zenith angle of $54.9^\circ$ for 23 November 2020 resulting in HSI with negligible sunglint effects.
 
-Additionally, the UAV includes an upward facing Ocean Optics UV-Vis-NIR spectrometer with a cosine corrector to capture the incident downwelling irradiance spectrum.
-
-Data collection by the hyperspectral imager is controlled by an attached Intel NUC small-form-factor computer. 
-
-A second processing NUC is also included for onboard georectification and generation of data products.
-
-The collected hyperspectral images (HSIs) are stored locally on a solid state drive that is simultaneously mounted by the processing computer.
-
-- georetification \cite{muller2002program, baumker2001new, mostafa2000multi}
+After conversion to reflectance, each HSI must also be georectified to assign geographic coordinates to each pixel. The UAV flights were performed at an approximate altitude of $50$ m above the water so that the imaging surface is essentially flat. Consequently, HSI were rapidly georectified to a $10$ cm resolution using position and orientation data from the embedded GPS/INS as outlined in \cite{muller2002program, baumker2001new, mostafa2000multi}. An example hyperspectral data cube is illustrated in panel (a) of Fig~\ref{fig:spectral-signatures} where the log10-reflectance values are plotted along the z-axis for each pixel in the scene and a psuedo-color image at the top of the data cube illustrates how the water would appear to the human eye from the perspective of the UAV.
 
 \subsection{Data Collection and Pre-Processing}
-- Julia programming language used \cite{bezanson2012julia}
-
 
 
 \subsection{Image Segmentation with the Normalized Spectral Similarity Score}
-
-
-\begin{equation}
-    \hat{\xi}_n = \sum_{k}^K R_{kn}\xi_k
-\end{equation}
 
 
 
@@ -234,7 +224,7 @@ The collected hyperspectral images (HSIs) are stored locally on a solid state dr
 \centering
 \includegraphics[width=15.5cm]{paper/figures/results/spectral-signatures.png}
 \end{adjustwidth}
-\caption{GTM Node Signatures corresponding to the exemplar spectra for the rhodamine plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). \label{fig:spectral-signautes}}
+\caption{GTM Node Signatures corresponding to the exemplar spectra for the rhodamine plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). \label{fig:spectral-signatures}}
 \end{figure}  
 
 \subsection{Water Class Map}
