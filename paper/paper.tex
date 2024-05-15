@@ -116,7 +116,7 @@ In this paper, we explore the application of the GTM to UAV-acquired HSI for the
 \end{figure}  
 
 
-In this study, we explore the use of the GTM as a tool for dimensionality reduction and non-linear endmember extraction of hyperspectral imagery. To this end, a dataset of HSI were collected at a pond in Montague, North Texas (shown in panel d of Fig~\ref{fig:sample-spectra}) on 23 November 2020 using a UAV mounted hyperspectral imager configured as described in \cite{robot-team-1, robot-team-2}. In this section we first provide a detailed overview of the GTM algorithm. Next we describe the UAV platform used for HSI collection and the various steps used to processes captured HSI. Finally, we describe the GTM training procedure, hyperparameter optimization, and subsequent visualization methods used to analyze trained GTM models in this study.
+In this study, we explore the use of the GTM as a tool for dimensionality reduction and non-linear endmember extraction of hyperspectral imagery. To this end, a dataset of HSI were collected at a pond in Montague, North Texas (shown in panel d of Fig~\ref{fig:sample-spectra}) on 23 November 2020 using a UAV mounted hyperspectral imager configured as described in \cite{robot-team-1, robot-team-2}. In this section we first provide a detailed overview of the GTM algorithm. Next we describe the UAV platform used for HSI collection and the various steps used to processes captured HSI. Finally, we describe the two case studies presented in this paper for the utilization of the GTM as a HSI visualization tool and as an endmember extraction technique.
 
 %%% --- Generative Topographic Mapping ------------------------------------
 \subsection{Generative Topographic Mapping}
@@ -181,15 +181,36 @@ To account for the variability of incident light, raw HSI are converted to units
 \begin{equation}\label{eq:reflectance}
     R(\lambda) = \pi L(\lambda)/E_d(\lambda)
 \end{equation}
-where $L$ is the spectral radiance, $E_d$ is the downwelling irradiance, and a factor of $\pi$ steradians results from assuming the water surface is Lambertian (diffuse) \cite{ruddick2019review}. HSI collection was performed near solar noon to maximize the amount of incident sunlight illuminating the water. For the site in North Texas, this corresponded to an average solar zenith angle of $54.9^\circ$ for 23 November 2020 resulting in HSI with negligible sunglint effects.
+where $L$ is the spectral radiance, $E_d$ is the downwelling irradiance, and a factor of $\pi$ steradians results from assuming the water surface is Lambertian (diffuse) \cite{ruddick2019review}. HSI collection was performed near solar noon to maximize the amount of incident sunlight illuminating the water. For the site in North Texas, this corresponded to an average solar zenith angle of $54.9^\circ$ for 23 November 2020 resulting in HSI with negligible sunglint effects. 
 
-After conversion to reflectance, each HSI must also be georectified to assign geographic coordinates to each pixel. The UAV flights were performed at an approximate altitude of $50$ m above the water so that the imaging surface is essentially flat. Consequently, HSI were rapidly georectified to a $10$ cm resolution using position and orientation data from the embedded GPS/INS as outlined in \cite{muller2002program, baumker2001new, mostafa2000multi}. An example hyperspectral data cube is illustrated in panel (a) of Fig~\ref{fig:spectral-signatures} where the log10-reflectance values are plotted along the z-axis for each pixel in the scene and a psuedo-color image at the top of the data cube illustrates how the water would appear to the human eye from the perspective of the UAV.
+After conversion to reflectance, each HSI must also be georectified to assign geographic coordinates to each pixel. The UAV flights were performed at an approximate altitude of $50$ m above the water so that the imaging surface can be considered to be flat. Consequently, HSI were rapidly georectified to a $10$ cm resolution using position and orientation data from the embedded GPS/INS as outlined in \cite{muller2002program, baumker2001new, mostafa2000multi}. An example hyperspectral data cube is illustrated in panel (a) of Fig~\ref{fig:spectral-signatures} where the log10-reflectance values are plotted along the z-axis for each pixel in the scene and a psuedo-color image at the top of the data cube illustrates how the water would appear to the human eye from the perspective of the UAV.
 
-\subsection{Data Collection and Pre-Processing}
+As a final processing step before training each GTM, we limit the wavelengths of each HSI to $\lambda \leq 900$ nm as wavelengths above $900$ nm showed significant noise. Additionally, each spectrum was re-scaled to a peak value of $1.0$ to account for incident light variability between HSI.
 
+\subsection{GTM Case Studies}
 
-\subsection{Image Segmentation with the Normalized Spectral Similarity Score}
+To explore the ability of the GTM to segment HSI pixels and aid in source identification we first consider a dataset of water-only spectra consisting of $>36,000$ records identified from collected HSI by a normalized difference water index (NDWI) greater than $0.25$ where the NDWI is defined as 
+\begin{equation}
+    \text{NDWI} = \dfrac{R(550) - R(860)}{R(550) + R(860)}.
+\end{equation}
+We then apply the trained GTM to all water-only pixels to visualize the distribution learned by the GTM and examine spectra associated with a subset of nodes in the latent space in order to assess the small-scale spatial variability within the pond.
 
+Next, we consider a dataset of combined HSI pixels including both water and land. To simulate the dispersion of a potential contaminant source, a Rhodamine tracer dye was released into the western portion of the pond and two additional UAV flights were used to collect HSI capturing the evolution of the resulting plume. From these HSI a collection of $>145,000$ were sampled for model training. Exemplar spectra for water, grass, algae, and rhodamine dye were identified from a sample HSI as shown in panels (b) and (c) of Fig~\ref{fig:sample-spectra}. Using these spectra, we explore the trained GTM and use it to extract spectral signatures corresponding to these endmember categories. Values for the hyperparameters $m$, $s$, and $\alpha$, are determined by training multiple GTM models and selecting values which minimize the Bayesian Information Criterion (BIC) given by 
+\begin{equation}
+    \text{BIC} = 2P\ln(N) - 2\mathcal{L}
+\end{equation}
+where $P$ is the total number of model parameters, $N$ is the number of records in the dataset, and $\mathcal{L}$ is the log-likelihood defined in Eq~\ref{eq:llh}.
+
+The normalized spectral similarity score (NS3) introduced by Nidamanuri and Zbell combines the root-mean-square (RMS) difference together with the spectral angle to provide a spectral distance function\cite{nidamanuri2010normalized}. For two spectra $R_1(\lambda)$ and $R_2(\lambda)$ it is defined by
+\begin{equation}
+    \text{NS3}(R_1, R_2) &= \sqrt{RMS(R_1, R_2)^2 + (1-\cos\theta)^2}
+\end{equation}
+where
+\begin{align}
+    \text{RMS}(R_1, R_2) &= \sqrt{\frac{1}{N-1}\sum_\lambda \left(R_{1}(\lambda) - R_2(\lambda) \right)^2} \\
+    \cos\theta &= \frac{\langle R_1 , R_2 \rangle}{\lVert R_1\rVert \lVert R_2 \rVert}.
+\end{align}
+We use the NS3 together with identified spectral endmembers to map the abundance of algae near the shore as well as the evolution of the Rhodamine dye plume.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
