@@ -119,7 +119,7 @@ In this paper, we explore the application of the GTM to UAV-acquired HSI for the
 In this study, we explore the use of the GTM as a tool for dimensionality reduction and non-linear endmember extraction of hyperspectral imagery. To this end, a dataset of HSI were collected at a pond in Montague, North Texas (shown in panel d of Fig~\ref{fig:sample-spectra}) on 23 November 2020 using a UAV mounted hyperspectral imager configured as described in \cite{robot-team-1, robot-team-2}. In this section we first provide a detailed overview of the GTM algorithm. Next we describe the UAV platform used for HSI collection and the various steps used to processes captured HSI. Finally, we describe the two case studies presented in this paper for the utilization of the GTM as a HSI visualization tool and as an endmember extraction technique.
 
 %%% --- Generative Topographic Mapping ------------------------------------
-\subsection{Generative Topographic Mapping}
+\subsection{Generative Topographic Mapping}\label{sec:gtm-overview}
 
 
 The GTM is a probabilistic latent variable model inspired by the SOM for visualizing and clustering high-dimensional data. Like the SOM, the GTM assumes vectors $\mathbf{x}$ in the $d$-dimensional data space (here representing reflectance spectra) are constrained to a low-dimensional embedded manifold. The SOM describes this manifold using a regular grid of nodes, each having an associated weight vector defining the mapping from the manifold to the data space. The position of each data record $\mathbf{x}$ in the manifold is assigned to the position of the node whose weight vector has the minimum Euclidean distance to $\mathbf{x}$. An iterative training procedure updates the weight vectors of each node to fit the manifold to the data such that nodes near each other in the SOM grid correspond to similar records in the data space.
@@ -150,7 +150,7 @@ The function $\psi$ is typically chosen to be given by the sum of $M$-many radia
 \begin{equation}
     \phi_m(\xi) = \exp\left(-\dfrac{\lVert \xi - \mu_m \rVert^2}{2\sigma^2}\right).
 \end{equation}
-Together the number of RBFs, $M$, and $\sigma$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be enforced by introducing an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
+The width $\sigma$ is taken as the distance between neighboring RBF centers adjusted by a scale factor labelled $s$. to Together the number of RBFs, $M$, and $s$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be enforced by introducing an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
 \begin{equation}\label{eq:weight-prior}
     p(W \mid \alpha) =  \left( \frac{\alpha}{2\pi} \right)^{MD/2}\exp\left(-\frac{\alpha}{2}\left\lVert W \right\rVert_{F}^2\right).
 \end{equation}
@@ -166,7 +166,7 @@ Together these responsibilities form a matrix with entries $R_{kn}$ which are ke
 \end{align}
 where $\Phi_{km} = \phi_m(\xi_k)$, $X$ is the data matrix formed by concatenating the records $\mathbf{x}_n$, and $G$ is a diagonal matrix with $G_{kk} = \sum\limits_n^N R_{kn}$. This process is repeated until the log-likelihood converges to a predetermined tolerance level.
 
-Slices $R_{[:,n]}$ of the matrix $R$ define the responsibility of each latent node $\xi_k$ for the $n$th data record $\mathbf{x}_n$. Therefore the final responsibility matrix computed at the end of the GTM training routine can be used to represent each record in the latent space by the mean:
+Slices $R_{[:,n]}$ of the matrix $R$ define the responsibility of each latent node $\xi_k$ for the $n$th data record $\mathbf{x}_n$. Therefore the final responsibility matrix after GTM training can be used to represent each record in the latent space by the mean:
 \begin{equation}
     \hat{\xi}_n = \sum_{k}^K R_{kn}\xi_k.
 \end{equation}
@@ -187,7 +187,7 @@ After conversion to reflectance, each HSI must also be georectified to assign ge
 
 As a final processing step before training each GTM, we limit the wavelengths of each HSI to $\lambda \leq 900$ nm as wavelengths above $900$ nm showed significant noise. Additionally, each spectrum was re-scaled to a peak value of $1.0$ to account for incident light variability between HSI.
 
-\subsection{GTM Case Studies}
+\subsection{GTM Case Studies}\label{sec:case-studies}
 
 To explore the ability of the GTM to segment HSI pixels and aid in source identification we first consider a dataset of water-only spectra consisting of $>36,000$ records identified from collected HSI by a normalized difference water index (NDWI) greater than $0.25$ where the NDWI is defined as 
 \begin{equation}
@@ -212,74 +212,75 @@ where
 \end{align}
 We use the NS3 together with identified spectral endmembers to map the abundance of algae near the shore as well as the evolution of the Rhodamine dye plume.
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
-\subsection{GTM Fit}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.8\columnwidth]{paper/figures/results/square-ndvi.pdf}
-\caption{GTM Map: We plot the mean position of each data point in the latent space with points colored by the their associated NDVI values. The locations of the exemplar points for algae, rhodamine dye, water, and dry grass are shown in the latent space illustrating that the GTM has clearly distinguished land, near-land, and water pixels.\label{fig:}}
-\end{figure}  
-
-
-\subsection{Hyperparamter Optimization with BIC}
-
-
-\begin{figure}[t]
-%\begin{adjustwidth}{-\extralength}{0cm}
-\centering
-\includegraphics[width=\textwidth]{paper/figures/results/bic.pdf}
-%\end{adjustwidth}
-\caption{Results of the hyperparameter search. Left: Variation of BIC with $m$ and $s$ for fixed $\alpha=0.1$. Right: Variation of the BIC with with $m$ and $\alpha$ for fixed $s=1.0$. The white star in each plot indicates the parameters with the lowest BIC.\label{fig:hp-results}}
-\end{figure}  
-
-
-\subsection{Spectral Signatures}
-
-
-\begin{figure}[t]
-\begin{adjustwidth}{-\extralength}{0cm}
-\centering
-\includegraphics[width=15.5cm]{paper/figures/results/spectral-signatures.png}
-\end{adjustwidth}
-\caption{GTM Node Signatures corresponding to the exemplar spectra for the rhodamine plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). \label{fig:spectral-signatures}}
-\end{figure}  
-
-\subsection{Water Class Map}
+\subsection{Water-only Pixel Segmentation}
 
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
 \includegraphics[width=18.0cm]{paper/figures/results/gtm-water.png}
 \end{adjustwidth}
-\caption{Classification map for GTM trained solely on water pixels (no land and no rhodamine plume). \textbf{(a)} GTM applied to all water pixels colored by their associated position in the latent space. \textbf{(b)} Representation of the poitns from the training set in the latent space. The points are colored with $\xi_1$ corresponding to red and $\xi_2$ corresponding to blue. \textbf{(c)} The associated GTM spectral signatures, $\Psi_i$, corresponding to the four corners and center of the GTM latent space. \label{fig:gtm-water}}
+\caption{Classification map for GTM trained solely on water pixels (no land and no rhodamine plume). \textbf{(a)} GTM applied to all water pixels colored by their associated position in the latent space. \textbf{(b)} Representation of the points from the training set in the latent space. Color is assigned to each point by mapping $\xi_1$ to red and $\xi_2$ to blue. \textbf{(c)} GTM spectral signatures, $\psi(\xi_k)$, corresponding to nodes from the four corners and center of the GTM latent space. \label{fig:gtm-water}}
 \end{figure}  
 
+A GTM with $K=32\times 32$ nodes was trained on the dataset of water-only pixels described in Sec~\ref{sec:case-studies} in order to explore the distribution of reflectance spectra captured by the HSI. The resulting GTM is visualized in Fig~\ref{fig:gtm-water}. First, we note that the GTM has utilized most of the embedding space as illustrated panel (b) where the position corresponding to the mean responsibility of each data point $\hat{\xi}_n$ has been plotted in the latent space. For this water-only gtm, the spectra appear to be largely clustered toward the left edge, bottom, and right edge of the embedding space. Spectral signatures corresponding to GTM nodes from the four corners and center of the latent space are shown in panel (c) illustrating the spectral variability represented across the latent space. 
 
-\subsection{Algae Identification}
+To visualize the distribution of HSI learned by the GTM, we can associate a color with each dimension of the latent space. In Fig~\ref{fig:gtm-water} we have used the red channel to represent $\xi_1$ and the blue channel to represent $\xi_2$. Applying the trained GTM to compute mean node responsibilities for all water-pixels in collected HSI allows us to illustrate the spatial distribution of the spectra on a map as shown in panel (a). Here we observe a clear distinction between water near the shore and water in the middle of the pond. Additionally, the eastern alcove of the pond is significantly more blue than the rest of the water reflecting the limited flow through this region. The close proximity of highly dissimilar GTM classes illustrated by sharp color gradients in the map captures the small-scale spatial variability typical of inland water bodies like this pond.
 
+\subsection{Endmember Extraction}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\columnwidth]{paper/figures/results/square-ndvi.pdf}
+%\caption{GTM Map: We plot the mean position of each data point in the latent space with points colored by the their associated NDVI values. The locations of the exemplar points for algae, rhodamine dye, water, and dry grass are shown in the latent space illustrating that the GTM has clearly distinguished land, near-land, and water pixels.\label{fig:gtm-ndvi}}
+\caption{GTM latent space visualization: Each sample spectrum from the dataset of combined HSI covering shore, water, and the rhodamine dye release are plotted in the GTM latent space at the location of the mean node responsibility, $\hat{\xi}_n$. Points are colored according to the NDVI computed from the original reflectance spectra. The locations of exemplar spectra for algae, rhodamine, water, and grass in the latent space are included as color-filled circles. Spectra from the shore and water are clearly separated to different regions of the latent space.\label{fig:gtm-ndvi}}
+\end{figure}  
+
+A second GTM was trained on the combined dataset of HSI covering shore, water, and the rhodamine tracer dye release. The resulting class map is shown in Fig~\ref{fig:ndvi} where each sample has been plotted at the position of the mean node responsibility and colored by the normalized difference vegetation index (NDVI) computed from the original reflectance spectrum. The NDVI is a spectral index sensitive to variations in vegetation health with negative values corresponding to water, small positive values corresponding to sparse vegetation, and large values near $1$ corresponding to dense vegetation \cite{thenkabail2018hyperspectral}. From this, we see that the GTM can clearly separate spectra by vegetation content with high values concentrated to the left of the embedding space and negative, water-based pixels concentrated to the right. Additionally, the position of exemplar spectra for algae, rhodamine, water, and grass are included as color-filled circles further illustrating the classification obtained by the GTM.
+
+%\begin{figure}[t]
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{paper/figures/results/bic.pdf}
+%\end{adjustwidth}
+\caption{Results of the hyperparameter search. Left: Variation of BIC with $m$ and $s$ for fixed $\alpha=0.1$. Right: Variation of the BIC with with $m$ and $\alpha$ for fixed $s=1.0$. The white star in each plot indicates the parameters with the lowest BIC across the entire parameter search.\label{fig:hp-results}}
+\end{figure}  
+
+As outlined in Sec~\ref{sec:gtm-overview}, there are three hyperparameters that need to be chosen to fit a GTM model: the number of RBF centers $M=m^2$ with $m$ the number along each axis, the scale factor $s$ which controls the RBF overlap, and the regularization parameter $\alpha$. To choose appropriate values we performed a grid search for $m$ values between $2$ and $20$, $s$ values between $0.1$ and $3.0$, and $\alpha$ values between $0.001$ and $10.0$. The best values were determined as those which minimized the BIC, with $m=14$, $s=1.0$, and $\alpha=0.1$, respectively. Heatmaps comparing the BIC for different hyperparameter values are provided in Fig~\ref{fig:hp-results} and a table of the top 25 models is given in Appendix A.  Since the matrix of RBF activations $\Phi$ need only be computed once at the GTM initialization step, the number of latent nodes given by $K=k^2$ can be chosen to be large enough to ensure a smooth mapping. We found that a value of $k=32$ provided a sufficient number of GTM nodes without significantly impacting training time.
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=15.5cm]{paper/figures/results/spectral-signatures.png}
+\end{adjustwidth}
+\caption{Spectral signatures $\psi(\xi_k)$ corresponding to GTM nodes with non-zero responsibility for exemplar spectra corresponding to the rhodamine dye plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). A pseudo-color image is inset into each plot wit the location of the exemplar spectrum marked with a white circle. \label{fig:spectral-signatures}}
+\end{figure}  
+
+Using the trained GTM we can compute spectral signatures for each node in the latent space via the non-linear mapping $\psi$. The responsibilities $R_{kn}$ therefore correspond to the contributions of the $kth$ node $\xi_k$ to the $n$th sample spectrum in the dataset. Endmembers are identified by nodes with non-zero responsibility values for each of the selected exemplar spectra and are plotted in Fig~\ref{fig:spectral-signatures}. We note that these extracted endmembers are able to accurately capture the shape of exemplar spectrum including thin reflectance peaks. The endmembers also manage to smoothly interpolate through noisy wavelengths as shown by the water and algae endmembers for $\lambda > 800$ nm.
+
+\subsection{Abundance Mapping with NS3}
 
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
 \includegraphics[width=15.5cm]{paper/figures/results/algae.png}
 \end{adjustwidth}
-\caption{\label{fig:algae-map}}
+\caption{Using the spectral endmember assigned to algae from the trained GTM together with the NS3, we are able to estimate the algal abundance near the shore. (\textbf{left}) NS3 values of pixels below a threshold of 0.4275 corresponding to a total area of $587.3$ $m^2$. (\textbf{right}) A picture of the pond near the shore showing the algae.\label{fig:algae-map}}
 \end{figure}  
 
+Spectral endmembers extracted from the GTM can be used to map the abundance of water constituents in HSI by selecting HSI pixels with a NS3 value below a given threshold. In Fig~\ref{fig:algae-map} we demonstrate this by using the extracted algae endmember spectrum to map algal abundance near the western shore of the pond. Identifying algae pixels as those with an NS3 value below 0.4725, we estimate the area subsumed by algae in Fig~\ref{fig:algae-map} to be $587.3$ $m^2$. Similarly, we are able to track the evolution of the rhodamine dye release into the western portion of the pond by computing the NS3 for HSI collected across multiple flights. In the left panel of Fig~\ref{fig:rhodamine-map}, we see that the dye plume initially encompasses an area of roughly $330.7$ $m^2$. A second flight performed 15 minutes later reveals the dye plume to have increased to an area of $1495.6$ $m^2$. The increase in NS3 values between flights reflects the dilution of dye as it diffused into the water.
 
 
-\subsection{Rhodamine Dye Plume Identification}
+
 
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
 \includegraphics[width=15.5cm]{paper/figures/results/rhodamine.png}
 \end{adjustwidth}
-\caption{\label{fig:rhodamine-map}}
+\caption{Using the spectral endmember assigned to Rhodamine from the trained GTM together with the NS3, we are able to map the evolution of the dye plume across two UAV flights. (\textbf{left}) The initial dye plume corresponding to a total area of $330.7$ $m^2$. (\textbf{right}) The same dye plume imaged approximately 15 minutes later now subsumes a total area of $1495.6$ $m^2$.\label{fig:rhodamine-map}}
 \end{figure}  
 
 
@@ -287,6 +288,23 @@ We use the NS3 together with identified spectral endmembers to map the abundance
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
+
+- Use of UAV-based HSI for water quality assessment is becoming increasingly popular
+- Most studies have focused on supervised techniques mapping captured spectra to specific parameters of interest 
+- This approach relies on reference data which are expensive to collect and require prior knowledge of expected sources in order to select appropriate sensors 
+- Spectral unmixing provides an HSI-only alternative however this approach relies on libraries of known endmember spectra
+- Most studies exploring endmember extraction from UAV-based HSI are focused on extracting pure endmembers which can then be utilized by satellite based HSI
+
+% smart collection of reference data
+- The map of the distribution of GTM classes throughout the pond in Fig~\ref{fig:gtm-water} reveals the significant spatial variability typical of inland water bodies. Knowledge of this distribution is highly relevant for the collection of in situ reference data where taking samples as little as a meter apart could clearly lead to significant differences in measurements. 
+- As a consequence, one useful application for the GTM is for intelligent reference data collection.
+- The ability of any supervised model to infer water quality parameters from captured HSI relies on a sufficient volume of reference measurements which reflect the true distribution in the water
+- In our previous work, we demonstrated how autonomous in situ data collection leads to significantly greater data volumes, which in turn, improves water parameter inversion models. 
+- Using the distribution obtained by the GTM, an autonomous boat can be routed to maximially sample the observed distribution
+- Cite papers where this has been done in other contexts... e.g. guided navigation of autonomous boat based on some cost function, for example, like the expected improvement functions used for Bayesian optimization strategies.
+- Such a strategy would likely reduce the sampling time and improve data quality by sampling a broader portion of the distribution. 
+- Since the GTM captures the distribution of observed spectra, we are also not constrained to the distribution of a single parameter as measured by the boat
+- That is, we previously observed the distributions for parameters like CDOM, Chlorophyll, Temperature, Turbidity, Blue-green algae, etc. were highly dissimilar so that guiding the boat using a single reference sensor would not accurately reflect the comprehensive distribution of water composition.
 
 \subsection{Summary of GTM applications in our paper}
 \subsection{Comparison to other existing approaches in literature}
@@ -379,14 +397,14 @@ HAB & Harmful Algal Bloom
 \section[\appendixname~\thesection]{Hyperparameter Search Results}
 
 \begin{table}[H]
-  \caption{The top 25 models from the hyperparameter search. A variety of GTM were trained to explore the the impact of varying m, $\alpha$, and s.\label{tab:hp-search}}
+  \caption{The top 25 models from the hyperparameter search. A variety of GTM were trained to explore the the impact of varying m, $\alpha$, and s. The Bayesian Information Criterion (BIC) and Akaike Information Criterion (AIC) are given in the final two columns which can be used for hyperparameter selection. \label{tab:hp-search}}
   \begin{adjustwidth}{-\extralength}{0cm}
   \newcolumntype{C}{>{\centering\arraybackslash}X}
   \begin{tabularx}{\fulllength}{CCCCCC}
     \toprule
     \textbf{m} & \textbf{$\alpha$} & \textbf{s} & \textbf{k} & \textbf{BIC} & \textbf{AIC} \\
     \midrule
-    14 & 0.1 & 1.0 & 32 & \textbf{-1.918e8} & -1.926e8\\
+    \textbf{14} & \textbf{0.1} & \textbf{1.0} & \textbf{32} & \textbf{-1.918e8} & \textbf{-1.926e8}\\
     13 & 0.01 & 1.0 & 32 & -1.917e8 & -1.923e8\\
     16 & 0.01 & 1.5 & 32 & -1.917e8 & -1.926e8\\
     14 & 10.0 & 1.0 & 32 & -1.917e8 & -1.924e8\\
