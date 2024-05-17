@@ -175,13 +175,26 @@ A freely available implementation of the GTM algorithm was developed for this st
 
 \subsection{UAV-Based Hyperspectral Imaging}
 
-A Freefly Alta-X autonomous quadcopter was used as the UAV platform in this study. This UAV was equipped with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager to capture HSI with $462$ wavelengths per pixel ranging from $391$ to $1011$ nm. This imager is in a pushbroom configuration so that HSI are captured one scan-line at a time resulting in data cubes consisting of $1000$ scan-lines with $1600$ pixels each. Additionally, the camera includes an embedded GPS/INS unit to enable georectification of collected HSI. An upward facing Ocean Optics UV-Vis NIR spectrometer with a cosine corrector was also included to provide measurements of the incident solar irradiance spectrum. Data collection and processing was controlled by an attached Intel NUC small-form-factor computer.
+A Freefly Alta-X autonomous quadcopter was used as the UAV platform in this study. This UAV was equipped with a Resonon Pika XC2 visible+near-infrared (VNIR) hyperspectral imager to capture HSI with $462$ wavelengths per pixel ranging from $391$ to $1011$ nm. This imager is in a pushbroom configuration so that HSI are captured one scan-line at a time resulting in data cubes consisting of $1000$ scan-lines with $1600$ pixels each. Additionally, the camera includes an embedded GPS/INS unit to enable georectification of collected HSI. An upward facing Ocean Optics UV-Vis NIR spectrometer with a cosine corrector was also included to provide measurements of the incident solar irradiance spectrum. The configuration of the UAV with the attached hyperspectral imager is shown in Fig~\ref{fig:drone}. Data collection and processing was controlled by an attached Intel NUC small-form-factor computer.
 
 To account for the variability of incident light, raw HSI are converted to units of reflectance using the downwelling irradiance spectrum simultaneously captured with each HSI. With the hyperspectral imager oriented to nadir, the reflectance is given by
 \begin{equation}\label{eq:reflectance}
     R(\lambda) = \pi L(\lambda)/E_d(\lambda)
 \end{equation}
 where $L$ is the spectral radiance, $E_d$ is the downwelling irradiance, and a factor of $\pi$ steradians results from assuming the water surface is Lambertian (diffuse) \cite{ruddick2019review}. HSI collection was performed near solar noon to maximize the amount of incident sunlight illuminating the water. For the site in North Texas, this corresponded to an average solar zenith angle of $54.9^\circ$ for 23 November 2020 resulting in HSI with negligible sunglint effects. 
+
+
+
+\begin{figure}[t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\centering
+\includegraphics[width=15.5cm]{paper/figures/methods/annotated-drone.pdf}
+\end{adjustwidth}
+\caption{The UAV platform: (\textbf{a}) The Resonon Pika XC2 hyperspectral imager. (\text{b}) The Freefly Alta-X with the attached hyperspectral imager, processing computer, and downwelling irradiance spectrometer. \label{fig:drone}}
+\end{figure}  
+
+
+
 
 After conversion to reflectance, each HSI must also be georectified to assign geographic coordinates to each pixel. The UAV flights were performed at an approximate altitude of $50$ m above the water so that the imaging surface can be considered to be flat. Consequently, HSI were rapidly georectified to a $10$ cm resolution using position and orientation data from the embedded GPS/INS as outlined in \cite{muller2002program, baumker2001new, mostafa2000multi}. An example hyperspectral data cube is illustrated in panel (a) of Fig~\ref{fig:spectral-signatures} where the log10-reflectance values are plotted along the z-axis for each pixel in the scene and a psuedo-color image at the top of the data cube illustrates how the water would appear to the human eye from the perspective of the UAV.
 
@@ -242,10 +255,11 @@ A second GTM was trained on the combined dataset of HSI covering shore, water, a
 
 %\begin{figure}[t]
 \begin{figure}[h]
+\begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=\textwidth]{paper/figures/results/bic.pdf}
-%\end{adjustwidth}
-\caption{Results of the hyperparameter search. Left: Variation of BIC with $m$ and $s$ for fixed $\alpha=0.1$. Right: Variation of the BIC with with $m$ and $\alpha$ for fixed $s=1.0$. The white star in each plot indicates the parameters with the lowest BIC across the entire parameter search.\label{fig:hp-results}}
+\includegraphics[width=17.0cm]{paper/figures/results/bic.pdf}
+\end{adjustwidth}
+\caption{Results of the hyperparameter search. (\textbf{left}) Variation of BIC with $m$ and $s$ for fixed $\alpha=0.1$. (\textbf{right}) Variation of the BIC with with $m$ and $\alpha$ for fixed $s=1.0$. The white star in each plot indicates the parameters with the lowest BIC across the entire parameter search.\label{fig:hp-results}}
 \end{figure}  
 
 As outlined in Sec~\ref{sec:gtm-overview}, there are three hyperparameters that need to be chosen to fit a GTM model: the number of RBF centers $M=m^2$ with $m$ the number along each axis, the scale factor $s$ which controls the RBF overlap, and the regularization parameter $\alpha$. To choose appropriate values we performed a grid search for $m$ values between $2$ and $20$, $s$ values between $0.1$ and $3.0$, and $\alpha$ values between $0.001$ and $10.0$. The best values were determined as those which minimized the BIC, with $m=14$, $s=1.0$, and $\alpha=0.1$, respectively. Heatmaps comparing the BIC for different hyperparameter values are provided in Fig~\ref{fig:hp-results} and a table of the top 25 models is given in Appendix A.  Since the matrix of RBF activations $\Phi$ need only be computed once at the GTM initialization step, the number of latent nodes given by $K=k^2$ can be chosen to be large enough to ensure a smooth mapping. We found that a value of $k=32$ provided a sufficient number of GTM nodes without significantly impacting training time.
@@ -253,7 +267,7 @@ As outlined in Sec~\ref{sec:gtm-overview}, there are three hyperparameters that 
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=15.5cm]{paper/figures/results/spectral-signatures.png}
+\includegraphics[width=17.0cm]{paper/figures/results/spectral-signatures.png}
 \end{adjustwidth}
 \caption{Spectral signatures $\psi(\xi_k)$ corresponding to GTM nodes with non-zero responsibility for exemplar spectra corresponding to the rhodamine dye plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). A pseudo-color image is inset into each plot wit the location of the exemplar spectrum marked with a white circle. \label{fig:spectral-signatures}}
 \end{figure}  
@@ -265,7 +279,7 @@ Using the trained GTM we can compute spectral signatures for each node in the la
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=15.5cm]{paper/figures/results/algae.png}
+\includegraphics[width=17.0cm]{paper/figures/results/algae.png}
 \end{adjustwidth}
 \caption{Using the spectral endmember assigned to algae from the trained GTM together with the NS3, we are able to estimate the algal abundance near the shore. (\textbf{left}) NS3 values of pixels below a threshold of 0.4275 corresponding to a total area of $587.3$ $m^2$. (\textbf{right}) A picture of the pond near the shore showing the algae.\label{fig:algae-map}}
 \end{figure}  
@@ -278,7 +292,7 @@ Spectral endmembers extracted from the GTM can be used to map the abundance of w
 \begin{figure}[t]
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=15.5cm]{paper/figures/results/rhodamine.png}
+\includegraphics[width=17.0cm]{paper/figures/results/rhodamine.png}
 \end{adjustwidth}
 \caption{Using the spectral endmember assigned to Rhodamine from the trained GTM together with the NS3, we are able to map the evolution of the dye plume across two UAV flights. (\textbf{left}) The initial dye plume corresponding to a total area of $330.7$ $m^2$. (\textbf{right}) The same dye plume imaged approximately 15 minutes later now subsumes a total area of $1495.6$ $m^2$.\label{fig:rhodamine-map}}
 \end{figure}  
@@ -381,11 +395,15 @@ The following abbreviations are used in this manuscript:\\
 \noindent 
 \begin{tabular}{@{}ll}
 UAV & Unmanned Aerial Vehicle \\
-SOM & Self Organizing Map \\ 
 GTM & Generative Topographic Mapping  \\
+SOM & Self Organizing Map \\ 
 HSI & Hyperspectral Image \\ 
-CDOM & Colored Dissolved Organic Matter \\
-HAB & Harmful Algal Bloom 
+PCA & Principal Component Analysis \\ 
+tSNE & t-Distributed Stochastic Neighbor Embedding \\
+MLJ & Machine Learning in Julia \\ 
+VNIR & Visible + Near-Infrared \\
+NDWI & Normalized Difference Water Index \\ 
+NS3 & Normalized Spectral Similarity Score
 \end{tabular}
 }
 
