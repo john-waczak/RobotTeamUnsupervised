@@ -39,7 +39,7 @@
 %=================================================================
 % Full title of the paper (Capitalized)
 % \Title{Robot Team III: Scotty Strikes Back}
-\Title{Visualization and Unsupervised Classification of Water Composition with UAV-based Hyperspectral Imaging and Generative Topographic Mapping}
+\Title{Unsupervised Characterization of Water Composition with UAV-based Hyperspectral Imaging and Generative Topographic Mapping}
 
 % MDPI internal command: Title for citation in the left column
 \TitleCitation{Title}
@@ -76,11 +76,13 @@ Hanson Center for Space Sciences, University of Texas at Dallas, Richardson, TX 
 
 % Abstract (Do not insert blank lines, i.e. \\) 
 \abstract{
-Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged as an essential technology for the characterization of inland water bodies. The high spectral and spatial resolutions of these systems enable the retrieval of a plethora of optically-active water quality parameters via band ratio algorithms and machine learning methods. However, fitting and validating these models requires access to sufficient quantities of in situ reference data which are time-consuming and expensive to obtain. In this study, we demonstrate how the Generative Topographic Mapping (GTM), a Bayesian realisation of the Self Organizing Map (SOM), enables highly-detailed unsupervised classification and nonlinear endmember extraction of UAV acquired hyperspectral imagery. Specifically, the topographic relationship between classes maintained by the GTM presents an attractive alternative to other unsupervised approaches which do not provide a notion of similarity between learned classes. Using data collected across a North Texas pond, we apply the GTM to create a detailed map segmenting the area into distinct regions of interest. Further, by interpreting the learned classes as distinct endmembers, the GTM can be used to rapidly identify and map unique water constituents. We demonstrate this capability by using the GTM to map algal abundance as well as the dispersion of a rhodamine dye tracer released into the water.
+Unmanned Aerial Vehicles (UAVs) equipped with hyperspectral imagers have emerged as an essential technology for the characterization of inland water bodies. The high spectral and spatial resolutions of these systems enable the retrieval of a plethora of optically-active water quality parameters via band ratio algorithms and machine learning methods. However, fitting and validating these models requires access to sufficient quantities of in situ reference data which are time-consuming and expensive to obtain. In this study, we demonstrate how the Generative Topographic Mapping (GTM), a Bayesian realisation of the Self-organizing Map, can be used to visualize high-dimensional hyperspectral imagery and extract spectral signatures corresponding to unique endmembers present in the water.  
+Using data collected across a North Texas pond, we first apply the GTM to visualize the distribution of captured reflectance spectra revealing small-scale spatial variability of water composition. Next, we demonstrate how the nodes of the fitted GTM can be interpreted as unique spectral endmembers. Using extracted endmembers together with the normalized spectral similarity score, we are able to efficiently map the abundance of near shore algae as well as the evolution of a rhodamine tracer dye used to simulate water contamination by a localized source. 
+%This study highlights the value of combining UAV-based hyperspectral imaging with unsupervised methods for...
 }
 
 % Keywords
-\keyword{Hyperspectral Imaging; Remote Sensing; Unsupervised Classification; Endmember Extraction, Spectral Unmixing} 
+\keyword{Hyperspectral Imaging; Remote Sensing; Unsupervised Classification; Endmember Extraction; Generative Topographic Mapping} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,7 +100,7 @@ Extending the capabilities of UAV-based hyperspectral imaging to enable water qu
 % neurons that wire together, fire together
 The self-organizing map (SOM) developed by Teuvo Kohonen is an unsupervised machine learning method which non-linearly maps high dimensional data to the nodes of a two-dimensional grid \cite{kohonen-som-1}. By preserving the topological relationship between nodes during training, the SOM ensures that similar spectral signatures are mapped together such that related HSI pixels naturally cluster together. This presents an attractive compromise by enabling the simultaneous visualization of HSI data and endmember extraction via the weight vector associated with each SOM node \cite{cantero2004analysis, duran2007time,som-hsi}. When reference data are available, the SOM can be utilized to provide semi-supervised labeling of HSI spectra \cite{riese2019supervised}. Furthermore, Danielsen et al. demonstrated that the dimensionality reduction offered by the SOM can even be used for on-board data compression of HSIs acquired by a CubeSat \cite{danielsen2021self}. Despite these clear capabilities, the SOM relies on a heuristic training algorithm with hyperparameters that can be challenging to tune and offers no direct probabilistic interpretation. To address these limitations, Bishop et al. developed the generative topographic mapping (GTM), a Bayesian latent-variable model inspired by the SOM \cite{gtm-bishop-1}. The GTM has been utilized in a variety of domains including drug design and chemical data visualization but has yet to see adoption for the analysis of hyperspectral imagery \cite{kireeva2012generative, gaspar2015chemical, horvath2019generative}.
 
-In this paper, we explore the application of the GTM to UAV-acquired HSI for the characterization water quality. Using data collected at pond in Montague, North Texas, we first train a GTM using water-only pixels to produce a low-dimensional representation of the collected HSI. We use this mapping to explore the highly detailed small-scale variability within the pond and discuss how this can be used to guide reference data collection. Next, we demonstrate how the GTM can be utilized to identify relevant spectral endmembers from a combined dataset including land pixels, algae, water, and a simulated contaminant plume using a rhodamine tracer dye. Once identified, these endmembers can be used to rapidly map the abundance of spectral features within the pond. We demonstrate this capability by mapping the abundance of algae near the shore and to track the evolution of a rhodamine dye plume. 
+In this paper, we explore the application of the GTM to UAV-acquired HSI for the characterization water quality. Using data collected at pond in Montague, North Texas, we first train a GTM using water-only pixels to produce a low-dimensional representation of the collected HSI. We use this mapping to explore the highly detailed small-scale variability within the pond and discuss how this can be used to guide reference data collection. Next, we demonstrate how the GTM can be utilized to identify relevant spectral endmembers from a combined dataset including land pixels, algae, water, and a simulated contaminant plume using a rhodamine tracer dye. Once identified, these endmembers can be used to rapidly map the abundance of spectral features within the pond. We demonstrate this capability by using GTM to map the abundance of algae near the shore as well as the dispersion of a rhodamine dye plume. 
 
 
 
@@ -150,7 +152,7 @@ The function $\psi$ is typically chosen to be given by the sum of $M$-many radia
 \begin{equation}
     \phi_m(\xi) = \exp\left(-\dfrac{\lVert \xi - \mu_m \rVert^2}{2\sigma^2}\right).
 \end{equation}
-The width $\sigma$ is taken as the distance between neighboring RBF centers adjusted by a scale factor labelled $s$. to Together the number of RBFs, $M$, and $s$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be enforced by introducing an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
+The width $\sigma$ is taken to be the distance between neighboring RBF centers multiplied by a scale factor, $s$. to Together the number of RBFs, $M$, and $s$ are hyperparameters for the model which govern the smoothness of the resulting manifold in the data space. Additionally, sparsity of $W$ can be enforced by introducing an additional hyperparameter $\alpha$ corresponding to a prior distribution over the weights given by
 \begin{equation}\label{eq:weight-prior}
     p(W \mid \alpha) =  \left( \frac{\alpha}{2\pi} \right)^{MD/2}\exp\left(-\frac{\alpha}{2}\left\lVert W \right\rVert_{F}^2\right).
 \end{equation}
@@ -269,7 +271,7 @@ As outlined in Sec~\ref{sec:gtm-overview}, there are three hyperparameters that 
 \centering
 \includegraphics[width=17.0cm]{paper/figures/results/spectral-signatures.png}
 \end{adjustwidth}
-\caption{Spectral signatures $\psi(\xi_k)$ corresponding to GTM nodes with non-zero responsibility for exemplar spectra corresponding to the rhodamine dye plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). A pseudo-color image is inset into each plot wit the location of the exemplar spectrum marked with a white circle. \label{fig:spectral-signatures}}
+\caption{Spectral signatures $\psi(\xi_k)$ corresponding to GTM nodes with non-zero responsibility for exemplar spectra corresponding to the rhodamine dye plume (top left), algae (top right), dry grass (bottom left), and open water (bottom right). A pseudo-color image is inset into each plot with the location of the exemplar spectrum marked with a white circle. \label{fig:spectral-signatures}}
 \end{figure}  
 
 Using the trained GTM we can compute spectral signatures for each node in the latent space via the non-linear mapping $\psi$. The responsibilities $R_{kn}$ therefore correspond to the contributions of the $kth$ node $\xi_k$ to the $n$th sample spectrum in the dataset. Endmembers are identified by nodes with non-zero responsibility values for each of the selected exemplar spectra and are plotted in Fig~\ref{fig:spectral-signatures}. We note that these extracted endmembers are able to accurately capture the shape of exemplar spectrum including thin reflectance peaks. The endmembers also manage to smoothly interpolate through noisy wavelengths as shown by the water and algae endmembers for $\lambda > 800$ nm.
@@ -287,57 +289,47 @@ Using the trained GTM we can compute spectral signatures for each node in the la
 Spectral endmembers extracted from the GTM can be used to map the abundance of water constituents in HSI by selecting HSI pixels with a NS3 value below a given threshold. In Fig~\ref{fig:algae-map} we demonstrate this by using the extracted algae endmember spectrum to map algal abundance near the western shore of the pond. Identifying algae pixels as those with an NS3 value below 0.4725, we estimate the area subsumed by algae in Fig~\ref{fig:algae-map} to be $587.3$ $m^2$. Similarly, we are able to track the evolution of the rhodamine dye release into the western portion of the pond by computing the NS3 for HSI collected across multiple flights. In the left panel of Fig~\ref{fig:rhodamine-map}, we see that the dye plume initially encompasses an area of roughly $330.7$ $m^2$. A second flight performed 15 minutes later reveals the dye plume to have increased to an area of $1495.6$ $m^2$. The increase in NS3 values between flights reflects the dilution of dye as it diffused into the water.
 
 
+\newpage 
 
-
-\begin{figure}[t]
+\begin{figure}
 \begin{adjustwidth}{-\extralength}{0cm}
 \centering
-\includegraphics[width=17.0cm]{paper/figures/results/rhodamine.png}
+\includegraphics[width=14.5cm]{paper/figures/results/rhodamine-vertical.png}
 \end{adjustwidth}
-\caption{Using the spectral endmember assigned to Rhodamine from the trained GTM together with the NS3, we are able to map the evolution of the dye plume across two UAV flights. (\textbf{left}) The initial dye plume corresponding to a total area of $330.7$ $m^2$. (\textbf{right}) The same dye plume imaged approximately 15 minutes later now subsumes a total area of $1495.6$ $m^2$.\label{fig:rhodamine-map}}
+\caption{Using the spectral endmember assigned to Rhodamine from the trained GTM together with the NS3, we are able to map the evolution of the dye plume across two UAV flights. (\textbf{left}) The initial dye plume corresponding to a total area of $330.7$ $m^2$. (\textbf{right}) The same dye plume imaged approximately 15 minutes later extends to a total area of $1495.6$ $m^2$.\label{fig:rhodamine-map}}
 \end{figure}  
 
+\newpage
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}
 
-- Use of UAV-based HSI for water quality assessment is becoming increasingly popular
-- Most studies have focused on supervised techniques mapping captured spectra to specific parameters of interest 
-- This approach relies on reference data which are expensive to collect and require prior knowledge of expected sources in order to select appropriate sensors 
-- Spectral unmixing provides an HSI-only alternative however this approach relies on libraries of known endmember spectra
-- Most studies exploring endmember extraction from UAV-based HSI are focused on extracting pure endmembers which can then be utilized by satellite based HSI
+% Overview of previous approaches
 
-% smart collection of reference data
-- The map of the distribution of GTM classes throughout the pond in Fig~\ref{fig:gtm-water} reveals the significant spatial variability typical of inland water bodies. Knowledge of this distribution is highly relevant for the collection of in situ reference data where taking samples as little as a meter apart could clearly lead to significant differences in measurements. 
-- As a consequence, one useful application for the GTM is for intelligent reference data collection.
-- The ability of any supervised model to infer water quality parameters from captured HSI relies on a sufficient volume of reference measurements which reflect the true distribution in the water
-- In our previous work, we demonstrated how autonomous in situ data collection leads to significantly greater data volumes, which in turn, improves water parameter inversion models. 
-- Using the distribution obtained by the GTM, an autonomous boat can be routed to maximially sample the observed distribution
-- Cite papers where this has been done in other contexts... e.g. guided navigation of autonomous boat based on some cost function, for example, like the expected improvement functions used for Bayesian optimization strategies.
-- Such a strategy would likely reduce the sampling time and improve data quality by sampling a broader portion of the distribution. 
-- Since the GTM captures the distribution of observed spectra, we are also not constrained to the distribution of a single parameter as measured by the boat
-- That is, we previously observed the distributions for parameters like CDOM, Chlorophyll, Temperature, Turbidity, Blue-green algae, etc. were highly dissimilar so that guiding the boat using a single reference sensor would not accurately reflect the comprehensive distribution of water composition.
+The application of UAV-based hyperspectral imaging (HSI) for water quality assessment is gaining significant traction due to its ability to efficiently capture detailed spectral data at high spatial resolutions. Most studies using UAVs have employed supervised techniques that map the captured spectra to specific water quality parameters of interest. For example Lu et al. evaluated a variety of machine learning methods for the extraction of chlorophyll-a and suspended sediment concentrations from HSI using data from UAV flights over 33 sampling locations \cite{lu2021retrieval}. However, this approach relies on the collection of paired in situ data which can be challenging to obtain in sufficient quantities to facilitate model training. Additionally, supervised methods require prior knowledge of expected sources in order to select and calibrate suitable reference instruments. Using models purpose-built for specific water quality parameters like chlorophyll a or turbidity discards potential information contained in HSI which can reveal unanticipated sources. Therefore, unsupervised methods which aid in the visualization of HSI and enable the identification of spectral endmembers within the imaging scene are needed to complement these supervised approaches.
 
-\subsection{Summary of GTM applications in our paper}
-\subsection{Comparison to other existing approaches in literature}
-- Is there much done for classification in real time? 
-\subsection{Comparison to Spectral Unmixing}
-- Here we can re-interpret the GTM model as performing a type of Bayesian spectral unmixing and suggest how the method could be further extended to work in this domain. Critically, other traditional methods work by observing that pure endmembers form the vertices of a simplex. 
+Recently some researchers have begun to explore endmember extraction using UAV-based imaging where the increased spatial resolution provided by UAV platforms is hypothesised to yield more pure pixels than their satellite counterparts. For instance, Alvarez et al. used multi-spectral UAV imagery to extract endmembers which were then applied to unmix remote sensing data for plant abundance estimation across a broad region of France \cite{alvarez2020can}. Similarly, Gu et al. explored UAV-to-satellite hyperspectral unmixing by applying endmembers extracted from UAV-based HSI to satellite observations \cite{gu2023intrinsic}. These studies underscore the potential of combining endmember extraction techniques with UAV-based HSI which has yet to see widespread adoption for water quality analysis.
 
-\subsection{Other applications of GTM}
-- Discuss use of GTM means/modes/responsibilities feature transformer for supervised models (e.g. better than PCA) 
-- Use of GTM classes to aid autonomous data collection by identification of "interesting" regons
+In this study, we explored the GTM as a unsupervised approach to simultaneously enable visualization of HSI and perform endmember extraction of spectral signatures. First, we showed how the representation of data in the latent space of the GTM given by the mean responsibility can be used to visualize the small-scale structures within inland water bodies as evidenced in Fig~\ref{fig:gtm-water}. In particular, we note that the sharp gradients in colors found when visualizing the spatial distribution of GTM nodes across the pond reflects significant variability in water composition at the sub-meter scale. This has important consequences for water quality assessment where the location of in situ data collection will have a strong impact on the ability of any model to predict water quality parameters from HSI. Visualizing the distribution of spectra from collected HSI is therefore highly relevant to guide in situ data collection as shifting the sampling location by as little as a meter can lead to significant differences in measured values.
 
+Based on these observations, one clear application of the GTM for real-time water quality assessment is for intelligently guided reference data collection. In our previous work, we showed that coordinating UAV-based hyperspectral imaging with in situ data collection by an autonomous boat can dramatically improve the inversion of water quality parameters from HSI pixels \cite{robot-team-2}. However, the spatial distributions of parameters such as chlorophyll-a, blue-green algae, and temperature are often highly dissimilar posing a challenge for optimal route planning. Since the GTM estimates the full distribution of reflectance spectra and not a single water quality parameter, one could construct a prize collecting travelling salesman problem (PC-TSP) which seeks to find the optimal route maximizing the area explored in the GTM latent space \cite{balas2007prize}. Similar approaches have been used to guide data collection with autonomous vehicles to optimize data quality subject to resource constraints \cite{suryan2020learning}. 
 
-- Drones can be equipped with HSI and compute to enable rapid generation of spectral indices like the NDVI for applications such as precision agriculture \cite{horstrand2019uav}
+The second application of the GTM presented in this study is for the extraction of endmembers corresponding to unique sources observed in the HSI. Here the GTM is an attractive choice as it does not rely on the assumption of linear mixing and the presence of pure pixels which are easily broken by the effects of multiple scattering in realistic scenes \cite{nonlinearity-in-hsi}. Additionally, because the GTM is a probabilistic model, the values of model hyperparameters can be selected objectively using information criteria like the BIC. This is a clear advantage over similar methods like the SOM on which the GTM is based. Endmembers identified for exemplar spectra corresponding to rhodamine, algae, grass, and water demonstrate that the method can successfully identify spectral signatures corresponding to diverse sources. If a set of labeled spectra for known sources are available, their representation in the GTM latent space could be used to perform as semi-supervised classification similar to the SOM approach developed by Riese et al. \cite{riese2019supervised}.
 
-- Mention how Bishop suggests extensions to GTM for on-line learning which could be used to accelerate training for large HSI datasets
+% something about abundance mapping
+Once endmembers are identified, estimating their abundance using the NS3 provides a quick method to map the distribution of sources in water. We note that the spatial distribution of algae mapped in Fig~\ref{fig:algae-map} realistically reflects clustering of algae near the shore. Additionally, the ability for the UAV to quickly survey the same area in rapid succession is highly advantageous for tracking the diffusion of point sources as demonstrated in Fig~\ref{fig:rhodamine-map} for the rhodmaine dye release.
 
+The primary limitation of the GTM is that the number of nodes increases exponentially with the dimension of the latent space. However when constrained to two dimensions in order to enable visualization of the resulting map, the number of latent nodes has a negligible impact compared to the size of the dataset on which it is trained. Additionally, the GTM considers individual HSI pixels and does not exploit spatial structure like other methods such as convolutional autoencoders and non-negative matrix factorization using super-pixels \cite{palsson2020convolutional,Feng2022HyperspectralUB}. Extensions to the GTM have been proposed to enable batch training for large datasets as well as manifold-aligned noise models which replace the fixed variance parameter $\beta^{-1}$ with a full covariance matrix \cite{gtm-bishop-2}. 
+
+Finally, we note that the representation obtained by the GTM can be used for non-linear feature extraction to improve supervised models. Traditionally, PCA is used as a common preprocessing technique to reduce high-dimensional HSI by keeping the first $r$-many principal components. For example, Uddin et al. report improved classification of HSI by using PCA to extract features for a support vector machine \cite{uddin2021pca}. The GTM can similarly be used to provide a sparse representation of the input data via the latent node responsibilities $R_{kn}$ obtained for each record. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
+
+In this study we present the GTM as an useful unsupervised method for the visualization of UAV-based hyperspectral imagery and associated extraction of spectral endmembers. Using data collected at a North Texas pond, we demonstrate how the latent space of the GTM can be used to visualize the distribution of observed reflectance spectra revealing the small-scale spatial variability of water composition. Spectral signatures extracted from GTM nodes are used to successfully map the abundance of algae near the shore and to track the evolution of a rhodamine tracer dye plume. These examples illustrate the power of combining unsupervised learning with UAV-based HSI collection for the characterization of water composition.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
