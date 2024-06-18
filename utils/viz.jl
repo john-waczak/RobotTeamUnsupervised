@@ -4,7 +4,6 @@ using PythonCall
 using Images
 using HDF5
 using ProgressMeter
-
 export get_background_satmap
 
 

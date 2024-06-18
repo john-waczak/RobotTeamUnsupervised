@@ -218,7 +218,7 @@ important_coords = Dict(
         "R" => Data[1:462, 285, 100] ./ maximum(Data[1:idx_900, 285, 100]),
         "λs" => λs,
     ),
-    "grass" => Dict(
+    "ground" => Dict(
         "x" => xs[400],
         "y" => xs[80],
         "R" => Data[1:462, 400, 80] ./ maximum(Data[1:idx_900, 400, 80]),
@@ -264,7 +264,7 @@ s_p = scatter!(ax, [80], [235], marker=:circle, color=red, markersize=10, stroke
 s_w = scatter!(ax, [400], [320], marker=:circle, color=blue, markersize=10, strokewidth=stroke_width, strokecolor=darkblue)
 s_g = scatter!(ax, [400], [80], marker=:circle, color=brown, markersize=10, strokewidth=stroke_width, strokecolor=darkbrown)
 
-fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g], ["Algae", "Rhodamine", "Water", "Grass"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g], ["Algae", "Rhodamine", "Water", "Ground"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 
 fig
 
@@ -279,10 +279,10 @@ ax = CairoMakie.Axis(fig[2,1], xlabel="λ (nm)", ylabel="Scaled Reflectance",);
 la = lines!(ax, important_coords["algae"]["λs"][1:idx_900], important_coords["algae"]["R"][1:idx_900], linewidth=2, label="Algae", color=green)
 lp = lines!(ax, important_coords["plume"]["λs"][1:idx_900], important_coords["plume"]["R"][1:idx_900], linewidth=2, label="Rhodamine", color=red)
 lw = lines!(ax, important_coords["water"]["λs"][1:idx_900], important_coords["water"]["R"][1:idx_900], linewidth=2, label="Water", color=blue)
-lg = lines!(ax, important_coords["grass"]["λs"][1:idx_900], important_coords["grass"]["R"][1:idx_900], linewidth=2, label="Grass", color=tan)
+lg = lines!(ax, important_coords["ground"]["λs"][1:idx_900], important_coords["ground"]["R"][1:idx_900], linewidth=2, label="Ground", color=tan)
 # lr = lines!(ax, important_coords["road"]["λs"][1:idx_900], important_coords["road"]["R"][1:idx_900], linewidth=2, label="Road", color=brown)
-#fig[1,1] = Legend(fig, [la, lp, lw, lg, lr], ["Algae", "Rhodamine", "Water", "Grass", "Road"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
-fig[1,1] = Legend(fig, [la, lp, lw, lg], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+#fig[1,1] = Legend(fig, [la, lp, lw, lg, lr], ["Algae", "Rhodamine", "Water", "Ground", "Road"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [la, lp, lw, lg], ["Algae", "Rhodamine", "Water", "Ground",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 xlims!(ax, important_coords["algae"]["λs"][1], important_coords["algae"]["λs"][idx_900])
 ylims!(ax, 0, 1)
 fig

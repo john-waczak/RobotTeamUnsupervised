@@ -97,7 +97,7 @@ M = gtm_mdl.M                          # RBF centers
 Ψ = rpt[:W] * rpt[:Φ]'                 # Projected Node Means
 llhs = rpt[:llhs]
 
-# compute responsabilities and projections
+# compute responsibilities and projections
 Rs = predict_responsibility(mach, X)
 mean_proj = DataFrame(MLJ.transform(mach, X))
 mean_proj_2 = DataFrame(MLJ.transform(mach, X2))
@@ -122,7 +122,7 @@ end
 sample_coords["plume"]["img_idxs"] = CartesianIndex(80, 235)
 sample_coords["water"]["img_idxs"] = CartesianIndex(400, 320)
 sample_coords["algae"]["img_idxs"] = CartesianIndex(285, 100)
-sample_coords["grass"]["img_idxs"] = CartesianIndex(400, 80)
+sample_coords["ground"]["img_idxs"] = CartesianIndex(400, 80)
 
 
 
@@ -277,8 +277,8 @@ save(joinpath(figures_path, "square-water-spec.png"), fig)
 
 
 # GRASS
-idx_grass = sample_coords["grass"]["idx_data"]
-idx_sort = sortperm(Rs[idx_grass, :], rev=true)
+idx_ground = sample_coords["ground"]["idx_data"]
+idx_sort = sortperm(Rs[idx_ground, :], rev=true)
 
 fig = Figure();
 ax = CairoMakie.Axis(fig[2,1], xlabel="λ (nm)", ylabel="Scaled Reflectance");
@@ -292,10 +292,10 @@ hidedecorations!(ax_inset)
 hidespines!(ax_inset)
 
 ls = []
-l_1 = lines!(ax, wavelengths[1:idx_900], Vector(X[idx_grass, 1:idx_900]), linewidth=2)
+l_1 = lines!(ax, wavelengths[1:idx_900], Vector(X[idx_ground, 1:idx_900]), linewidth=2)
 push!(ls, l_1)
 for i ∈ 1:3
-    if Rs[idx_grass, idx_sort[i]] > 0
+    if Rs[idx_ground, idx_sort[i]] > 0
         l_2 = lines!(ax, wavelengths[1:idx_900], Ψ[1:idx_900, idx_sort[i]], linewidth=2, color=(mints_colors[2], 1/i))
     end
     if i == 1
@@ -303,16 +303,16 @@ for i ∈ 1:3
     end
 end
 
-fig[1,1] = Legend(fig, ls, ["Grass Spectrum", "GTM Node Signatures"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, ls, ["Ground Spectrum", "GTM Node Signatures"], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 xlims!(ax, wavelengths[1], 900)
 ylims!(ax, 0, 1)
 heatmap!(ax_inset, rgb_image)
-scatter!(ax_inset, [sample_coords["grass"]["img_idxs"][1]], [sample_coords["grass"]["img_idxs"][2]], markersize=7, color=:white, marker = :xcross)
+scatter!(ax_inset, [sample_coords["ground"]["img_idxs"][1]], [sample_coords["ground"]["img_idxs"][2]], markersize=7, color=:white, marker = :xcross)
 
 fig
 
-save(joinpath(figures_path, "square-grass-spec.pdf"), fig)
-save(joinpath(figures_path, "square-grass-spec.png"), fig)
+save(joinpath(figures_path, "square-ground-spec.pdf"), fig)
+save(joinpath(figures_path, "square-ground-spec.png"), fig)
 
 
 # plot location in latent space
@@ -325,9 +325,9 @@ scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=5, alpha=0.7, color=cl
 s_a = scatter!(ax, mean_proj.ξ₁[sample_coords["algae"]["idx_data"]], mean_proj.ξ₂[sample_coords["algae"]["idx_data"]], marker=:circle, color=green, markersize=15, strokewidth=stroke_width, strokecolor=darkgreen, )
 s_p = scatter!(ax, mean_proj.ξ₁[sample_coords["plume"]["idx_data"]], mean_proj.ξ₂[sample_coords["plume"]["idx_data"]], marker=:circle, color=red, markersize=15, strokewidth=stroke_width, strokecolor=darkred)
 s_w = scatter!(ax, mean_proj.ξ₁[sample_coords["water"]["idx_data"]], mean_proj.ξ₂[sample_coords["water"]["idx_data"]], marker=:circle, color=blue, markersize=15, strokewidth=stroke_width, strokecolor=darkblue)
-s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["grass"]["idx_data"]], mean_proj.ξ₂[sample_coords["grass"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
+s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["ground"]["idx_data"]], mean_proj.ξ₂[sample_coords["ground"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
 
-fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Ground",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 
 fig
 
@@ -347,9 +347,9 @@ s = scatter!(ax, mean_proj.ξ₁[is_unsup], mean_proj.ξ₂[is_unsup], markersiz
 s_a = scatter!(ax, mean_proj.ξ₁[sample_coords["algae"]["idx_data"]], mean_proj.ξ₂[sample_coords["algae"]["idx_data"]], marker=:circle, color=green, markersize=15, strokewidth=stroke_width, strokecolor=darkgreen, )
 s_p = scatter!(ax, mean_proj.ξ₁[sample_coords["plume"]["idx_data"]], mean_proj.ξ₂[sample_coords["plume"]["idx_data"]], marker=:circle, color=red, markersize=15, strokewidth=stroke_width, strokecolor=darkred)
 s_w = scatter!(ax, mean_proj.ξ₁[sample_coords["water"]["idx_data"]], mean_proj.ξ₂[sample_coords["water"]["idx_data"]], marker=:circle, color=blue, markersize=15, strokewidth=stroke_width, strokecolor=darkblue)
-s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["grass"]["idx_data"]], mean_proj.ξ₂[sample_coords["grass"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
+s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["ground"]["idx_data"]], mean_proj.ξ₂[sample_coords["ground"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
 
-fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Ground",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 cb = Colorbar(fig[2,2], s, label="NDWI")
 fig
 
@@ -367,9 +367,9 @@ s = scatter!(ax, mean_proj.ξ₁[is_unsup], mean_proj.ξ₂[is_unsup], markersiz
 s_a = scatter!(ax, mean_proj.ξ₁[sample_coords["algae"]["idx_data"]], mean_proj.ξ₂[sample_coords["algae"]["idx_data"]], marker=:circle, color=green, markersize=15, strokewidth=stroke_width, strokecolor=darkgreen, )
 s_p = scatter!(ax, mean_proj.ξ₁[sample_coords["plume"]["idx_data"]], mean_proj.ξ₂[sample_coords["plume"]["idx_data"]], marker=:circle, color=red, markersize=15, strokewidth=stroke_width, strokecolor=darkred)
 s_w = scatter!(ax, mean_proj.ξ₁[sample_coords["water"]["idx_data"]], mean_proj.ξ₂[sample_coords["water"]["idx_data"]], marker=:circle, color=blue, markersize=15, strokewidth=stroke_width, strokecolor=darkblue)
-s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["grass"]["idx_data"]], mean_proj.ξ₂[sample_coords["grass"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
+s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["ground"]["idx_data"]], mean_proj.ξ₂[sample_coords["ground"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
 
-fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Ground",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 cb = Colorbar(fig[2,2], s, label="NDVI")
 fig
 
@@ -400,9 +400,9 @@ s = scatter!(ax, mean_proj.ξ₁, mean_proj.ξ₂, markersize=9, alpha=0.85, col
 s_a = scatter!(ax, mean_proj.ξ₁[sample_coords["algae"]["idx_data"]], mean_proj.ξ₂[sample_coords["algae"]["idx_data"]], marker=:circle, color=green, markersize=15, strokewidth=stroke_width, strokecolor=darkgreen, )
 s_p = scatter!(ax, mean_proj.ξ₁[sample_coords["plume"]["idx_data"]], mean_proj.ξ₂[sample_coords["plume"]["idx_data"]], marker=:circle, color=red, markersize=15, strokewidth=stroke_width, strokecolor=darkred)
 s_w = scatter!(ax, mean_proj.ξ₁[sample_coords["water"]["idx_data"]], mean_proj.ξ₂[sample_coords["water"]["idx_data"]], marker=:circle, color=blue, markersize=15, strokewidth=stroke_width, strokecolor=darkblue)
-s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["grass"]["idx_data"]], mean_proj.ξ₂[sample_coords["grass"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
+s_g = scatter!(ax, mean_proj.ξ₁[sample_coords["ground"]["idx_data"]], mean_proj.ξ₂[sample_coords["ground"]["idx_data"]], marker=:circle, color=brown, markersize=15, strokewidth=stroke_width, strokecolor=darkbrown)
 
-fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Grass",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
+fig[1,1] = Legend(fig, [s_a, s_p, s_w, s_g,], ["Algae", "Rhodamine", "Water", "Ground",], framevisible=false, orientation=:horizontal, padding=(0,0,0,0), labelsize=13, height=-5)
 fig
 
 save(joinpath(figures_path, "gtm-classes-latent.png"), fig)
@@ -415,7 +415,7 @@ save(joinpath(figures_path, "gtm-classes-latent.pdf"), fig)
 sample_coords["algae"]["Ψ"] = Ψ[:, sample_coords["algae"]["idx_class"]]
 sample_coords["plume"]["Ψ"] = Ψ[:, sample_coords["plume"]["idx_class"]]
 sample_coords["water"]["Ψ"] = Ψ[:, sample_coords["water"]["idx_class"]]
-sample_coords["grass"]["Ψ"] = Ψ[:, sample_coords["grass"]["idx_class"]]
+sample_coords["ground"]["Ψ"] = Ψ[:, sample_coords["ground"]["idx_class"]]
 # sample_coords["road"]["Ψ"] = Ψ[:, sample_coords["road"]["idx_class"]]
 
 models_path = "./models"
