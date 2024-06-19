@@ -51,14 +51,13 @@ e= -97.712413
 
 satmap = get_background_satmap(w,e,s,n)
 
+lon_min, lon_max = (-97.7168, -97.7125)
+lat_min, lat_max = (33.70075, 33.7035)
 
 CairoMakie.activate!()
 fig = Figure(size=(800,600));
 ax = CairoMakie.Axis(fig[1,1]);
 bg = heatmap!(ax, (satmap.w - lon_min)..(satmap.e - lon_min), (satmap.s - lat_min)..(satmap.n - lat_min), satmap.img);
-
-lon_min, lon_max = (-97.7168, -97.7125)
-lat_min, lat_max = (33.70075, 33.7035)
 
 # add 30 meter scale bar
 lines!(ax, [λ_scale_l - lon_min, λ_scale_r - lon_min], [ϕ_scale - lat_min, ϕ_scale - lat_min], color=:white, linewidth=5)
@@ -286,6 +285,45 @@ R, X, Y, Lon, Lat, ij_inbounds, IsInbounds = get_data_for_heatmap(f_list_dye[1])
 rmse_plume = zeros(size(R,2), size(R,3));
 ns3_plume = zeros(size(R,2), size(R,3));
 cos_plume = zeros(size(R,2), size(R,3));
+
+
+
+# compute distribution of ns3 for this datacube
+# using Statistics
+
+# R, X, Y, Lon, Lat, ij_inbounds, IsInbounds = get_data_for_heatmap(f_list_dye[1]);
+# R1, X1, Y1, Lon1, Lat1, ij_inbounds1, IsInbounds1 = get_data_for_heatmap(f_list_dye[2]);
+# R2, X2, Y2, Lon2, Lat2, ij_inbounds2, IsInbounds2 = get_data_for_heatmap(f_list_dye[3]);
+
+
+
+# idx_notnan = findall(.!(isnan.(R[1,:,:])))
+# R[:, idx_notnan]
+# ns3_plume_vals_1 = [NS3(R[:, idx], R_plume) for idx in idx_notnan]
+
+# idx_notnan = findall(.!(isnan.(R1[1,:,:])))
+# R1[:, idx_notnan]
+# ns3_plume_vals_2 = [NS3(R1[:, idx], R_plume) for idx in idx_notnan]
+
+# idx_notnan = findall(.!(isnan.(R2[1,:,:])))
+# R2[:, idx_notnan]
+# ns3_plume_vals_3 = [NS3(R2[:, idx], R_plume) for idx in idx_notnan]
+
+# ns3_res = vcat(ns3_plume_vals_1, ns3_plume_vals_2, ns3_plume_vals_3)
+
+# quantile(ns3_plume_vals_1, 0.15) # ~0.4
+
+# length(ns3_res)
+# density(ns3_res)
+# hist(ns3_res, bins=30)
+
+# flist_to_use = vcat(f_list_1[1:7], "/Users/johnwaczak/data/robot-team/processed/hsi/12-09/Dye_2/Dye_2-1.h5", f_list_dye[1])
+# R, X, Y, Lon, Lat, ij_inbounds, IsInbounds = get_data_for_heatmap(flist_to_use[1]);
+# idx_notnan = findall(.!(isnan.(R[1,:,:])))
+# R[:, idx_notnan]
+# ns3_1 = [NS3(R[:, idx], R_algae) for idx in idx_notnan]
+
+# quantile(ns3_1[ns3_1 .> 0.2], 0.03)
 
 
 for i ∈ axes(rmse_plume,1), j ∈ axes(rmse_plume,2)

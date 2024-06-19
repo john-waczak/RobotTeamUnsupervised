@@ -259,6 +259,12 @@ img = heatmap!(ax, rgb_image);
 
 stroke_width = 1.5
 
+
+scatter!(ax, [285], [100], marker=:circle, color=:white , markersize=13, strokewidth=stroke_width, strokecolor=:white, )
+scatter!(ax, [80], [235], marker=:circle, color=:white , markersize=13, strokewidth=stroke_width, strokecolor=:white)
+scatter!(ax, [400], [320], marker=:circle, color=:white , markersize=13, strokewidth=stroke_width, strokecolor=:white)
+scatter!(ax, [400], [80], marker=:circle, color=:white, markersize=13, strokewidth=stroke_width, strokecolor=:white)
+
 s_a = scatter!(ax, [285], [100], marker=:circle, color=green, markersize=10, strokewidth=stroke_width, strokecolor=darkgreen, )
 s_p = scatter!(ax, [80], [235], marker=:circle, color=red, markersize=10, strokewidth=stroke_width, strokecolor=darkred)
 s_w = scatter!(ax, [400], [320], marker=:circle, color=blue, markersize=10, strokewidth=stroke_width, strokecolor=darkblue)
